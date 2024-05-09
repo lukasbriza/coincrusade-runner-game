@@ -1,9 +1,9 @@
 import "./styles/style.css"
+import projectConfig from "../public/assets/config.json"
 import { Game, Types, AUTO, Scale } from "phaser";
 import { sizes } from "./constants";
 import { GameScene } from "./scenes";
-
-const speedDown = 300
+import { GAME_PARAMETERS } from "./configurations";
 
 const gameConfig: Types.Core.GameConfig = {
     type: AUTO,
@@ -14,8 +14,8 @@ const gameConfig: Types.Core.GameConfig = {
     physics: {
         default: "arcade",
         arcade: {
-            gravity: { y: speedDown, x: 0 },
-            debug: true
+            gravity: { y: GAME_PARAMETERS.gravityX, x: 0 },
+            debug: projectConfig.debugMode
         }
     },
     scene: GameScene

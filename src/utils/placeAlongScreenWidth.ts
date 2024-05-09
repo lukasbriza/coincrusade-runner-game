@@ -1,9 +1,12 @@
-import { Physics, Textures } from "phaser";
+import { Physics, Scene } from "phaser";
 import { sizes } from "../constants";
 
 
-export const placeAlongScreenWidth = (staticGroup: Physics.Arcade.StaticGroup, img: Textures.Texture, key: string, yPlaceLine: number) => {
-    const width = img.getSourceImage().width
+export const placeAlongScreenWidth = (scene: Scene, key: string, yPlaceLine: number) => {
+    const staticGroup = scene.physics.add.staticGroup()
+    const image = scene.game.textures.get(key)
+
+    const width = image.getSourceImage().width
     const copyNum = Math.ceil(sizes.width / width)
 
     for (let i = 0; i < copyNum; i++) {
