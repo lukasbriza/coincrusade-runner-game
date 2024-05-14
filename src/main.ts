@@ -1,25 +1,38 @@
 import "./styles/style.css"
-import projectConfig from "../public/assets/config.json"
-import { Game, Types, AUTO, Scale } from "phaser";
-import { sizes } from "./constants";
-import { GameScene } from "./scenes";
+import { Game, Types, Scale, WEBGL } from "phaser";
+import { screenSizes } from "./constants";
+import { GameScene } from "./scenes/_index";
 import { GAME_PARAMETERS } from "./configurations";
+import { onWindowResize } from "./utils/onWindowResize";
+
+const parent = document.getElementById("gameContainer")
 
 const gameConfig: Types.Core.GameConfig = {
-    type: AUTO,
-    mode: Scale.FIT,
-    autoCenter: Scale.CENTER_BOTH,
-    width: sizes.width,
-    height: sizes.height,
+    type: WEBGL,
+    scale: {
+        mode: Scale.ScaleModes.NONE,
+        width: screenSizes.width,
+        height: screenSizes.height,
+
+    },
     physics: {
         default: "arcade",
         arcade: {
-            gravity: { y: GAME_PARAMETERS.gravityX, x: 0 },
-            debug: projectConfig.debugMode
+            debug: GAME_PARAMETERS.debug
         }
+    },
+    render: {
+        antialiasGL: false,
+        pixelArt: true
+    },
+    parent: parent ?? undefined,
+    canvasStyle: "display:block; width: 100%; height:100%",
+    autoFocus: true,
+    callbacks: {
+
     },
     scene: GameScene
 }
 
-const game = new Game(gameConfig);
-export default game
+window.game = new Game(gameConfig);
+window.onresize = () => onWindowResize()

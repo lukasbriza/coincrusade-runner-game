@@ -14,3 +14,17 @@ body {
   height: 100%;
   background: var(--background);
 }
+
+#gameContainer {
+  position: relative;
+}
+#test {
+  display: none;
+  background: red;
+  height: 93px;
+  width: 50px;
+  position: absolute;
+  bottom: calc(0px + 3px);
+  z-index: 100;
+  /* 693-66=627*/
+}

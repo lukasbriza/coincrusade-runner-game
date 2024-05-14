@@ -1,0 +1,1 @@
+1: decoupling core classes and assign them to window object
