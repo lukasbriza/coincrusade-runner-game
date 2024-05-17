@@ -1,7 +1,7 @@
 import { Animations, Input, Physics, Tilemaps, Time } from "phaser";
 import { GAME_PARAMETERS } from "../configurations";
 import { GameScene } from "../scenes/GameScene";
-import { ANIMATION_KEYS, KEYS, TILE } from "../constants";
+import { ANIMATION_KEYS, SPRITE_KEYS, TILE } from "../constants";
 import { ColliderObject } from "../interfaces/_index";
 import { PowerBar } from "./PowerBar";
 
@@ -14,51 +14,60 @@ export class Knight extends Physics.Arcade.Sprite {
 
     private keyW?: Input.Keyboard.Key;
     private keyK?: Input.Keyboard.Key;
+    private keyD?: Input.Keyboard.Key;
+    private keyA?: Input.Keyboard.Key;
 
     constructor(scene: GameScene) {
-        super(scene, 100, 100, KEYS.SPRITE_KNIGHT_RUN)
-        scene.assetManager.addExistingSpriteToScene(this)
+        super(scene, 100, 100, SPRITE_KEYS.SPRITE_KNIGHT_RUN)
+        scene.assetHelper.addExistingSprite(this)
 
         //corect sprite position and collision box
         this.setSize(65, 65)
         this.setOffset(0, 65)
+        this.setDepth(1)
         this.setBottomY(this.scene.game.renderer.height - TILE.height)
 
         //init key objects
         this.keyW = scene.input.keyboard?.addKey("W", false, false)
         this.keyK = scene.input.keyboard?.addKey("K", false, false)
-
+        this.keyD = scene.input.keyboard?.addKey("D", false, false)
+        this.keyA = scene.input.keyboard?.addKey("A", false, false)
 
         //enable body collisions
         this.getBody().setCollideWorldBounds(true);
         this.setGravityY(GAME_PARAMETERS.playerGravityY)
 
-
-        //add colliders and colision callback
-        scene.physics.add.collider(this, scene.platformManager.activeGroup, this.onCollideWithWorld, undefined, this)
-
         //inits
         this.initListeners()
         this.initAnimations()
-        this.powerBar = new PowerBar(scene, this)
+        this.powerBar = new PowerBar(this)
 
         //start run animation loop
         this.run()
     }
 
-    //Init register animations for knight
+    //INIT
+    private initListeners() {
+        this.keyW?.on("down", this.startCollectingPower, this)
+        this.keyW?.on("up", this.jump, this)
+        this.keyK?.on("down", this.attack, this)
+        this.keyD?.on("up", () => this.setVelocityX(0))
+        this.keyD?.on("down", () => this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityRightX), this)
+        this.keyA?.on("up", () => this.setVelocityX(0))
+        this.keyA?.on("down", this.slowRun, this)
+    }
     private initAnimations() {
         this.scene.anims.create({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
-            frames: this.scene.anims.generateFrameNames(KEYS.SPRITE_KNIGHT_RUN, {
+            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_RUN, {
                 prefix: "run-",
                 end: 6,
             }),
-            frameRate: 10,
+            frameRate: GAME_PARAMETERS.knightStartFramerate,
         })
         this.scene.anims.create({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_JUMP,
-            frames: this.scene.anims.generateFrameNames(KEYS.SPRITE_KNIGHT_JUMP, {
+            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_JUMP, {
                 prefix: "jump-",
                 end: 3
             }),
@@ -66,7 +75,7 @@ export class Knight extends Physics.Arcade.Sprite {
         })
         this.scene.anims.create({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_ATTACK,
-            frames: this.scene.anims.generateFrameNames(KEYS.SPRITE_KNIGHT_ATTACK, {
+            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_ATTACK, {
                 prefix: "attack-",
                 end: 5
             }),
@@ -74,27 +83,21 @@ export class Knight extends Physics.Arcade.Sprite {
         })
     }
 
-    //Init buttons listeners
-    private initListeners() {
-        this.keyW?.on("down", this.startCollectingPower, this)
-        this.keyW?.on("up", this.jump, this)
-        this.keyK?.on("down", this.attack, this)
-    }
-
-    update() {
-        //Update powerbar position on every frame
-        const x = this.body?.x ?? this.x
-        const y = this.body?.y ?? this.y
-        this.powerBar?.setBarPosition(x, y - 25, true)
-    }
-
+    //ABL
     private run() {
-        this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN, repeat: -1 }, true)
+        this.anims.play({
+            key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
+            repeat: -1,
+            frameRate: GAME_PARAMETERS.knightStartFramerate
+        }, true)
     }
-
+    private slowRun() {
+        if (!this.inAir) {
+            this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityLeftX)
+        }
+    }
     private jump() {
         if (this.inAir) return
-
         if (this.jumpTimer) {
             this.scene.time.removeEvent(this.jumpTimer)
         }
@@ -106,10 +109,8 @@ export class Knight extends Physics.Arcade.Sprite {
         this.jumpTimer = undefined
         this.powerBar!.jumpPower = 0;
     }
-
     private startCollectingPower() {
         if (this.inAir) return
-
         this.jumpTimer = this.scene.time.addEvent({
             delay: GAME_PARAMETERS.powerJumpLoadSpeed,
             loop: true,
@@ -117,7 +118,6 @@ export class Knight extends Physics.Arcade.Sprite {
             callbackScope: this.powerBar
         })
     }
-
     private attack() {
         if (!this.inAir) {
             this.isAttacking = true
@@ -125,14 +125,11 @@ export class Knight extends Physics.Arcade.Sprite {
                 .on("animationcomplete", (animation: Animations.Animation) => {
                     if (animation.key === ANIMATION_KEYS.ANIMATION_KNIGHT_ATTACK) {
                         this.isAttacking = false
-                        this.run()
+                        //this.run()
                     }
                 }, this)
         }
-
-
     }
-
     public onCollideWithWorld(_: ColliderObject, worldObject: ColliderObject) {
         if (worldObject instanceof Tilemaps.Tile) {
             return
@@ -144,12 +141,20 @@ export class Knight extends Physics.Arcade.Sprite {
         }
     }
 
+    //LOOP
+    update() {
+        //Update powerbar position on every frame
+        const x = this.body?.x ?? this.x
+        const y = this.body?.y ?? this.y
+        this.powerBar?.setBarPosition(x, y - 25, true)
+    }
+
+    //HELPERS
     //This method set y accordingly to bottom line of sprite not accordingly to center of sprite
     public setBottomY(desiredY: number) {
         this.setY(desiredY - (this.height / 2))
     }
-
-    private getBody(): Physics.Arcade.Body {
+    private getBody() {
         return this.body as Physics.Arcade.Body;
     }
 

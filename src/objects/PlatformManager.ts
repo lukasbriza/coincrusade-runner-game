@@ -1,29 +1,64 @@
 import { GameObjects } from "phaser";
-import { GameScene } from "../scenes/_index"
 import { PlatformDatabase } from "./PlatformDatabase"
-import { POOL_CONFIG } from "../constants";
+import { POOL_CONFIG, TILE } from "../constants";
+import { EndlessPlainGenerator } from "../generators/EndlessPlainGenerator";
+import { GroupHelper } from "../helpers/GroupHelper";
+import { GameScene } from "../scenes/GameScene";
 
 export class PlatformManager extends PlatformDatabase {
     public activeGroup: GameObjects.Group;
-    private removingId?: string;
+    public coinGroup: GameObjects.Group;
+    public activeGroupHelper: GroupHelper;
+    public coinGroupHelper: GroupHelper;
+
+    //GENERATORS
+    private endlessPlainGenerator: EndlessPlainGenerator;
+    //
 
     constructor(scene: GameScene) {
         super(scene)
-        this.activeGroup = this.scene.add.group({ removeCallback: this.onRemoveActiveGroupMember })
-        this.activeGroup.addMultiple(this.generateInitialChunk(), true)
+
+        this.activeGroup = scene.add.group({ removeCallback: () => this.onRemoveActiveGroupMember() })
+        this.coinGroup = scene.add.group()
+
+        this.activeGroup.addMultiple(this.generateInitialChunk().sprites, true)
+        this.activeGroupHelper = new GroupHelper(this.activeGroup)
+        this.coinGroupHelper = new GroupHelper(this.coinGroup)
+
+        //GENERATORS INIT
+        this.endlessPlainGenerator = new EndlessPlainGenerator(this)
+        //
+
+        scene.time.addEvent({
+            delay: 2000,
+            callback: this.processOutOfWorldMembers,
+            loop: true,
+            callbackScope: this
+        })
     }
+    ////////////////////////////
     //CORE LOGIC
     private generatePlatforms() {
+        const maps = this.endlessPlainGenerator.generate()
+        const lastMemberX = this.activeGroupHelper.getLastMemberOfGroupByX()?.body?.position.x
+        const translationResult = this.translateMaptypes(maps, lastMemberX)
 
+        //ADD TO GROUPS
+        this.activeGroup.addMultiple(translationResult.sprites, true)
+        this.coinGroup.addMultiple(translationResult.coins, true)
     }
+    ////////////////////////////
     //ABL METHODS
-    private processPlatformsOutOfWorld(): void {
+    private processOutOfWorldMembers(): void {
         if (this.activeGroup.getLength() > 0) {
-            const platform = this.findFirstPlatformOutOfWorld()
-            if (platform) {
-                this.removePlatformFromGroup(platform)
-            }
+            const platforms = this.activeGroupHelper.findAllMembersByCondition(ch => ch.body!.position.x < -TILE.width)
+            platforms.length > 0 && platforms.forEach(p => this.removePlatformFromGroup(p))
         }
+        if (this.coinGroup.getLength() > 0) {
+            const coins = this.coinGroupHelper.findAllMembersByCondition(ch => ch.body!.position.x < -TILE.width)
+            coins.length > 0 && coins.forEach(c => this.removeCoinFromGroup(c))
+        }
+
     }
     private onRemoveActiveGroupMember(): void {
         if (this.hasToGenerateNewPlatforms()) {
@@ -32,41 +67,18 @@ export class PlatformManager extends PlatformDatabase {
     }
 
     //UTILITY METHODS
+    public removeCoinFromGroup(coin: GameObjects.GameObject): void {
+        this.coinGroup.remove(coin, true, true)
+    }
+
     private removePlatformFromGroup(platform: GameObjects.GameObject): void {
-        this.removingId = platform.name
-        this.activeGroup.remove(platform)
-    }
-    private getLastPlatformOfGroup(): GameObjects.GameObject | undefined {
-        const activeGroupArray = this.activeGroup.children.getArray()
-        if (activeGroupArray.length > 0) {
-            return activeGroupArray.reduce((prev, curr) => {
-                if (curr.body!.position.x > prev.body!.position.x) {
-                    return curr
-                }
-                return prev
-            })
-        }
-    }
-    private findFirstPlatformOutOfWorld(): GameObjects.GameObject | undefined {
-        return this.activeGroup.children.getArray().find(children => {
-            const pos = children.body?.position;
-            return pos!.x < 0 && children.name !== this.removingId
-        })
+        this.activeGroup.remove(platform, true, true)
     }
     private hasToGenerateNewPlatforms(): boolean {
-        const lastPlatform = this.getLastPlatformOfGroup()
+        const lastPlatform = this.activeGroupHelper.getLastMemberOfGroupByX()
         if (lastPlatform && lastPlatform.body?.position.x) {
             return lastPlatform.body.position.x <= POOL_CONFIG.criticalPackageWidth
         }
         return true
     }
-
-
-    //UPDATE LOOP
-    public update() {
-        this.processPlatformsOutOfWorld()
-    }
 }
-
-//mít k dispozici všechny platformy
-//moci vybírat z platforem

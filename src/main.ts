@@ -18,8 +18,9 @@ const gameConfig: Types.Core.GameConfig = {
     physics: {
         default: "arcade",
         arcade: {
-            debug: GAME_PARAMETERS.debug
-        }
+            debug: GAME_PARAMETERS.debug,
+        },
+
     },
     render: {
         antialiasGL: false,

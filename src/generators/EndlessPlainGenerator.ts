@@ -1,18 +1,40 @@
-import { PLATFORM_MAP_KEYS } from "../constants";
+import { PLATFORM_MAP_KEYS, POOL_CONFIG } from "../constants";
+import { GroupHelper } from "../helpers/_index";
 import { PlatformManager } from "../objects/_index";
+import { MapTypeExtended } from "../interfaces/_index";
+import { ENDLESS_PLAIN_GENERATOR_PARAMETERS } from "../configurations";
+import { GeneratorBase } from "./GeneratorBase";
 
-export class EndlessPlainGenerator {
-    private _manager: PlatformManager;
+export class EndlessPlainGenerator extends GeneratorBase {
+    private config = ENDLESS_PLAIN_GENERATOR_PARAMETERS;
+    private manager: PlatformManager;
+    private groupHelper: GroupHelper;
+
     constructor(manager: PlatformManager) {
-        this._manager = manager
-        this.checkNeededAssets()
-    }
-    public generate() {
+        super()
 
+        this.manager = manager
+        this.groupHelper = new GroupHelper(this.manager.activeGroup)
     }
 
-    private checkNeededAssets() {
-        const loadedMap = this._manager.scene.assetManager.loadedPlatformMaps.includes(PLATFORM_MAP_KEYS.BASE)
-        if (!loadedMap) throw new Error("Map asset for EndlessPlainGenerator is not loaded.")
+    public generate(): MapTypeExtended[] {
+        const mapArray: MapTypeExtended[] = []
+        const lastMember = this.groupHelper.getLastMemberOfGroupByX()
+        if (lastMember) {
+            const map = this.manager.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
+            //GET WIDTH OF SPACE THAT NEED TO GENERATE
+            const difference = POOL_CONFIG.maxChunkPackageWidth - lastMember.body!.position.x
+
+            //GENERATE
+            const iterations = Math.ceil(difference / map.width)
+            for (let i = 0; i < iterations; i++) {
+                //GET COIN CHANCE
+                const isCoinChance = this.dropCoin(this.config.coinGenerationChance)
+
+                mapArray.push({ ...map, coins: [isCoinChance ? "coin" : null] })
+            }
+        }
+
+        return mapArray;
     }
 }
