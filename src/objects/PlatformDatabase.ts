@@ -1,23 +1,25 @@
 import { v4 as uuidv4 } from 'uuid';
 import { GAME_PARAMETERS } from "../configurations";
-import { PLATFORM_MAP_KEYS, POOL_CONFIG, TILE } from "../constants";
-import { MapType, MapTypeExtended, TranslationResult } from "../interfaces/_index";
+import { KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
+import { ImageWithDynamicBody, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
 import { AssetHelper } from '../helpers/AssetHelper';
 import { Coin } from './Coin';
 import { GameScene } from '../scenes/_index';
-import { Types } from 'phaser';
+import { cleanTileName, isDecorationSprite, setupDynamicSpriteBase, setupImageBase } from '../utils/_index';
+import { Water } from './Water';
+import { setupAssetbase } from '../utils/setupAssetBase';
 
 export class PlatformDatabase {
     private scene: GameScene;
     private assetHelper: AssetHelper;
-    public avaliablePlatforms: MapType[];
+    public avaliablePlatformMaps: MapType[];
     public chunk: number = POOL_CONFIG.chunkSize;
 
     constructor(scene: GameScene) {
         this.scene = scene;
         this.assetHelper = new AssetHelper(scene)
         const mapKeys = Object.keys(PLATFORM_MAP_KEYS)
-        this.avaliablePlatforms = mapKeys.map(key => this.assetHelper.getPlatformMap(PLATFORM_MAP_KEYS[key as keyof typeof PLATFORM_MAP_KEYS]))
+        this.avaliablePlatformMaps = mapKeys.map(key => this.assetHelper.getPlatformMap(PLATFORM_MAP_KEYS[key as keyof typeof PLATFORM_MAP_KEYS]))
     }
 
     //INIT
@@ -37,41 +39,85 @@ export class PlatformDatabase {
         return this.assetHelper.getPlatformMap(key)
     }
     public getPlatformMapsByDifficulty(difficulty: number): MapType[] {
-        return this.avaliablePlatforms.filter(map => map.difficulty == difficulty)
+        return this.avaliablePlatformMaps.filter(map => map.difficulty == difficulty)
+    }
+    public getAllMaps(): MapType[] {
+        return this.avaliablePlatformMaps
     }
     public translateMaptypes(map: MapTypeExtended[], xStartPosition?: number) {
         const translateResult: TranslationResult[] = map.map((mapType, xOffset) => {
             const xStart = (xOffset * TILE.width) + (xStartPosition ?? 0)
             return this.translateMaptype(mapType, xStart)
         })
-        return translateResult.reduce((prev, curr) => ({ coins: prev.coins.concat(curr.coins), sprites: prev.sprites.concat(curr.sprites) }))
+        return translateResult.reduce((prev, curr) => ({
+            coins: prev.coins.concat(curr.coins),
+            platforms: prev.platforms.concat(curr.platforms),
+            decorations: prev.decorations.concat(curr.decorations)
+        }))
     }
 
     //UTILITY METHODS
-    private translateMaptype(map: MapTypeExtended, xStartPosition: number = 0) {
-        const sprites: Types.Physics.Arcade.SpriteWithDynamicBody[] = []
-        const coins: Coin[] = []
+    public translateMaptype(jsonMap: MapTypeExtended, xStartPosition: number = 0) {
+        //PLACE TILES AND DECORATIONS ON MAP
+        const tiles = this.tileTranslationMatrix(jsonMap.map, xStartPosition)
+        //PLACE COINS ON MAP
+        const coins = this.coinTranslationMatrix(jsonMap.coins, xStartPosition)
+        return { coins, ...tiles }
+    }
+    private tileTranslationMatrix(tileMap: MapTypeMember[][], xStartPosition: number = 0) {
+        const platforms: SpriteWithDynamicBody[] = []
+        const decorations: ImageWithDynamicBody[] = []
 
-        map.map.forEach((row, yOffset) => {
+        tileMap.forEach((row, yOffset) => {
             const y = yOffset * TILE.height
             row.forEach((tile, xOffset) => {
                 const x = (xOffset * TILE.width) + xStartPosition
-                //HANDLE TILES
-                //When string => is some sprite
-                if (typeof tile === "string" && tile !== "coin") {
-                    const sprite = this.assetHelper.addDynamicSprite(tile, x, y)
-                    sprite.setOrigin(0, 0)
-                    sprite.setImmovable(true)
-                    sprite.setFriction(0, 0)
-                    sprite.setName(uuidv4())
-                    sprite.setVelocityX(GAME_PARAMETERS.platformStartSpeed * -1)
-                    sprites.push(sprite)
+
+                if (typeof tile === "string") {
+                    const isDecoration = isDecorationSprite(tile)
+                    const cleanName = cleanTileName(tile)
+
+                    if (isDecoration) {
+                        const image = setupImageBase(
+                            this.assetHelper,
+                            cleanName,
+                            x + (TILE.width / 2),
+                            y + TILE.height
+                        )
+                        decorations.push(image)
+                    }
+                    if (!isDecoration) {
+                        if (cleanName === SPRITE_KEYS.SPRITE_WATER) {
+                            const water = new Water(this.scene, x, y)
+                            water.setOrigin(0, 0)
+                            setupAssetbase(water)
+                            water.setVelocityX(GAME_PARAMETERS.platformStartSpeed * -1)
+                            water.setPosition(x, y + (TILE.height - water.height))
+                            platforms.push(water)
+                            return
+                        }
+
+                        const sprite = setupDynamicSpriteBase(this.assetHelper, cleanName, x, y)
+                        sprite.setOrigin(0, 0)
+
+                        switch (cleanName) {
+                            case KEYS.SLIM_GROUND:
+                            case KEYS.ROCK1:
+                            case KEYS.ROCK2:
+                                sprite.setPosition(x, y + (TILE.height - sprite.body.height))
+                        }
+
+                        platforms.push(sprite)
+                    }
+
                 }
             })
         })
-
-        map.coins.forEach((tile, xOffset) => {
-            //HANDLE COINS
+        return { platforms, decorations }
+    }
+    private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0) {
+        const coins: Coin[] = []
+        coinTileArr.forEach((tile, xOffset) => {
             if (tile === "coin") {
                 const x = (xOffset * TILE.width) + xStartPosition
                 const coin = new Coin(this.scene, x + (TILE.width / 2), 0);
@@ -83,7 +129,6 @@ export class PlatformDatabase {
                 coins.push(coin)
             }
         })
-
-        return { sprites, coins }
+        return coins
     }
 }

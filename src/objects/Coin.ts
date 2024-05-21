@@ -1,12 +1,13 @@
-import { Physics } from "phaser";
+import { Physics, Scene } from "phaser";
 import { ANIMATION_KEYS, SPRITE_KEYS } from "../constants";
-import { GameScene } from "../scenes/GameScene";
 import { CoinCounter } from "./CoinCounter";
+import { AssetHelper } from "../helpers/_index";
 
 export class Coin extends Physics.Arcade.Sprite {
-    constructor(scene: GameScene, x: number, y: number, gravity: boolean = true) {
+    constructor(scene: Scene, x: number, y: number, gravity: boolean = true) {
         super(scene, x, y, SPRITE_KEYS.SPRITE_COIN)
-        scene.assetHelper.addExistingSprite(this)
+        const assetHelper = new AssetHelper(scene)
+        assetHelper.addExistingSprite(this)
 
         gravity && this.setGravityY(350)
         this.setDepth(0)

@@ -34,12 +34,12 @@ export class Knight extends Physics.Arcade.Sprite {
         this.keyA = scene.input.keyboard?.addKey("A", false, false)
 
         //enable body collisions
-        this.getBody().setCollideWorldBounds(true);
+        this.getBody()
         this.setGravityY(GAME_PARAMETERS.playerGravityY)
+        this.setCollisionCategory(1)
 
         //inits
         this.initListeners()
-        this.initAnimations()
         this.powerBar = new PowerBar(this)
 
         //start run animation loop
@@ -55,32 +55,6 @@ export class Knight extends Physics.Arcade.Sprite {
         this.keyD?.on("down", () => this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityRightX), this)
         this.keyA?.on("up", () => this.setVelocityX(0))
         this.keyA?.on("down", this.slowRun, this)
-    }
-    private initAnimations() {
-        this.scene.anims.create({
-            key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
-            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_RUN, {
-                prefix: "run-",
-                end: 6,
-            }),
-            frameRate: GAME_PARAMETERS.knightStartFramerate,
-        })
-        this.scene.anims.create({
-            key: ANIMATION_KEYS.ANIMATION_KNIGHT_JUMP,
-            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_JUMP, {
-                prefix: "jump-",
-                end: 3
-            }),
-            frameRate: 5
-        })
-        this.scene.anims.create({
-            key: ANIMATION_KEYS.ANIMATION_KNIGHT_ATTACK,
-            frames: this.scene.anims.generateFrameNames(SPRITE_KEYS.SPRITE_KNIGHT_ATTACK, {
-                prefix: "attack-",
-                end: 5
-            }),
-            frameRate: 10
-        })
     }
 
     //ABL
@@ -112,7 +86,7 @@ export class Knight extends Physics.Arcade.Sprite {
     private startCollectingPower() {
         if (this.inAir) return
         this.jumpTimer = this.scene.time.addEvent({
-            delay: GAME_PARAMETERS.powerJumpLoadSpeed,
+            delay: GAME_PARAMETERS.powerJumpLoadDelay,
             loop: true,
             callback: this.powerBar?.increaseJumpPower,
             callbackScope: this.powerBar

@@ -1,29 +1,29 @@
-import { GameObjects } from "phaser";
+import { GameObjects, Scene } from "phaser";
 import { FONT_KEYS } from "../constants";
-import { GameScene } from "../scenes/_index";
 import { Coin } from "./Coin";
+import { AssetHelper } from "../helpers/_index";
 
 export class CoinCounter {
-    private scene: GameScene;
+    private scene: Scene;
     public count: number = 0;
     public textTexture: GameObjects.BitmapText;
     public nearTextCoin: Coin;
 
-    constructor(scene: GameScene) {
+    constructor(scene: Scene, y?: number) {
+        const assetHelper = new AssetHelper(scene)
         this.scene = scene
-
-        this.textTexture = scene.assetHelper.addText(FONT_KEYS.MAIN, 0, 0, "0")
+        this.textTexture = assetHelper.addText(FONT_KEYS.MAIN, 0, 0, "0")
         this.textTexture.setOrigin(1, 0)
         this.textTexture.setScale(2, 2)
-        this.textTexture.setPosition(scene.renderer.width - 25, 0)
-        this.nearTextCoin = new Coin(scene, 0, 0, false)
-        this.nearTextCoin.setOrigin(1, 0)
+        this.textTexture.setPosition(scene.renderer.width - 25, y ?? 0)
+        this.nearTextCoin = new Coin(scene, 0, y ?? 0, false)
+        this.nearTextCoin.setOrigin(0.5, 0.5)
         this.setActualCoinPosition()
     }
 
     private setActualCoinPosition() {
-        const x = this.scene.renderer.width - 30 - this.textTexture.width
-        const y = (this.textTexture.height - this.nearTextCoin.height) / 1.5
+        const x = this.scene.renderer.width - 30 - this.textTexture.width - (this.nearTextCoin.width / 2)
+        const y = this.textTexture.y + (this.textTexture.height / 2) + 3
         this.nearTextCoin.setPosition(x, y)
     }
 

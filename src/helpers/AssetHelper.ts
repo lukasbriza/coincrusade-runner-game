@@ -44,6 +44,9 @@ export class AssetHelper {
     public addDynamicSprite(key: string, x?: number, y?: number) {
         return this.scene.physics.add.sprite(x ?? 0, y ?? 0, key)
     }
+    public addDynamicImage(key: string, x?: number, y?: number) {
+        return this.scene.physics.add.image(x ?? 0, y ?? 0, key)
+    }
     public addExistingSprite(sprite: Physics.Arcade.Sprite, physics: boolean = true) {
         const asset = this.scene.add.existing(sprite)
         if (physics) return this.scene.physics.add.existing(sprite)
@@ -67,5 +70,4 @@ export class AssetHelper {
             throw new Error(`Unexpected error in AssetLoader.getPlatformMap with key: ${key}`)
         }
     }
-
 }
