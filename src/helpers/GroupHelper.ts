@@ -10,13 +10,18 @@ export class GroupHelper {
     public getLastMemberOfGroupByX(): GameObjects.GameObject | undefined {
         const activeGroupArray = this.group.children.getArray()
         if (activeGroupArray.length > 0) {
-            return activeGroupArray.reduce((prev, curr) => {
-                if (curr.body!.position.x > prev.body!.position.x) {
-                    return curr
+            let lastMember = activeGroupArray[0];
+            activeGroupArray.forEach(member => {
+                if (member.body?.position.x === undefined) {
+                    console.error(`Member has undefined x`, member)
                 }
-                return prev
+                if (lastMember.body!.position.x < member.body!.position.x) {
+                    lastMember = member
+                }
             })
+            return lastMember
         }
+        return undefined
     }
     public findFirstMemberOfGroupByX(additionalCondition?: (children: GameObjects.GameObject) => boolean) {
         return this.group.children.getArray().find(children => {

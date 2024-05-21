@@ -1,0 +1,13 @@
+{
+  "width": 540,
+  "difficulty": 1,
+  "map": [
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    ["stump1.{D}", "rock1", "grass2.{D}", "grass2.{D}", "rock1", "grass1.{D}"],
+    ["ground", "ground", "ground", "ground", "ground", "ground"]
+  ]
+}

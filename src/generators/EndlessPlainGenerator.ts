@@ -1,19 +1,16 @@
 import { PLATFORM_MAP_KEYS, POOL_CONFIG } from "../constants";
 import { GroupHelper } from "../helpers/_index";
 import { PlatformManager } from "../objects/_index";
-import { MapTypeExtended } from "../interfaces/_index";
+import { MapTypeExtended, PlatformGenerator } from "../interfaces/_index";
 import { ENDLESS_PLAIN_GENERATOR_PARAMETERS } from "../configurations";
 import { GeneratorBase } from "./GeneratorBase";
 
-export class EndlessPlainGenerator extends GeneratorBase {
+export class EndlessPlainGenerator extends GeneratorBase implements PlatformGenerator {
     private config = ENDLESS_PLAIN_GENERATOR_PARAMETERS;
-    private manager: PlatformManager;
     private groupHelper: GroupHelper;
 
     constructor(manager: PlatformManager) {
-        super()
-
-        this.manager = manager
+        super(manager)
         this.groupHelper = new GroupHelper(this.manager.activeGroup)
     }
 
