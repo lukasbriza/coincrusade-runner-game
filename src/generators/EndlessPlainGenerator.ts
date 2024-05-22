@@ -1,11 +1,11 @@
 import { PLATFORM_MAP_KEYS, POOL_CONFIG } from "../constants";
 import { GroupHelper } from "../helpers/_index";
 import { PlatformManager } from "../objects/_index";
-import { MapTypeExtended, PlatformGenerator } from "../interfaces/_index";
-import { ENDLESS_PLAIN_GENERATOR_PARAMETERS } from "../configurations";
+import { MapTypeExtended, IPlatformGenerator } from "../interfaces/_index";
+import { ENDLESS_PLAIN_GENERATOR_PARAMETERS } from "../configurations/_index";
 import { GeneratorBase } from "./GeneratorBase";
 
-export class EndlessPlainGenerator extends GeneratorBase implements PlatformGenerator {
+export class EndlessPlainGenerator extends GeneratorBase implements IPlatformGenerator {
     private config = ENDLESS_PLAIN_GENERATOR_PARAMETERS;
     private groupHelper: GroupHelper;
 

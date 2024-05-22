@@ -4,7 +4,7 @@ import { POOL_CONFIG, TILE } from "../constants";
 import { GroupHelper } from "../helpers/GroupHelper";
 import { GameScene } from "../scenes/GameScene";
 import { AllPlatformTestGenerator, EndlessPlainGenerator } from "../generators/_index";
-import { GAME_PARAMETERS } from "../configurations";
+import { GAME_PARAMETERS } from "../configurations/_index";
 
 export class PlatformManager extends PlatformDatabase {
     public activeGroup: GameObjects.Group;

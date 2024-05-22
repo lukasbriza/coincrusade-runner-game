@@ -1,7 +1,6 @@
 import _ from "lodash";
-import { PLATFORM_MAP_KEYS, TILE } from "../constants";
-import { MapTypeExtended } from "../interfaces/_index";
-import { GAME_PARAMETERS } from "../configurations";
+import { KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, TILE } from "../constants";
+import { MapTypeExtended, MapTypeMember } from "../interfaces/_index";
 import { PlatformManager } from "../objects/_index";
 import { randomNumber } from "../utils/_index";
 
@@ -15,12 +14,53 @@ export class GeneratorBase {
         const random = Math.random()
         return random <= chance;
     }
+    public computeCoinChances(mapType: MapTypeMember[][], coinDropChance: number): (string | null)[] {
+        const coinArr: (string | null)[] = []
+
+        //ITERATE THROUGH SLOPES
+        mapType[0].forEach((_, column) => {
+            //LOOK AT SLOPE
+            if (this.canRenderCoin(mapType, column)) {
+                const isCoinChance = this.dropCoin(coinDropChance)
+                coinArr.push(isCoinChance ? "coin" : null)
+                return
+            }
+            coinArr.push(null)
+        })
+
+        console.log({ mapType, coinArr })
+        return coinArr
+    }
+
+
+    private canRenderCoin(mapType: MapTypeMember[][], columnIndex: number): boolean {
+        const contraIndicationArray = [KEYS.ROCK1, KEYS.ROCK2, SPRITE_KEYS.SPRITE_WATER]
+        const groundArray = [KEYS.GROUND, KEYS.SLIM_GROUND]
+
+        let canRender: boolean = true
+        let foundGround: boolean = false
+
+        mapType.forEach((row) => {
+            const targetMember = row[columnIndex]
+            if (canRender !== false && foundGround === false) {
+                if (contraIndicationArray.includes(targetMember as (KEYS | SPRITE_KEYS))) {
+                    canRender = false
+                }
+                if (groundArray.includes(targetMember as KEYS)) {
+                    foundGround = true
+                }
+            }
+        })
+
+        return canRender
+    }
 
     public addRandomPlatau(map: MapTypeExtended) {
-        console.log(map.map[0].length)
-        let localMap = { ...map }
-        const plataus = randomNumber(GAME_PARAMETERS.minPlatauCount, GAME_PARAMETERS.maxPlatauCount, true)
-        console.log({ plataus })
+        let localMap = _.cloneDeep(map)
+
+        const minPlatau = window.configurationManager.minPlatauCount
+        const maxPlatau = window.configurationManager.maxPlatauCount
+        const plataus = randomNumber(minPlatau, maxPlatau, true)
         const base = this.manager.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
 
         for (let i = 0; i < plataus; i++) {

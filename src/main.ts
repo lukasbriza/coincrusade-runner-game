@@ -2,8 +2,9 @@ import "./styles/style.css"
 import { Game, Types, Scale, WEBGL } from "phaser";
 import { screenSizes } from "./constants";
 import { GameScene } from "./scenes/_index";
-import { GAME_PARAMETERS } from "./configurations";
+import { GAME_PARAMETERS } from "./configurations/_index";
 import { onWindowResize } from "./utils/onWindowResize";
+import { ConfigurationManager } from "./configurations/_index";
 
 const parent = document.getElementById("gameContainer")
 
@@ -35,5 +36,6 @@ const gameConfig: Types.Core.GameConfig = {
     scene: GameScene
 }
 
-window.game = new Game(gameConfig);
+window.configurationManager = new ConfigurationManager()
 window.onresize = () => onWindowResize()
+window.game = new Game(gameConfig);
