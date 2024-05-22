@@ -9,14 +9,13 @@ export type AppParameters = {
     powerJumpMaxCap: number
     powerMultiplicator: number
     platformStartSpeed: number
+    minimalPlatformSpeed: number
 
     knightStartFramerate: number
     knightMoveVelocityRightX: number
     knightMoveVelocityLeftX: number
 
     currentGenerator: "Endless" | "AllTest"
-    maxPlatauCount: number
-    minPlatauCount: number
 }
 
 export type Image = { path: string }

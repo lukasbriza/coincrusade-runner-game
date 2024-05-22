@@ -1,3 +1,5 @@
 export * from "./Common"
 export * from "./Window"
 export * from "./PlatformGenerator"
+export * from "./ConfigurationManager"
+export * from "./Parameters"

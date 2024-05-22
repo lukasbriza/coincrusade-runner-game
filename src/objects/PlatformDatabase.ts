@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-import { GAME_PARAMETERS } from "../configurations";
 import { KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
 import { ImageWithDynamicBody, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
 import { AssetHelper } from '../helpers/AssetHelper';
@@ -42,7 +40,7 @@ export class PlatformDatabase {
         return this.avaliablePlatformMaps.filter(map => map.difficulty == difficulty)
     }
     public getAllMaps(): MapType[] {
-        return this.avaliablePlatformMaps
+        return this.avaliablePlatformMaps.filter(map => map.width > TILE.width)
     }
     public translateMaptypes(map: MapTypeExtended[], xStartPosition?: number) {
         const translateResult: TranslationResult[] = map.map((mapType, xOffset) => {
@@ -65,6 +63,7 @@ export class PlatformDatabase {
         return { coins, ...tiles }
     }
     private tileTranslationMatrix(tileMap: MapTypeMember[][], xStartPosition: number = 0) {
+        const platformSpeed = window.configurationManager.platformStartSpeed
         const platforms: SpriteWithDynamicBody[] = []
         const decorations: ImageWithDynamicBody[] = []
 
@@ -91,7 +90,7 @@ export class PlatformDatabase {
                             const water = new Water(this.scene, x, y)
                             water.setOrigin(0, 0)
                             setupAssetbase(water)
-                            water.setVelocityX(GAME_PARAMETERS.platformStartSpeed * -1)
+                            water.setVelocityX(platformSpeed * -1)
                             water.setPosition(x, y + (TILE.height - water.height))
                             platforms.push(water)
                             return
@@ -102,9 +101,13 @@ export class PlatformDatabase {
 
                         switch (cleanName) {
                             case KEYS.SLIM_GROUND:
+                                sprite.setPosition(x, y + (TILE.height - sprite.body.height))
+                                break
                             case KEYS.ROCK1:
                             case KEYS.ROCK2:
                                 sprite.setPosition(x, y + (TILE.height - sprite.body.height))
+                                sprite.setSize(sprite.width, sprite.height - 10)
+                                sprite.setOffset(0, 10)
                         }
 
                         platforms.push(sprite)
@@ -116,16 +119,17 @@ export class PlatformDatabase {
         return { platforms, decorations }
     }
     private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0) {
+        const platformSpeed = window.configurationManager.platformStartSpeed
         const coins: Coin[] = []
+
         coinTileArr.forEach((tile, xOffset) => {
             if (tile === "coin") {
                 const x = (xOffset * TILE.width) + xStartPosition
                 const coin = new Coin(this.scene, x + (TILE.width / 2), 0);
                 coin.setOrigin(0.5, 0.5)
+                setupAssetbase(coin)
                 coin.setImmovable(false)
-                coin.setFriction(0, 0)
-                coin.setName(uuidv4())
-                coin.setVelocityX(GAME_PARAMETERS.platformStartSpeed * -1)
+                coin.setVelocityX(platformSpeed * -1)
                 coins.push(coin)
             }
         })
