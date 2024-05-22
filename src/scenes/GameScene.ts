@@ -4,7 +4,7 @@ import { Knight, PlatformManager, Coin, PlayerStatus } from "../objects/_index"
 import { spreadImageOnScene } from "../utils/_index";
 import { AssetHelper } from "../helpers/_index";
 import { ColliderObject } from "../interfaces/_index";
-import { GAME_PARAMETERS } from "../configurations";
+import { GAME_PARAMETERS } from "../configurations/_index";
 
 export class GameScene extends Scene {
     public knight: Knight;
@@ -37,7 +37,11 @@ export class GameScene extends Scene {
             KEYS.GRASS2,
             KEYS.SLIM_GROUND,
             KEYS.TREE,
-            KEYS.STUMP
+            KEYS.STUMP1,
+            KEYS.STUMP2,
+            KEYS.TENT1,
+            KEYS.TENT2,
+            KEYS.PUMPKIN
         ])
         this.assetHelper.loadPlatformMaps([
             PLATFORM_MAP_KEYS.BASE,
@@ -84,8 +88,19 @@ export class GameScene extends Scene {
         this.knight = new Knight(this)
 
         //COLLIDERS
-        this.physics.add.collider(this.knight, this.platformManager.activeGroup, this.knight.onCollideWithWorld, undefined, this.knight)
-        this.physics.add.collider(this.platformManager.coinGroup, this.platformManager.activeGroup)
+        this.physics.add.collider(
+            this.knight,
+            this.platformManager.activeGroup,
+            this.knight.onCollideWithWorld,
+            undefined,
+            this.knight
+        )
+        this.physics.add.collider(
+            this.platformManager.coinGroup,
+            this.platformManager.activeGroup,
+            undefined, (coin: ColliderObject, _) => {
+                return !(coin as Coin).isPicked
+            })
         this.physics.add.collider(
             this.knight,
             this.platformManager.coinGroup,
@@ -130,6 +145,22 @@ export class GameScene extends Scene {
                 end: 5
             }),
             frameRate: 10
+        })
+        this.anims.create({
+            key: ANIMATION_KEYS.ANIMATION_SPRITE_COIN,
+            frames: this.anims.generateFrameNames(SPRITE_KEYS.SPRITE_COIN, {
+                prefix: "coin-",
+                end: 5,
+            }),
+            frameRate: 10
+        })
+        this.anims.create({
+            key: ANIMATION_KEYS.ANIMATION_SPRITE_WATER,
+            frames: this.anims.generateFrameNames(SPRITE_KEYS.SPRITE_WATER, {
+                prefix: "water-",
+                end: 2,
+            }),
+            frameRate: 7
         })
     }
 }

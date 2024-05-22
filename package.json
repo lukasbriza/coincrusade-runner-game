@@ -8,6 +8,7 @@
   },
   "author": "lukasbriza",
   "dependencies": {
+    "lodash": "^4.17.21",
     "phaser": "^3.80.1",
     "uuid": "^9.0.1"
   },

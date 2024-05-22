@@ -5,17 +5,23 @@ export const SCENE_KEYS = {
 }
 
 export enum KEYS {
-    GROUND = "ground",
-    BACKGROUND = "background",
     KNIGHT_POWERBAR = "knight-powerbar",
     KNIGHT_SLIDE = "knight-slide",
-    GRASS1 = "grass1",
-    GRASS2 = "grass2",
+
+    GROUND = "ground",
+    BACKGROUND = "background",
+    SLIM_GROUND = "slim",
     ROCK1 = "rock1",
     ROCK2 = "rock2",
-    SLIM_GROUND = "slim",
-    STUMP = "stump1",
-    TREE = "tree1"
+
+    GRASS1 = "grass1",
+    GRASS2 = "grass2",
+    STUMP1 = "stump1",
+    STUMP2 = "stump2",
+    TREE = "tree1",
+    TENT1 = "tent1",
+    TENT2 = "tent2",
+    PUMPKIN = "pumpkin"
 }
 
 export enum FONT_KEYS {
@@ -124,7 +130,11 @@ export const IMAGES: ImagesType = {
     [KEYS.ROCK2]: { path: "assets/platforms/rock2.png" },
     [KEYS.TREE]: { path: "assets/platforms/tree1.png" },
     [KEYS.SLIM_GROUND]: { path: "assets/platforms/slim.png" },
-    [KEYS.STUMP]: { path: "assets/platforms/stump1.png" }
+    [KEYS.STUMP1]: { path: "assets/platforms/stump1.png" },
+    [KEYS.STUMP2]: { path: "assets/platforms/stump2.png" },
+    [KEYS.TENT1]: { path: "assets/platforms/tent1.png" },
+    [KEYS.TENT2]: { path: "assets/platforms/tent2.png" },
+    [KEYS.PUMPKIN]: { path: "assets/platforms/pumpkin.png" },
 }
 
 export const FONTS: FontTypes = {

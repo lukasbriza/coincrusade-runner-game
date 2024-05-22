@@ -1,6 +1,6 @@
 import { GameObjects, Physics } from "phaser";
 import { KEYS } from "../constants";
-import { GAME_PARAMETERS } from "../configurations";
+import { GAME_PARAMETERS } from "../configurations/_index";
 import { AssetHelper } from "../helpers/AssetHelper";
 
 export class PowerBar extends Physics.Arcade.Sprite {
@@ -16,9 +16,9 @@ export class PowerBar extends Physics.Arcade.Sprite {
         super(parent.scene, 0, 0, KEYS.KNIGHT_POWERBAR)
         this.assetHelper = new AssetHelper(parent.scene)
 
-        const bodyWidth = parent.body?.width ?? parent.width
+        const bodyWidth = (parent.body?.width ?? parent.width) + 20
         this.barWidth = (bodyWidth / 100) * 60
-        this.boundMargin = (bodyWidth - this.barWidth) / 2
+        this.boundMargin = (bodyWidth - 20 - this.barWidth) / 2
 
         this.powerBar = this.assetHelper.addImage(KEYS.KNIGHT_POWERBAR)
         this.powerBar.setOrigin(0, 0)
