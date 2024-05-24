@@ -7,4 +7,9 @@ export type IGeneratorParameters = {
     minChestGenerationChance: number
     maxPlatauCount: number
     minPlatauCount: number
+
+    platauTentChance: number
+    platauGrassChance: number
+    platauTreeOrStumpChance: number
+    maxStumpsAndTreesOnPlatau: number
 }

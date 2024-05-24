@@ -7,6 +7,10 @@ export class ConfigurationManager implements IConfigurationManager {
     public coinGenerationChance: number;
     public chestGenerationChance: number;
     public platformStartSpeed: number = GAME_PARAMETERS.platformStartSpeed;
+    public platauTentChance: number;
+    public platauGrassChance: number;
+    public platauTreeOrStumpChance: number;
+    public maxStumpsAndTreesOnPlatau: number;
 
     constructor() {
         const params = this.resolveGeneratorParameters()
@@ -14,6 +18,10 @@ export class ConfigurationManager implements IConfigurationManager {
         this.minPlatauCount = params.minPlatauCount
         this.coinGenerationChance = params.coinGenerationChance
         this.chestGenerationChance = params.chestGenerationChance
+        this.platauTentChance = params.platauTentChance
+        this.platauGrassChance = params.platauGrassChance
+        this.platauTreeOrStumpChance = params.platauTreeOrStumpChance
+        this.maxStumpsAndTreesOnPlatau = params.maxStumpsAndTreesOnPlatau
     }
     private resolveGeneratorParameters(): IGeneratorParameters {
         switch (GAME_PARAMETERS.currentGenerator) {

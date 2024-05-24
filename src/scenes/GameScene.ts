@@ -35,13 +35,19 @@ export class GameScene extends Scene {
             KEYS.ROCK2,
             KEYS.GRASS1,
             KEYS.GRASS2,
+            KEYS.GRASS3,
+            KEYS.GRASS4,
+            KEYS.GRASS5,
+            KEYS.GRASS6,
             KEYS.SLIM_GROUND,
-            KEYS.TREE,
+            KEYS.TREE1,
+            KEYS.TREE2,
             KEYS.STUMP1,
             KEYS.STUMP2,
             KEYS.TENT1,
             KEYS.TENT2,
-            KEYS.PUMPKIN
+            KEYS.TENT3,
+            KEYS.TENT4
         ])
         this.assetHelper.loadPlatformMaps([
             PLATFORM_MAP_KEYS.BASE,

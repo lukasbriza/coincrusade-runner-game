@@ -5,7 +5,7 @@
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
-    [0, "grass1.{D}", 0, 0, 0, "stump1.{D}"],
+    [0, "grass.{D}", 0, 0, 0, "stump1.{D}"],
     [0, "ground", 0, 0, 0, "ground"],
     [0, 0, 0, 0, 0, 0],
     ["water", "water", "water", "water", "water", "water"]

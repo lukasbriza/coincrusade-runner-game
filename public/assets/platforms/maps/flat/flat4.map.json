@@ -7,7 +7,7 @@
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
-    [0, 0, "rock1", 0, "tree1.{D}", "grass2.{D}"],
+    [0, 0, "rock1", 0, "tree.{D}", "grass.{D}"],
     ["ground", "ground", "ground", "water", "ground", "ground"]
   ]
 }
