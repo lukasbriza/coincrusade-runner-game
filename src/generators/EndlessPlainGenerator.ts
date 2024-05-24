@@ -26,7 +26,7 @@ export class EndlessPlainGenerator extends GeneratorBase implements IPlatformGen
             const iterations = Math.ceil(difference / map.width)
             for (let i = 0; i < iterations; i++) {
                 //GET COIN CHANCE
-                const isCoinChance = this.dropCoin(this.config.coinGenerationChance)
+                const isCoinChance = this.getChance(this.config.coinGenerationChance)
 
                 mapArray.push({ ...map, coins: [isCoinChance ? "coin" : null] })
             }

@@ -11,17 +11,27 @@ export enum KEYS {
     GROUND = "ground",
     BACKGROUND = "background",
     SLIM_GROUND = "slim",
+
     ROCK1 = "rock1",
     ROCK2 = "rock2",
 
     GRASS1 = "grass1",
     GRASS2 = "grass2",
+    GRASS3 = "grass3",
+    GRASS4 = "grass4",
+    GRASS5 = "grass5",
+    GRASS6 = "grass6",
+
     STUMP1 = "stump1",
     STUMP2 = "stump2",
-    TREE = "tree1",
+
+    TREE1 = "tree1",
+    TREE2 = "tree2",
+
     TENT1 = "tent1",
     TENT2 = "tent2",
-    PUMPKIN = "pumpkin"
+    TENT3 = "tent3",
+    TENT4 = "tent4",
 }
 
 export enum FONT_KEYS {
@@ -124,17 +134,29 @@ export const IMAGES: ImagesType = {
     [KEYS.KNIGHT_POWERBAR]: { path: "assets/powerbar.png" },
     [KEYS.KNIGHT_SLIDE]: { path: "assets/slide.png" },
     [KEYS.GROUND]: { path: "assets/platforms/basePlatform.png" },
+
     [KEYS.GRASS1]: { path: "assets/platforms/grass1.png" },
     [KEYS.GRASS2]: { path: "assets/platforms/grass2.png" },
+    [KEYS.GRASS3]: { path: "assets/platforms/grass3.png" },
+    [KEYS.GRASS4]: { path: "assets/platforms/grass4.png" },
+    [KEYS.GRASS5]: { path: "assets/platforms/grass5.png" },
+    [KEYS.GRASS6]: { path: "assets/platforms/grass6.png" },
+
     [KEYS.ROCK1]: { path: "assets/platforms/rock1.png" },
     [KEYS.ROCK2]: { path: "assets/platforms/rock2.png" },
-    [KEYS.TREE]: { path: "assets/platforms/tree1.png" },
+
+    [KEYS.TREE1]: { path: "assets/platforms/tree1.png" },
+    [KEYS.TREE2]: { path: "assets/platforms/tree2.png" },
+
     [KEYS.SLIM_GROUND]: { path: "assets/platforms/slim.png" },
+
     [KEYS.STUMP1]: { path: "assets/platforms/stump1.png" },
     [KEYS.STUMP2]: { path: "assets/platforms/stump2.png" },
+
     [KEYS.TENT1]: { path: "assets/platforms/tent1.png" },
     [KEYS.TENT2]: { path: "assets/platforms/tent2.png" },
-    [KEYS.PUMPKIN]: { path: "assets/platforms/pumpkin.png" },
+    [KEYS.TENT3]: { path: "assets/platforms/tent3.png" },
+    [KEYS.TENT4]: { path: "assets/platforms/tent4.png" },
 }
 
 export const FONTS: FontTypes = {
@@ -154,3 +176,7 @@ export const POOL_CONFIG = {
     maxChunkPackageWidth: 3 * (15 * TILE.width),
     criticalPackageWidth: 2 * (15 * TILE.width)
 }
+
+export const tents = [KEYS.TENT1, KEYS.TENT2, KEYS.TENT3, KEYS.TENT4]
+export const grass = [KEYS.GRASS1, KEYS.GRASS2, KEYS.GRASS3, KEYS.GRASS4, KEYS.GRASS5, KEYS.GRASS6]
+export const stumpAndTrees = [KEYS.STUMP1, KEYS.STUMP2, KEYS.TREE1, KEYS.TREE2]

@@ -25,6 +25,11 @@ export const ENDLESS_PLAIN_GENERATOR_PARAMETERS: IGeneratorParameters = {
     minChestGenerationChance: 0.1,
     maxPlatauCount: 6,
     minPlatauCount: 4,
+
+    platauGrassChance: 0.5,
+    platauTentChance: 0.1,
+    platauTreeOrStumpChance: 0.3,
+    maxStumpsAndTreesOnPlatau: 2
 }
 
 export const ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS: IGeneratorParameters = {
@@ -36,4 +41,9 @@ export const ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS: IGeneratorParameters = {
     minChestGenerationChance: 0.1,
     maxPlatauCount: 6,
     minPlatauCount: 4,
+
+    platauGrassChance: 0.7,
+    platauTentChance: 0.08,
+    platauTreeOrStumpChance: 0.2,
+    maxStumpsAndTreesOnPlatau: 2
 }

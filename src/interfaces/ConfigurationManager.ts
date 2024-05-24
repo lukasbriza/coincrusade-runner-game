@@ -4,6 +4,10 @@ export type IConfigurationManager = {
     coinGenerationChance: number
     platformStartSpeed: number
     chestGenerationChance: number
+    platauTentChance: number
+    platauGrassChance: number
+    platauTreeOrStumpChance: number
+    maxStumpsAndTreesOnPlatau: number
 
     increaseMaxPlatauCount: (by?: number) => number
     decreaseMaxPlatauCount: (by?: number) => number

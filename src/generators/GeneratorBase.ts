@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, TILE } from "../constants";
+import { grass, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, stumpAndTrees, tents, TILE } from "../constants";
 import { MapTypeExtended, MapTypeMember } from "../interfaces/_index";
 import { PlatformManager } from "../objects/_index";
 import { randomNumber } from "../utils/_index";
@@ -10,7 +10,7 @@ export class GeneratorBase {
     constructor(manager: PlatformManager) {
         this.manager = manager
     }
-    public dropCoin(chance: number): boolean {
+    public getChance(chance: number): boolean {
         const random = Math.random()
         return random <= chance;
     }
@@ -19,16 +19,13 @@ export class GeneratorBase {
 
         //ITERATE THROUGH SLOPES
         mapType[0].forEach((_, column) => {
-            //LOOK AT SLOPE
             if (this.canRenderCoin(mapType, column)) {
-                const isCoinChance = this.dropCoin(coinDropChance)
+                const isCoinChance = this.getChance(coinDropChance)
                 coinArr.push(isCoinChance ? "coin" : null)
                 return
             }
             coinArr.push(null)
         })
-
-        console.log({ mapType, coinArr })
         return coinArr
     }
 
@@ -40,6 +37,7 @@ export class GeneratorBase {
         let canRender: boolean = true
         let foundGround: boolean = false
 
+        //LOOK AT SLOPE FOR COIN GENERATION
         mapType.forEach((row) => {
             const targetMember = row[columnIndex]
             if (canRender !== false && foundGround === false) {
@@ -62,11 +60,47 @@ export class GeneratorBase {
         const maxPlatau = window.configurationManager.maxPlatauCount
         const plataus = randomNumber(minPlatau, maxPlatau, true)
         const base = this.manager.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
+        const config = window.configurationManager
+
+
+        let tentAdded = false
+        let treeOrStumpCount = 0
 
         for (let i = 0; i < plataus; i++) {
+            const tentChance = this.getChance(config.platauTentChance)
+            const grassChance = this.getChance(config.platauGrassChance)
+            const stumpOrTreeChance = this.getChance(config.platauTreeOrStumpChance)
+
+            //NO COINS ON PLATAU
             localMap.coins.push(null)
+            //UPDATE MAP WIDTH FOR TRANSLATION
             localMap.width = localMap.width + TILE.width
+            //EXTEND JSON SCHEMA
             localMap.map.forEach((row, i) => {
+                let decoration: number | KEYS = 0
+                if (localMap.map.length - 2 === i) {
+
+                    if (tentAdded == false && tentChance) {
+                        const sample = _.sample(tents)
+                        if (sample) decoration = sample
+                        tentAdded = true
+                    }
+                    if (!decoration && config.maxStumpsAndTreesOnPlatau > treeOrStumpCount && stumpOrTreeChance) {
+                        const sample = _.sample(stumpAndTrees)
+                        if (sample) decoration = sample
+                        treeOrStumpCount++
+                    }
+
+                    if (!decoration && grassChance) {
+                        const sample = _.sample(grass)
+                        if (sample) decoration = sample
+                    }
+
+
+                    localMap.map[i] = row.concat([decoration ? decoration.toString() + ".{D}" : 0])
+                    return
+                }
+
                 localMap.map[i] = row.concat(base.map[i])
             })
         }

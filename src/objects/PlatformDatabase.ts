@@ -1,4 +1,4 @@
-import { KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
+import { grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
 import { ImageWithDynamicBody, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
 import { AssetHelper } from '../helpers/AssetHelper';
 import { Coin } from './Coin';
@@ -6,6 +6,7 @@ import { GameScene } from '../scenes/_index';
 import { cleanTileName, isDecorationSprite, setupDynamicSpriteBase, setupImageBase } from '../utils/_index';
 import { Water } from './Water';
 import { setupAssetbase } from '../utils/setupAssetBase';
+import _ from "lodash";
 
 export class PlatformDatabase {
     private scene: GameScene;
@@ -23,11 +24,19 @@ export class PlatformDatabase {
     //INIT
     public generateInitialChunk() {
         const baseMap = this.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
+
         const iterations = Math.ceil(this.chunk / baseMap.width) * 2
         const chunkMap: MapTypeExtended[] = []
 
         for (let i = 0; i < iterations; i++) {
-            chunkMap.push({ ...baseMap, coins: [null] })
+            let localMap = _.cloneDeep(baseMap)
+            if (window.configurationManager.platauGrassChance > Math.random()) {
+                const key = _.sample(grass)
+
+                if (key) localMap.map[localMap.map.length - 2][0] = key ? (key.toString() + ".{D}") : 0
+                console.log(localMap)
+            }
+            chunkMap.push({ ...localMap, coins: [null] })
         }
         return this.translateMaptypes(chunkMap, undefined)
     }
@@ -74,9 +83,19 @@ export class PlatformDatabase {
 
                 if (typeof tile === "string") {
                     const isDecoration = isDecorationSprite(tile)
-                    const cleanName = cleanTileName(tile)
+                    let cleanName = cleanTileName(tile)
 
                     if (isDecoration) {
+                        if (cleanName === "tree") {
+                            const treeArray = [KEYS.TREE1, KEYS.TREE2]
+                            console.log(_.sample(treeArray))
+                            cleanName = _.sample(treeArray)?.toString() ?? "tree1"
+                        }
+                        if (cleanName === "grass") {
+                            const grassArray = [KEYS.GRASS1, KEYS.GRASS2, KEYS.GRASS3, KEYS.GRASS4, KEYS.GRASS5, KEYS.GRASS6]
+                            cleanName = _.sample(grassArray)?.toString() ?? "grass1"
+                        }
+
                         const image = setupImageBase(
                             this.assetHelper,
                             cleanName,
