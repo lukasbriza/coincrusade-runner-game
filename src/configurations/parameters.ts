@@ -15,6 +15,7 @@ export const GAME_PARAMETERS: AppParameters = {
 
     timeAdditionInSeconds: 10,
     addTimeEveryNumberOfCoins: 5,
+    maxPlayerLives: 3,
 
     currentGenerator: "AllTest",
 }

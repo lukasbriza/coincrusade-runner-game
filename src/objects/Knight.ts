@@ -2,10 +2,10 @@ import { Animations, Input, Physics, Tilemaps, Time } from "phaser";
 import { GAME_PARAMETERS } from "../configurations/_index";
 import { GameScene } from "../scenes/GameScene";
 import { ANIMATION_KEYS, SPRITE_KEYS, TILE } from "../constants";
-import { ColliderObject } from "../interfaces/_index";
+import { ColliderObject, IKnight } from "../interfaces/_index";
 import { PowerBar } from "./PowerBar";
 
-export class Knight extends Physics.Arcade.Sprite {
+export class Knight extends Physics.Arcade.Sprite implements IKnight {
     public inAir: boolean = false;
     public isAttacking: boolean = false;
 
@@ -48,7 +48,7 @@ export class Knight extends Physics.Arcade.Sprite {
     }
 
     //INIT
-    private initListeners() {
+    private initListeners(): void {
         this.keyW?.on("down", this.startCollectingPower, this)
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
@@ -61,24 +61,24 @@ export class Knight extends Physics.Arcade.Sprite {
     }
 
     //ABL
-    private onWorldBound() {
+    private onWorldBound(): void {
         this.setVelocityX(0)
         this.setX(this.scene.renderer.width)
     }
-    private run() {
+    private run(): void {
         this.anims.play({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
             repeat: -1,
             frameRate: GAME_PARAMETERS.knightStartFramerate
         }, true)
     }
-    private runSlover() {
+    private runSlover(): void {
         this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityLeftX)
     }
-    private runQuicker() {
+    private runQuicker(): void {
         this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityRightX)
     }
-    private jump() {
+    private jump(): void {
         if (this.inAir) return
         if (this.jumpTimer) {
             this.scene.time.removeEvent(this.jumpTimer)
@@ -91,7 +91,7 @@ export class Knight extends Physics.Arcade.Sprite {
         this.jumpTimer = undefined
         this.powerBar!.jumpPower = 0;
     }
-    private startCollectingPower() {
+    private startCollectingPower(): void {
         if (this.inAir) return
         this.jumpTimer = this.scene.time.addEvent({
             delay: GAME_PARAMETERS.powerJumpLoadDelay,
@@ -100,7 +100,7 @@ export class Knight extends Physics.Arcade.Sprite {
             callbackScope: this.powerBar
         })
     }
-    private attack() {
+    private attack(): void {
         if (!this.inAir) {
             this.isAttacking = true
             this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_ATTACK }, true)
@@ -112,7 +112,7 @@ export class Knight extends Physics.Arcade.Sprite {
                 }, this)
         }
     }
-    public onCollideWithWorld(_: ColliderObject, worldObject: ColliderObject) {
+    public onCollideWithWorld(_: ColliderObject, worldObject: ColliderObject): void {
         if (worldObject instanceof Tilemaps.Tile) {
             return
         }
@@ -124,7 +124,7 @@ export class Knight extends Physics.Arcade.Sprite {
     }
 
     //LOOP
-    update() {
+    update(): void {
         //Update powerbar position on every frame
         const x = this.body?.x ?? this.x
         const y = this.body?.y ?? this.y
@@ -137,10 +137,10 @@ export class Knight extends Physics.Arcade.Sprite {
 
     //HELPERS
     //This method set y accordingly to bottom line of sprite not accordingly to center of sprite
-    public setBottomY(desiredY: number) {
+    public setBottomY(desiredY: number): void {
         this.setY(desiredY - (this.height / 2))
     }
-    private getBody() {
+    private getBody(): Physics.Arcade.Body {
         return this.body as Physics.Arcade.Body;
     }
 
