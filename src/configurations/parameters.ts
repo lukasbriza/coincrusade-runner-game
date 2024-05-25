@@ -13,6 +13,9 @@ export const GAME_PARAMETERS: AppParameters = {
     knightMoveVelocityRightX: 300,
     knightMoveVelocityLeftX: -300,
 
+    timeAdditionInSeconds: 10,
+    addTimeEveryNumberOfCoins: 5,
+
     currentGenerator: "AllTest",
 }
 

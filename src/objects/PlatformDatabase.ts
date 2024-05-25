@@ -34,7 +34,6 @@ export class PlatformDatabase {
                 const key = _.sample(grass)
 
                 if (key) localMap.map[localMap.map.length - 2][0] = key ? (key.toString() + ".{D}") : 0
-                console.log(localMap)
             }
             chunkMap.push({ ...localMap, coins: [null] })
         }

@@ -22,7 +22,11 @@ export class Coin extends Physics.Arcade.Sprite {
             target.setCollideWorldBounds(false)
             target.setVelocityX(0)
             this.isPicked = true
-            this.scene.physics.moveToObject(target, coinCounter.nearTextCoin, 60, 1500)
+
+            const b = Math.pow((this.scene.renderer.width - target.body!.x), 2)
+            const a = Math.pow((this.scene.renderer.height - coinCounter.nearTextCoin.body!.y), 2)
+            const speed = Math.sqrt(a + b)
+            this.scene.physics.moveToObject(target, coinCounter.nearTextCoin, speed * 0.8)
         }, 300)
     }
 }

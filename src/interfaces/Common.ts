@@ -15,6 +15,9 @@ export type AppParameters = {
     knightMoveVelocityRightX: number
     knightMoveVelocityLeftX: number
 
+    timeAdditionInSeconds: number
+    addTimeEveryNumberOfCoins: number
+
     currentGenerator: "Endless" | "AllTest"
 }
 
