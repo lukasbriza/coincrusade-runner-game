@@ -2,8 +2,9 @@ import { GameObjects, Scene } from "phaser";
 import { FONT_KEYS } from "../constants";
 import { Coin } from "./Coin";
 import { AssetHelper } from "../helpers/_index";
+import { ICoinCounter } from "../interfaces/_index";
 
-export class CoinCounter {
+export class CoinCounter implements ICoinCounter {
     private scene: Scene;
     public count: number = 0;
     public textTexture: GameObjects.BitmapText;
@@ -21,19 +22,19 @@ export class CoinCounter {
         this.setActualCoinPosition()
     }
 
-    private setActualCoinPosition() {
+    private setActualCoinPosition(): void {
         const x = this.scene.renderer.width - 30 - this.textTexture.width - (this.nearTextCoin.width / 2)
         const y = this.textTexture.y + (this.textTexture.height / 2) + 3
         this.nearTextCoin.setPosition(x, y)
     }
 
-    public increment() {
+    public increment(): void {
         this.count++
         this.textTexture.setText(this.count.toString())
         this.setActualCoinPosition()
     }
 
-    public reset() {
+    public reset(): void {
         this.count = 0
         this.textTexture.setText(this.count.toString())
         this.setActualCoinPosition()

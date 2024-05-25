@@ -2,11 +2,13 @@ import { GameObjects, Scene } from "phaser";
 import { FONT_KEYS } from "../constants";
 import { AssetHelper } from "../helpers/_index";
 import { GAME_PARAMETERS } from "../configurations/_index";
+import { ITimeCounter } from "../interfaces/_index";
 
-export class TimeCounter {
+export class TimeCounter implements ITimeCounter {
     public time: Date = new Date();
     public timeText: GameObjects.BitmapText;
     public addTimetext: GameObjects.BitmapText;
+    public addTimeCounter: number = 0;
 
     constructor(scene: Scene, y?: number) {
         const assetHelper = new AssetHelper(scene)
@@ -29,34 +31,38 @@ export class TimeCounter {
             callbackScope: this
         })
     }
-    private init() {
+    private init(): void {
         this.time.setFullYear(2000, 1, 1)
         this.time.setHours(0, 0, 0, 0)
         this.time.setMinutes(2)
     }
 
-    private secondPassed() {
+    private secondPassed(): void {
         this.time.setSeconds(this.time.getSeconds() - 1)
         this.timeText.text = this.getTimeStringFormat()
     }
-    private getTimeStringFormat() {
+
+    private getTimeStringFormat(): string {
         const minutes = this.time.getMinutes()
         const seconds = this.time.getSeconds()
         const minutesString = minutes === 0 ? "0" : minutes.toString()
         const secondsString = seconds === 0 ? "00" : seconds < 10 ? "0" + seconds.toString() : seconds.toString()
         return `${minutesString}:${secondsString}`
     }
-    public addTime() {
+
+    public addTime(): void {
         this.time.setSeconds(this.time.getSeconds() + GAME_PARAMETERS.timeAdditionInSeconds)
         this.showAdditionTextAnnouncement()
     }
-    public showAdditionTextAnnouncement() {
+
+    public showAdditionTextAnnouncement(): void {
         this.addTimetext.setAlpha(1)
         setTimeout(() => {
             this.addTimetext.setAlpha(0)
         }, 1500)
     }
-    public reset() {
+
+    public reset(): void {
         this.init()
     }
 }

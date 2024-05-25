@@ -2,8 +2,9 @@ import { GameObjects, Physics } from "phaser";
 import { KEYS } from "../constants";
 import { GAME_PARAMETERS } from "../configurations/_index";
 import { AssetHelper } from "../helpers/AssetHelper";
+import { IPowerbar } from "../interfaces/_index";
 
-export class PowerBar extends Physics.Arcade.Sprite {
+export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
     private assetHelper: AssetHelper;
 
     private barWidth: number;
@@ -28,18 +29,18 @@ export class PowerBar extends Physics.Arcade.Sprite {
         this.setPercents(0)
     }
 
-    public setBarPosition(x: number, y: number, center: boolean = true) {
+    public setBarPosition(x: number, y: number, center: boolean = true): void {
         this.powerBar.setPosition(x + (center ? this.boundMargin : 0), y)
     }
 
-    public setPercents(percent: number) {
+    public setPercents(percent: number): void {
         if (percent < 0 || percent > 100) throw new Error("Wrong percent property.")
         const width = (this.barWidth / 100) * percent
         this.powerBar.setOrigin(0, 0)
         this.powerBar.setCrop(0, 0, width, 4)
     }
 
-    public increaseJumpPower() {
+    public increaseJumpPower(): void {
         if (this.jumpPower < GAME_PARAMETERS.powerJumpMaxCap) {
             this.jumpPower++
             this.setPercents((100 / GAME_PARAMETERS.powerJumpMaxCap) * this.jumpPower)

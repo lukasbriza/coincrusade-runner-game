@@ -2,8 +2,9 @@ import { Physics, Scene } from "phaser";
 import { ANIMATION_KEYS, SPRITE_KEYS } from "../constants";
 import { CoinCounter } from "./CoinCounter";
 import { AssetHelper } from "../helpers/_index";
+import { ICoin } from "../interfaces/_index";
 
-export class Coin extends Physics.Arcade.Sprite {
+export class Coin extends Physics.Arcade.Sprite implements ICoin {
     public isPicked: boolean = false;
 
     constructor(scene: Scene, x: number, y: number, gravity: boolean = true) {
@@ -15,7 +16,7 @@ export class Coin extends Physics.Arcade.Sprite {
         this.setDepth(0)
         this.anims.play({ key: ANIMATION_KEYS.ANIMATION_SPRITE_COIN, repeat: -1 })
     }
-    public pickCoin(coinCounter: CoinCounter, target: Coin) {
+    public pickCoin(coinCounter: CoinCounter, target: Coin): void {
         setTimeout(() => {
             target.setGravityY(0)
             target.setImmovable(false)

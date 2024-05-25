@@ -1,25 +1,28 @@
 import { Scene } from "phaser";
 import { CoinCounter } from "./CoinCounter";
 import { TimeCounter } from "./TimeCounter";
+import { LifeCounter } from "./LifeCounter";
 import { GAME_PARAMETERS } from "../configurations/_index";
+import { IPlayerStatus } from "../interfaces/_index";
 
-export class PlayerStatus {
+export class PlayerStatus implements IPlayerStatus {
     public coinCounter: CoinCounter;
     public timeCounter: TimeCounter;
-    private addTimeCounter: number = 0;
+    public lifeCounter: LifeCounter;
 
     constructor(scene: Scene) {
         this.coinCounter = new CoinCounter(scene, 0)
         this.timeCounter = new TimeCounter(scene, this.coinCounter.nearTextCoin.height)
+        this.lifeCounter = new LifeCounter(scene)
     }
 
-    public incrementCoinCounter() {
+    public incrementCoinCounter(): void {
         this.coinCounter.increment()
-        this.addTimeCounter++
+        this.timeCounter.addTimeCounter++
 
-        if (this.addTimeCounter >= GAME_PARAMETERS.addTimeEveryNumberOfCoins) {
+        if (this.timeCounter.addTimeCounter >= GAME_PARAMETERS.addTimeEveryNumberOfCoins) {
             this.timeCounter.addTime()
-            this.addTimeCounter = 0
+            this.timeCounter.addTimeCounter = 0
         }
     }
 }

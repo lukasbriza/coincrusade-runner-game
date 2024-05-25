@@ -7,6 +7,9 @@ export const SCENE_KEYS = {
 export enum KEYS {
     KNIGHT_POWERBAR = "knight-powerbar",
     KNIGHT_SLIDE = "knight-slide",
+    HEART_FULL = "heart-full",
+    HEART_HALF = "heart-half",
+    HEART_EMPTY = "heart-empty",
 
     GROUND = "ground",
     BACKGROUND = "background",
@@ -134,6 +137,9 @@ export const IMAGES: ImagesType = {
     [KEYS.KNIGHT_POWERBAR]: { path: "assets/powerbar.png" },
     [KEYS.KNIGHT_SLIDE]: { path: "assets/slide.png" },
     [KEYS.GROUND]: { path: "assets/platforms/basePlatform.png" },
+    [KEYS.HEART_FULL]: { path: "assets/heart_full.png" },
+    [KEYS.HEART_HALF]: { path: "assets/heart_half.png" },
+    [KEYS.HEART_EMPTY]: { path: "assets/heart_empty.png" },
 
     [KEYS.GRASS1]: { path: "assets/platforms/grass1.png" },
     [KEYS.GRASS2]: { path: "assets/platforms/grass2.png" },

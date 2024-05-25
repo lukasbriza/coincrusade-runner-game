@@ -5,8 +5,9 @@ import { GroupHelper } from "../helpers/GroupHelper";
 import { GameScene } from "../scenes/GameScene";
 import { AllPlatformTestGenerator, EndlessPlainGenerator } from "../generators/_index";
 import { GAME_PARAMETERS } from "../configurations/_index";
+import { IPlatformManager } from "../interfaces/_index";
 
-export class PlatformManager extends PlatformDatabase {
+export class PlatformManager extends PlatformDatabase implements IPlatformManager {
     public activeGroup: GameObjects.Group;
     public coinGroup: GameObjects.Group;
     public decorationGroup: GameObjects.Group;
@@ -55,7 +56,7 @@ export class PlatformManager extends PlatformDatabase {
     }
     ////////////////////////////
     //CORE LOGIC
-    private generatePlatforms() {
+    private generatePlatforms(): void {
         const maps = this.resolveGenerator().generate()
         const lastMemberX = this.activeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?

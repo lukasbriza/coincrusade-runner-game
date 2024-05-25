@@ -1,5 +1,5 @@
 import { grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
-import { ImageWithDynamicBody, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
+import { ImageWithDynamicBody, IPlatformDatabase, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
 import { AssetHelper } from '../helpers/AssetHelper';
 import { Coin } from './Coin';
 import { GameScene } from '../scenes/_index';
@@ -8,7 +8,7 @@ import { Water } from './Water';
 import { setupAssetbase } from '../utils/setupAssetBase';
 import _ from "lodash";
 
-export class PlatformDatabase {
+export class PlatformDatabase implements IPlatformDatabase {
     private scene: GameScene;
     private assetHelper: AssetHelper;
     public avaliablePlatformMaps: MapType[];
@@ -22,7 +22,7 @@ export class PlatformDatabase {
     }
 
     //INIT
-    public generateInitialChunk() {
+    public generateInitialChunk(): TranslationResult {
         const baseMap = this.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
 
         const iterations = Math.ceil(this.chunk / baseMap.width) * 2
@@ -50,7 +50,7 @@ export class PlatformDatabase {
     public getAllMaps(): MapType[] {
         return this.avaliablePlatformMaps.filter(map => map.width > TILE.width)
     }
-    public translateMaptypes(map: MapTypeExtended[], xStartPosition?: number) {
+    public translateMaptypes(map: MapTypeExtended[], xStartPosition?: number): TranslationResult {
         const translateResult: TranslationResult[] = map.map((mapType, xOffset) => {
             const xStart = (xOffset * TILE.width) + (xStartPosition ?? 0)
             return this.translateMaptype(mapType, xStart)
@@ -63,7 +63,7 @@ export class PlatformDatabase {
     }
 
     //UTILITY METHODS
-    public translateMaptype(jsonMap: MapTypeExtended, xStartPosition: number = 0) {
+    public translateMaptype(jsonMap: MapTypeExtended, xStartPosition: number = 0): TranslationResult {
         //PLACE TILES AND DECORATIONS ON MAP
         const tiles = this.tileTranslationMatrix(jsonMap.map, xStartPosition)
         //PLACE COINS ON MAP
@@ -136,7 +136,7 @@ export class PlatformDatabase {
         })
         return { platforms, decorations }
     }
-    private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0) {
+    private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0): Coin[] {
         const platformSpeed = window.configurationManager.platformStartSpeed
         const coins: Coin[] = []
 

@@ -17,6 +17,7 @@ export type AppParameters = {
 
     timeAdditionInSeconds: number
     addTimeEveryNumberOfCoins: number
+    maxPlayerLives: number
 
     currentGenerator: "Endless" | "AllTest"
 }
