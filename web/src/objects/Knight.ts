@@ -22,6 +22,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         scene.assetHelper.addExistingSprite(this)
 
         //corect sprite position and collision box
+        this.setOrigin(0, 0.5)
         this.setSize(40, 65)
         this.setOffset(10, 65)
         this.setDepth(1)
@@ -52,30 +53,38 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyW?.on("down", this.startCollectingPower, this)
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
-        this.keyD?.on("up", () => this.setVelocityX(0))
-        this.keyD?.on("down", this.runQuicker, this)
-        this.keyA?.on("up", () => this.setVelocityX(0))
-        this.keyA?.on("down", this.runSlover, this)
-
         this.scene.physics.world.on('overlap', (x: any, y: Knight) => console.log(x, y))
     }
 
     //ABL
     private onWorldBound(): void {
+        this.setFlipX(false)
         this.setVelocityX(0)
         this.setX(this.scene.renderer.width)
     }
     private run(): void {
+        this.runSetup()
         this.anims.play({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
             repeat: -1,
             frameRate: GAME_PARAMETERS.knightStartFramerate
         }, true)
     }
+    private runSetup() {
+        this.setOrigin(0, 0.5)
+        this.setOffset(10, 65)
+        this.setFlipX(false)
+        this.setVelocityX(0)
+    }
+
     private runSlover(): void {
+        this.setOrigin(0.5, 0.5)
+        this.setFlipX(true)
+        this.setOffset(75, 65)
         this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityLeftX)
     }
     private runQuicker(): void {
+        this.runSetup()
         this.setVelocityX(GAME_PARAMETERS.knightMoveVelocityRightX)
     }
     private jump(): void {
@@ -130,9 +139,32 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         const y = this.body?.y ?? this.y
         this.powerBar?.setBarPosition(x, y - 25, true)
 
+        //Callback when on right side of world
         if ((this.body!.x + this.body!.width) >= this.scene.renderer.width) {
             this.onWorldBound()
         }
+
+        //A
+        if (this.keyA?.isDown && this.keyD?.isUp && this.body?.velocity.x !== GAME_PARAMETERS.knightMoveVelocityLeftX) {
+            this.runSlover()
+        }
+        if (this.keyA?.isUp && this.inAir && this.body?.velocity.x === GAME_PARAMETERS.knightMoveVelocityLeftX) {
+            this.setVelocityX(0)
+        }
+        //D
+        if (this.keyD?.isDown && this.body!.velocity.x !== GAME_PARAMETERS.knightMoveVelocityRightX) {
+            this.runQuicker()
+        }
+        if (this.keyD?.isUp && this.inAir && this.body!.velocity.x === GAME_PARAMETERS.knightMoveVelocityRightX) {
+            this.setVelocityX(0)
+        }
+
+        //DEFAULT
+        if (this.keyA?.isUp && this.keyD?.isUp && !this.inAir && this.body!.velocity.x !== 0) {
+            this.run()
+        }
+
+
     }
 
     //HELPERS

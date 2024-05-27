@@ -27,6 +27,8 @@ export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
 
         this.setBarPosition(parent.body?.x ?? parent.x, parent.body?.y ?? parent.y, true)
         this.setPercents(0)
+
+        this.powerBar.setDepth(1)
     }
 
     public setBarPosition(x: number, y: number, center: boolean = true): void {
