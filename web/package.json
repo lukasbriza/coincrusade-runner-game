@@ -1,18 +1,19 @@
 {
-  "name": "coincrusade-runner-game",
+  "name": "coincrusade-runner-game-fe",
   "version": "1",
-  "description": "Coin Crusade: Knight´s Quest runner game.",
+  "description": "Coin Crusade: Knight´s Quest runner game front-end",
   "scripts": {
     "dev": "rollup --watch --config rollup.config.dev.mjs --no-treeshake",
     "build": "rollup --config rollup.config.prod.mjs"
   },
   "author": "lukasbriza",
   "dependencies": {
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "phaser": "^3.80.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
     "@babel/preset-env": "^7.23.9",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-babel": "^6.0.4",
@@ -21,7 +22,6 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/plugin-url": "^8.0.2",
-    "@types/lodash": "^4.17.4",
     "@types/uuid": "^9.0.8",
     "rollup": "^4.12.0",
     "rollup-plugin-copy": "^3.5.0",

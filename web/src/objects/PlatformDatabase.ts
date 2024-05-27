@@ -6,7 +6,8 @@ import { GameScene } from '../scenes/_index';
 import { cleanTileName, isDecorationSprite, setupDynamicSpriteBase, setupImageBase } from '../utils/_index';
 import { Water } from './Water';
 import { setupAssetbase } from '../utils/setupAssetBase';
-import _ from "lodash";
+import * as _ from "lodash-es";
+
 
 export class PlatformDatabase implements IPlatformDatabase {
     private scene: GameScene;

@@ -2,7 +2,6 @@ import { MapTypeExtended } from "../interfaces/_index";
 import { PlatformManager } from "../objects/_index";
 import { randomNumber } from "../utils/_index";
 import { GeneratorBase } from "./GeneratorBase";
-import _ from "lodash"
 
 export class AllPlatformTestGenerator extends GeneratorBase {
 

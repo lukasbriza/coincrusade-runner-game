@@ -11,7 +11,7 @@ export const GAME_PARAMETERS: AppParameters = {
 
     knightStartFramerate: 12,
     knightMoveVelocityRightX: 300,
-    knightMoveVelocityLeftX: -300,
+    knightMoveVelocityLeftX: -480,
 
     timeAdditionInSeconds: 10,
     addTimeEveryNumberOfCoins: 5,

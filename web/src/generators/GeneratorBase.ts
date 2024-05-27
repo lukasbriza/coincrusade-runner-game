@@ -1,4 +1,4 @@
-import _ from "lodash";
+import * as _ from "lodash-es";
 import { grass, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, stumpAndTrees, tents, TILE } from "../constants";
 import { MapTypeExtended, MapTypeMember } from "../interfaces/_index";
 import { PlatformManager } from "../objects/_index";

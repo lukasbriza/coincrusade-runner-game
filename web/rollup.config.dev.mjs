@@ -9,10 +9,7 @@ import glslify from "rollup-plugin-glslify";
 import { fileURLToPath } from "node:url";
 import copy from "rollup-plugin-copy";
 import postcss from "rollup-plugin-postcss";
-import alias from "@rollup/plugin-alias";
-import path from "path";
-
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import builtins from "rollup-plugin-node-builtins";
 
 export default {
   input: "src/main.ts",
@@ -28,26 +25,17 @@ export default {
     url({
       emitFiles: true,
     }),
+    builtins(),
     typescript(),
     postcss({
       extensions: [".css"],
     }),
-    /*alias({
-      entries: [
-        {
-          find: "phaser",
-          replacement: path.resolve(__dirname, "../node_modules/phaser/dist/phaser.min.js"),
-        },
-      ],
-    }),*/
 
     glslify(),
     nodeResolve({
       extensions: ["ts", "tsx"],
     }),
     commonjs({
-      //include: ["node_modules/eventemitter3/**", "node_modules/phaser/**"],
-      //exclude: ["node_modules/phaser/src/polyfills/requestAnimationFrame.js", "node_modules/phaser/src/phaser-esm.js"],
       sourceMap: true,
       ignoreGlobal: false,
     }),
