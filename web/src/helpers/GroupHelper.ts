@@ -1,6 +1,7 @@
 import { GameObjects } from "phaser";
+import { IGrouphelper } from "../interfaces/_index";
 
-export class GroupHelper {
+export class GroupHelper implements IGrouphelper {
     private group: GameObjects.Group;
 
     constructor(group: GameObjects.Group) {
@@ -23,7 +24,7 @@ export class GroupHelper {
         }
         return undefined
     }
-    public findFirstMemberOfGroupByX(additionalCondition?: (children: GameObjects.GameObject) => boolean) {
+    public findFirstMemberOfGroupByX(additionalCondition?: (children: GameObjects.GameObject) => boolean): GameObjects.GameObject | undefined {
         return this.group.children.getArray().find(children => {
             const pos = children.body?.position;
             if (additionalCondition) {

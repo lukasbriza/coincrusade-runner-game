@@ -5,6 +5,7 @@ import { GameScene } from "./scenes/_index";
 import { GAME_PARAMETERS } from "./configurations/_index";
 import { onWindowResize } from "./utils/onWindowResize";
 import { ConfigurationManager } from "./configurations/_index";
+import { GameState } from "./objects/_index";
 
 const parent = document.getElementById("gameContainer")
 
@@ -36,6 +37,7 @@ const gameConfig: Types.Core.GameConfig = {
     scene: GameScene
 }
 
-window.configurationManager = new ConfigurationManager()
-window.onresize = () => onWindowResize()
 window.game = new Game(gameConfig);
+window.configurationManager = new ConfigurationManager()
+window.gameState = new GameState()
+window.onresize = () => onWindowResize()

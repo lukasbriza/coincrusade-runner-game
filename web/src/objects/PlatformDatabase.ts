@@ -1,23 +1,27 @@
-import { grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
+import { EVENTS, grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
 import { ImageWithDynamicBody, IPlatformDatabase, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
-import { AssetHelper } from '../helpers/AssetHelper';
 import { Coin } from './Coin';
 import { GameScene } from '../scenes/_index';
 import { cleanTileName, isDecorationSprite, setupDynamicSpriteBase, setupImageBase } from '../utils/_index';
 import { Water } from './Water';
 import { setupAssetbase } from '../utils/setupAssetBase';
 import * as _ from "lodash-es";
+import { Eventhelper, AssetHelper } from "../helpers/_index";
 
 
 export class PlatformDatabase implements IPlatformDatabase {
     private scene: GameScene;
     private assetHelper: AssetHelper;
+
+    public eventHelper: Eventhelper;
     public avaliablePlatformMaps: MapType[];
     public chunk: number = POOL_CONFIG.chunkSize;
 
     constructor(scene: GameScene) {
         this.scene = scene;
         this.assetHelper = new AssetHelper(scene)
+        this.eventHelper = new Eventhelper(scene)
+
         const mapKeys = Object.keys(PLATFORM_MAP_KEYS)
         this.avaliablePlatformMaps = mapKeys.map(key => this.assetHelper.getPlatformMap(PLATFORM_MAP_KEYS[key as keyof typeof PLATFORM_MAP_KEYS]))
     }
@@ -59,7 +63,8 @@ export class PlatformDatabase implements IPlatformDatabase {
         return translateResult.reduce((prev, curr) => ({
             coins: prev.coins.concat(curr.coins),
             platforms: prev.platforms.concat(curr.platforms),
-            decorations: prev.decorations.concat(curr.decorations)
+            decorations: prev.decorations.concat(curr.decorations),
+            obstacles: prev.obstacles.concat(curr.obstacles)
         }))
     }
 
@@ -75,6 +80,7 @@ export class PlatformDatabase implements IPlatformDatabase {
         const platformSpeed = window.configurationManager.platformStartSpeed
         const platforms: SpriteWithDynamicBody[] = []
         const decorations: ImageWithDynamicBody[] = []
+        const obstacles: SpriteWithDynamicBody[] = []
 
         tileMap.forEach((row, yOffset) => {
             const y = yOffset * TILE.height
@@ -111,7 +117,7 @@ export class PlatformDatabase implements IPlatformDatabase {
                             setupAssetbase(water)
                             water.setVelocityX(platformSpeed * -1)
                             water.setPosition(x, y + (TILE.height - water.height))
-                            platforms.push(water)
+                            obstacles.push(water)
                             return
                         }
 
@@ -127,6 +133,8 @@ export class PlatformDatabase implements IPlatformDatabase {
                                 sprite.setPosition(x, y + (TILE.height - sprite.body.height))
                                 sprite.setSize(sprite.width, sprite.height - 10)
                                 sprite.setOffset(0, 10)
+                                obstacles.push(sprite)
+                                return
                         }
 
                         platforms.push(sprite)
@@ -135,7 +143,7 @@ export class PlatformDatabase implements IPlatformDatabase {
                 }
             })
         })
-        return { platforms, decorations }
+        return { platforms, decorations, obstacles }
     }
     private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0): Coin[] {
         const platformSpeed = window.configurationManager.platformStartSpeed
@@ -150,6 +158,7 @@ export class PlatformDatabase implements IPlatformDatabase {
                 coin.setImmovable(false)
                 coin.setVelocityX(platformSpeed * -1)
                 coins.push(coin)
+                //this.eventHelper.dispatch(EVENTS.COIN_GENERATED)
             }
         })
         return coins

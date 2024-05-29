@@ -18,6 +18,7 @@ export type AppParameters = {
     timeAdditionInSeconds: number
     addTimeEveryNumberOfCoins: number
     maxPlayerLives: number
+    onHitImmortalityDuration: number
 
     currentGenerator: "Endless" | "AllTest"
 }
@@ -37,7 +38,7 @@ export type SpriteWithDynamicBody = Types.Physics.Arcade.SpriteWithDynamicBody |
 export type ImageWithDynamicBody = Types.Physics.Arcade.ImageWithDynamicBody
 export type ColliderObject = Tilemaps.Tile | Types.Physics.Arcade.GameObjectWithBody
 
-export type TranslationResult = { decorations: ImageWithDynamicBody[], platforms: SpriteWithDynamicBody[], coins: Coin[] }
+export type TranslationResult = { decorations: ImageWithDynamicBody[], platforms: SpriteWithDynamicBody[], coins: Coin[], obstacles: SpriteWithDynamicBody[] }
 
 export type PlatformMapType = {
     [key in PLATFORM_MAP_KEYS]: { path: string }

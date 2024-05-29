@@ -6,7 +6,6 @@ import del from "rollup-plugin-delete";
 import typescript from "@rollup/plugin-typescript";
 import url from "@rollup/plugin-url";
 import glslify from "rollup-plugin-glslify";
-import { fileURLToPath } from "node:url";
 import copy from "rollup-plugin-copy";
 import postcss from "rollup-plugin-postcss";
 import builtins from "rollup-plugin-node-builtins";

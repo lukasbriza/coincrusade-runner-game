@@ -1,20 +1,23 @@
 import { GameObjects } from "phaser";
 import { PlatformDatabase } from "./PlatformDatabase"
-import { POOL_CONFIG, TILE } from "../constants";
+import { EVENTS, POOL_CONFIG, TILE } from "../constants";
 import { GroupHelper } from "../helpers/GroupHelper";
 import { GameScene } from "../scenes/GameScene";
 import { AllPlatformTestGenerator, EndlessPlainGenerator } from "../generators/_index";
 import { GAME_PARAMETERS } from "../configurations/_index";
 import { IPlatformManager } from "../interfaces/_index";
+import { Eventhelper } from "../helpers/_index";
 
 export class PlatformManager extends PlatformDatabase implements IPlatformManager {
     public activeGroup: GameObjects.Group;
     public coinGroup: GameObjects.Group;
     public decorationGroup: GameObjects.Group;
+    public obstacleGroup: GameObjects.Group;
 
     public activeGroupHelper: GroupHelper;
     public coinGroupHelper: GroupHelper;
     public decorationGroupHelper: GroupHelper;
+    public obstacleGroupHelper: GroupHelper;
 
     //GENERATORS
     private endlessPlainGenerator: EndlessPlainGenerator;
@@ -27,6 +30,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.activeGroup = scene.add.group()
         this.coinGroup = scene.add.group()
         this.decorationGroup = scene.add.group()
+        this.obstacleGroup = scene.add.group()
 
         const initChunk = this.generateInitialChunk()
         this.activeGroup.addMultiple(initChunk.platforms, true)
@@ -35,24 +39,18 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.activeGroupHelper = new GroupHelper(this.activeGroup)
         this.coinGroupHelper = new GroupHelper(this.coinGroup)
         this.decorationGroupHelper = new GroupHelper(this.decorationGroup)
+        this.obstacleGroupHelper = new GroupHelper(this.obstacleGroup)
+
+        this.eventHelper = new Eventhelper(scene)
 
         //GENERATORS INIT
         this.endlessPlainGenerator = new EndlessPlainGenerator(this)
         this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this)
         //
 
-        scene.time.addEvent({
-            delay: 2000,
-            callback: this.processOutOfWorldMembers,
-            loop: true,
-            callbackScope: this
-        })
-        scene.time.addEvent({
-            delay: 1000,
-            callback: this.startPlatformGenerationProcess,
-            loop: true,
-            callbackScope: this
-        })
+        this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
+        this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
+        this.eventHelper.addListener(EVENTS.COIN_PICKED, this.removeCoinFromGroup, this)
     }
     ////////////////////////////
     //CORE LOGIC
@@ -67,6 +65,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.activeGroup.addMultiple(translationResult.platforms, true)
         this.decorationGroup.addMultiple(translationResult.decorations, true)
         this.coinGroup.addMultiple(translationResult.coins, true)
+        this.obstacleGroup.addMultiple(translationResult.obstacles, true)
     }
     private resolveGenerator() {
         switch (GAME_PARAMETERS.currentGenerator) {
@@ -91,6 +90,10 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
             const decorations = this.decorationGroupHelper.findAllMembersByCondition(ch => ch.body!.position.x < -TILE.width)
             decorations.length > 0 && decorations.forEach(d => this.removeDecorationFromGroup(d))
         }
+        if (this.obstacleGroup.getLength() > 0) {
+            const obstacles = this.obstacleGroupHelper.findAllMembersByCondition(ch => ch.body!.position.x < -TILE.width)
+            obstacles.length > 0 && obstacles.forEach(o => this.removeObstacleFromGroup(o))
+        }
     }
     private startPlatformGenerationProcess(): void {
         if (this.hasToGenerateNewPlatforms()) {
@@ -107,6 +110,9 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private removeDecorationFromGroup(decoration: GameObjects.GameObject): void {
         this.decorationGroup.remove(decoration, true, true)
+    }
+    private removeObstacleFromGroup(obstacle: GameObjects.GameObject): void {
+        this.obstacleGroup.remove(obstacle, true, true)
     }
     private hasToGenerateNewPlatforms(): boolean {
         const lastPlatform = this.activeGroupHelper.getLastMemberOfGroupByX()

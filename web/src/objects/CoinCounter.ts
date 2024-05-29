@@ -1,7 +1,7 @@
 import { GameObjects, Scene } from "phaser";
-import { FONT_KEYS } from "../constants";
+import { EVENTS, FONT_KEYS } from "../constants";
 import { Coin } from "./Coin";
-import { AssetHelper } from "../helpers/_index";
+import { AssetHelper, Eventhelper } from "../helpers/_index";
 import { ICoinCounter } from "../interfaces/_index";
 
 export class CoinCounter implements ICoinCounter {
@@ -9,9 +9,12 @@ export class CoinCounter implements ICoinCounter {
     public count: number = 0;
     public textTexture: GameObjects.BitmapText;
     public nearTextCoin: Coin;
+    private eventHelper: Eventhelper;
 
     constructor(scene: Scene, y?: number) {
         const assetHelper = new AssetHelper(scene)
+        this.eventHelper = new Eventhelper(scene)
+
         this.scene = scene
         this.textTexture = assetHelper.addText(FONT_KEYS.MAIN, 0, 0, "0")
         this.textTexture.setOrigin(1, 0)
@@ -19,7 +22,10 @@ export class CoinCounter implements ICoinCounter {
         this.textTexture.setPosition(scene.renderer.width - 25, y ?? 0)
         this.nearTextCoin = new Coin(scene, 0, y ?? 0, false)
         this.nearTextCoin.setOrigin(0.5, 0.5)
+        this.nearTextCoin.inCoinCounter = true
         this.setActualCoinPosition()
+
+        this.eventHelper.addListener(EVENTS.COIN_PICKED, this.increment, this)
     }
 
     private setActualCoinPosition(): void {

@@ -1,6 +1,6 @@
 import { GameObjects, Scene } from "phaser";
-import { FONT_KEYS } from "../constants";
-import { AssetHelper } from "../helpers/_index";
+import { EVENTS, FONT_KEYS } from "../constants";
+import { AssetHelper, Eventhelper } from "../helpers/_index";
 import { GAME_PARAMETERS } from "../configurations/_index";
 import { ITimeCounter } from "../interfaces/_index";
 
@@ -10,8 +10,12 @@ export class TimeCounter implements ITimeCounter {
     public addTimetext: GameObjects.BitmapText;
     public addTimeCounter: number = 0;
 
+    private eventHelper: Eventhelper;
+
     constructor(scene: Scene, y?: number) {
         const assetHelper = new AssetHelper(scene)
+        this.eventHelper = new Eventhelper(scene)
+
         this.init()
         this.timeText = assetHelper.addText(FONT_KEYS.MAIN, 0, 0, this.getTimeStringFormat())
         this.timeText.setOrigin(1, 0)
@@ -24,12 +28,8 @@ export class TimeCounter implements ITimeCounter {
         this.addTimetext.setPosition(scene.renderer.width - 25, (y ?? 0) + this.timeText.height - 15)
         this.addTimetext.setAlpha(0)
 
-        scene.time.addEvent({
-            delay: 1000,
-            callback: this.secondPassed,
-            loop: true,
-            callbackScope: this
-        })
+        this.eventHelper.timer(1000, this.secondPassed, this, undefined, true)
+        this.eventHelper.addListener(EVENTS.COIN_PICKED, this.addTime, this)
     }
     private init(): void {
         this.time.setFullYear(2000, 1, 1)
@@ -51,15 +51,17 @@ export class TimeCounter implements ITimeCounter {
     }
 
     public addTime(): void {
-        this.time.setSeconds(this.time.getSeconds() + GAME_PARAMETERS.timeAdditionInSeconds)
-        this.showAdditionTextAnnouncement()
+        this.addTimeCounter++
+        if (this.addTimeCounter >= GAME_PARAMETERS.addTimeEveryNumberOfCoins) {
+            this.time.setSeconds(this.time.getSeconds() + GAME_PARAMETERS.timeAdditionInSeconds)
+            this.showAdditionTextAnnouncement()
+            this.addTimeCounter = 0
+        }
     }
 
     public showAdditionTextAnnouncement(): void {
         this.addTimetext.setAlpha(1)
-        setTimeout(() => {
-            this.addTimetext.setAlpha(0)
-        }, 1500)
+        this.eventHelper.timer(1250, () => { this.addTimetext.setAlpha(0) }, this)
     }
 
     public reset(): void {

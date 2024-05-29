@@ -1,15 +1,13 @@
-import { Animations, Input, Physics, Tilemaps, Time } from "phaser";
+import { Animations, Input, Physics, Scene, Tilemaps, Time } from "phaser";
 import { GAME_PARAMETERS } from "../configurations/_index";
-import { GameScene } from "../scenes/GameScene";
-import { ANIMATION_KEYS, SPRITE_KEYS, TILE } from "../constants";
+import { ANIMATION_KEYS, EVENTS, SPRITE_KEYS, TILE } from "../constants";
 import { ColliderObject, IKnight } from "../interfaces/_index";
 import { PowerBar } from "./PowerBar";
+import { AssetHelper, Eventhelper } from "../helpers/_index";
 
 export class Knight extends Physics.Arcade.Sprite implements IKnight {
     public inAir: boolean = false;
     public isAttacking: boolean = false;
-
-    private jumpTimer?: Time.TimerEvent;
     private powerBar?: PowerBar;
 
     private keyW?: Input.Keyboard.Key;
@@ -17,9 +15,22 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     private keyD?: Input.Keyboard.Key;
     private keyA?: Input.Keyboard.Key;
 
-    constructor(scene: GameScene) {
+    private eventHelper: Eventhelper;
+    private assetHelper: AssetHelper
+
+    private immortalAnimation: boolean = false;
+    private immortalEvent?: Time.TimerEvent;
+
+    constructor(scene: Scene) {
         super(scene, 100, 100, SPRITE_KEYS.SPRITE_KNIGHT_RUN)
-        scene.assetHelper.addExistingSprite(this)
+        this.assetHelper = new AssetHelper(scene)
+        this.assetHelper.addExistingSprite(this)
+
+        this.eventHelper = new Eventhelper(scene)
+        this.eventHelper.addListener(EVENTS.KNIGHT_HIT, (_: ColliderObject, worldObject: ColliderObject) => {
+            this.startImmortalityAnimation()
+            this.onCollideWithWorld(_, worldObject)
+        }, this)
 
         //corect sprite position and collision box
         this.setOrigin(0, 0.5)
@@ -53,7 +64,6 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyW?.on("down", this.startCollectingPower, this)
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
-        this.scene.physics.world.on('overlap', (x: any, y: Knight) => console.log(x, y))
     }
 
     //ABL
@@ -70,13 +80,6 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
             frameRate: GAME_PARAMETERS.knightStartFramerate
         }, true)
     }
-    private runSetup() {
-        this.setOrigin(0, 0.5)
-        this.setOffset(10, 65)
-        this.setFlipX(false)
-        this.setVelocityX(0)
-    }
-
     private runSlover(): void {
         this.setOrigin(0.5, 0.5)
         this.setFlipX(true)
@@ -89,25 +92,15 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     }
     private jump(): void {
         if (this.inAir) return
-        if (this.jumpTimer) {
-            this.scene.time.removeEvent(this.jumpTimer)
-        }
 
         this.inAir = true
         this.body!.velocity.y = -this.powerBar!.jumpPower * GAME_PARAMETERS.powerMultiplicator
+        this.eventHelper.dispatch(EVENTS.STOP_COLLECT_JUMP_POWER)
         this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_JUMP }, true)
-
-        this.jumpTimer = undefined
-        this.powerBar!.jumpPower = 0;
     }
     private startCollectingPower(): void {
         if (this.inAir) return
-        this.jumpTimer = this.scene.time.addEvent({
-            delay: GAME_PARAMETERS.powerJumpLoadDelay,
-            loop: true,
-            callback: this.powerBar?.increaseJumpPower,
-            callbackScope: this.powerBar
-        })
+        this.eventHelper.dispatch(EVENTS.COLLECT_JUMP_POWER)
     }
     private attack(): void {
         if (!this.inAir) {
@@ -129,6 +122,30 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
             this.inAir = false
             this.powerBar?.setPercents(0)
             this.run()
+        }
+    }
+    public startImmortalityAnimation(): void {
+        if (!this.immortalEvent) {
+            const delay = 250
+            const repeat = Math.floor(GAME_PARAMETERS.onHitImmortalityDuration / delay)
+            const cb = () => {
+                if (!this.immortalAnimation) {
+                    this.setTintFill(0xffffff)
+                    this.immortalAnimation = true
+                    return
+                }
+                this.clearTint()
+                this.immortalAnimation = false
+
+            }
+            const clear = () => {
+                this.clearTint()
+                this.eventHelper.removeTimer(this.immortalEvent as Time.TimerEvent)
+                this.immortalEvent = undefined
+            }
+
+            this.immortalEvent = this.eventHelper.timer(delay, cb, this, repeat)
+            this.eventHelper.timer((repeat + 1) * delay, clear, this)
         }
     }
 
@@ -174,6 +191,12 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     }
     private getBody(): Physics.Arcade.Body {
         return this.body as Physics.Arcade.Body;
+    }
+    private runSetup() {
+        this.setOrigin(0, 0.5)
+        this.setOffset(10, 65)
+        this.setFlipX(false)
+        this.setVelocityX(0)
     }
 
 }
