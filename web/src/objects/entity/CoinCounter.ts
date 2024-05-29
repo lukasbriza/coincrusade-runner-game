@@ -1,8 +1,8 @@
 import { GameObjects, Scene } from "phaser";
-import { EVENTS, FONT_KEYS } from "../constants";
+import { EVENTS, FONT_KEYS } from "../../constants";
 import { Coin } from "./Coin";
-import { AssetHelper, Eventhelper } from "../helpers/_index";
-import { ICoinCounter } from "../interfaces/_index";
+import { AssetHelper, Eventhelper } from "../../helpers/_index";
+import { ICoinCounter } from "../../interfaces/_index";
 
 export class CoinCounter implements ICoinCounter {
     private scene: Scene;

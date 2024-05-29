@@ -1,12 +1,13 @@
-import { EVENTS, grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../constants";
-import { ImageWithDynamicBody, IPlatformDatabase, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../interfaces/_index";
-import { Coin } from './Coin';
-import { GameScene } from '../scenes/_index';
-import { cleanTileName, isDecorationSprite, setupDynamicSpriteBase, setupImageBase } from '../utils/_index';
-import { Water } from './Water';
-import { setupAssetbase } from '../utils/setupAssetBase';
+import { grass, KEYS, PLATFORM_MAP_KEYS, POOL_CONFIG, SPRITE_KEYS, TILE } from "../../constants";
+import { ImageWithDynamicBody, IPlatformDatabase, MapType, MapTypeExtended, MapTypeMember, SpriteWithDynamicBody, TranslationResult } from "../../interfaces/_index";
+import { Coin } from '../entity/Coin';
+import { GameScene } from '../../scenes/_index';
+import { cleanTileName, isDecorationSprite, isObstacleSprite, setupDynamicSpriteBase, setupImageBase } from '../../utils/_index';
+import { Water } from '../entity/Water';
+import { setupAssetbase } from '../../utils/setupAssetBase';
 import * as _ from "lodash-es";
-import { Eventhelper, AssetHelper } from "../helpers/_index";
+import { Eventhelper, AssetHelper } from "../../helpers/_index";
+import { Physics } from "phaser";
 
 
 export class PlatformDatabase implements IPlatformDatabase {
@@ -43,6 +44,7 @@ export class PlatformDatabase implements IPlatformDatabase {
             chunkMap.push({ ...localMap, coins: [null] })
         }
         return this.translateMaptypes(chunkMap, undefined)
+
     }
 
     //ABL METHODS
@@ -64,7 +66,8 @@ export class PlatformDatabase implements IPlatformDatabase {
             coins: prev.coins.concat(curr.coins),
             platforms: prev.platforms.concat(curr.platforms),
             decorations: prev.decorations.concat(curr.decorations),
-            obstacles: prev.obstacles.concat(curr.obstacles)
+            obstacles: prev.obstacles.concat(curr.obstacles),
+            slopeTriggers: prev.slopeTriggers.concat(curr.slopeTriggers)
         }))
     }
 
@@ -77,90 +80,118 @@ export class PlatformDatabase implements IPlatformDatabase {
         return { coins, ...tiles }
     }
     private tileTranslationMatrix(tileMap: MapTypeMember[][], xStartPosition: number = 0) {
-        const platformSpeed = window.configurationManager.platformStartSpeed
         const platforms: SpriteWithDynamicBody[] = []
         const decorations: ImageWithDynamicBody[] = []
         const obstacles: SpriteWithDynamicBody[] = []
+        const slopeTriggers: SpriteWithDynamicBody[] = []
 
         tileMap.forEach((row, yOffset) => {
             const y = yOffset * TILE.height
             row.forEach((tile, xOffset) => {
                 const x = (xOffset * TILE.width) + xStartPosition
+                const isBottomTile = yOffset === (tileMap.length - 1)
+
+                if (isBottomTile) {
+                    const slopeTrigger = setupDynamicSpriteBase(this.assetHelper, KEYS.GROUND, x, y)
+                    slopeTrigger.resetCollisionCategory()
+                    slopeTrigger.setAlpha(0)
+                    slopeTriggers.push(slopeTrigger)
+                }
 
                 if (typeof tile === "string") {
-                    const isDecoration = isDecorationSprite(tile)
                     let cleanName = cleanTileName(tile)
+                    const isDecoration = isDecorationSprite(tile)
+                    const isObstacle = isObstacleSprite(cleanName)
 
                     if (isDecoration) {
-                        if (cleanName === "tree") {
-                            const treeArray = [KEYS.TREE1, KEYS.TREE2]
-                            console.log(_.sample(treeArray))
-                            cleanName = _.sample(treeArray)?.toString() ?? "tree1"
-                        }
-                        if (cleanName === "grass") {
-                            const grassArray = [KEYS.GRASS1, KEYS.GRASS2, KEYS.GRASS3, KEYS.GRASS4, KEYS.GRASS5, KEYS.GRASS6]
-                            cleanName = _.sample(grassArray)?.toString() ?? "grass1"
-                        }
-
-                        const image = setupImageBase(
-                            this.assetHelper,
-                            cleanName,
-                            x + (TILE.width / 2),
-                            y + TILE.height
-                        )
-                        decorations.push(image)
+                        const decX = x + (TILE.width / 2)
+                        const decY = y + TILE.height
+                        this.processDecoration(cleanName, decX, decY, decorations)
                     }
                     if (!isDecoration) {
-                        if (cleanName === SPRITE_KEYS.SPRITE_WATER) {
-                            const water = new Water(this.scene, x, y)
-                            water.setOrigin(0, 0)
-                            setupAssetbase(water)
-                            water.setVelocityX(platformSpeed * -1)
-                            water.setPosition(x, y + (TILE.height - water.height))
-                            obstacles.push(water)
+                        if (isObstacle) {
+                            this.processObstacle(cleanName, x, y, obstacles)
                             return
                         }
 
                         const sprite = setupDynamicSpriteBase(this.assetHelper, cleanName, x, y)
-                        sprite.setOrigin(0, 0)
-
                         switch (cleanName) {
                             case KEYS.SLIM_GROUND:
                                 sprite.setPosition(x, y + (TILE.height - sprite.body.height))
                                 break
-                            case KEYS.ROCK1:
-                            case KEYS.ROCK2:
-                                sprite.setPosition(x, y + (TILE.height - sprite.body.height))
-                                sprite.setSize(sprite.width, sprite.height - 10)
-                                sprite.setOffset(0, 10)
-                                obstacles.push(sprite)
-                                return
                         }
-
                         platforms.push(sprite)
                     }
 
                 }
             })
         })
-        return { platforms, decorations, obstacles }
+        return { platforms, decorations, obstacles, slopeTriggers }
     }
     private coinTranslationMatrix(coinTileArr: (string | null)[], xStartPosition: number = 0): Coin[] {
-        const platformSpeed = window.configurationManager.platformStartSpeed
         const coins: Coin[] = []
 
         coinTileArr.forEach((tile, xOffset) => {
             if (tile === "coin") {
                 const x = (xOffset * TILE.width) + xStartPosition
                 const coin = new Coin(this.scene, x + (TILE.width / 2), 0);
-                coin.setOrigin(0.5, 0.5)
+                coin.setPosition(x + (TILE.width / 2) - coin.body!.width / 2, 0)
                 setupAssetbase(coin)
                 coin.setImmovable(false)
-                coin.setVelocityX(platformSpeed * -1)
                 coins.push(coin)
-                //this.eventHelper.dispatch(EVENTS.COIN_GENERATED)
             }
         })
         return coins
+    }
+
+    //UTILS
+    private processDecoration(cleanName: string, x: number, y: number, decorations: ImageWithDynamicBody[]) {
+        if (cleanName === "tree") {
+            const treeArray = [KEYS.TREE1, KEYS.TREE2]
+            cleanName = _.sample(treeArray)?.toString() ?? "tree1"
+        }
+        if (cleanName === "grass") {
+            const grassArray = [KEYS.GRASS1, KEYS.GRASS2, KEYS.GRASS3, KEYS.GRASS4, KEYS.GRASS5, KEYS.GRASS6]
+            cleanName = _.sample(grassArray)?.toString() ?? "grass1"
+        }
+
+        const image = setupImageBase(
+            this.assetHelper,
+            cleanName,
+            x,
+            y
+        )
+        decorations.push(image)
+    }
+    private processObstacle(cleanName: string, x: number, y: number, obstacles: SpriteWithDynamicBody[]) {
+        let obstacle: Physics.Arcade.Sprite | undefined = undefined
+
+        switch (cleanName) {
+            case SPRITE_KEYS.SPRITE_WATER:
+                const water = new Water(this.scene, x, y)
+                setupAssetbase(water)
+                water.setPosition(x, y + (TILE.height - water.height))
+                obstacle = water
+                break
+            case KEYS.ROCK1:
+            case KEYS.ROCK2:
+                const sprite = setupDynamicSpriteBase(this.assetHelper, cleanName, x, y)
+                sprite.setPosition(x, y + (TILE.height - sprite.body.height))
+                sprite.setSize(sprite.width, sprite.height - 10)
+                sprite.setOffset(0, 10)
+                obstacle = sprite
+                break
+        }
+
+        obstacle && obstacles.push(obstacle)
+    }
+    private setupPlatform(cleanName: string, x: number, y: number, platforms: SpriteWithDynamicBody[]) {
+        const sprite = setupDynamicSpriteBase(this.assetHelper, cleanName, x, y)
+        switch (cleanName) {
+            case KEYS.SLIM_GROUND:
+                sprite.setPosition(x, y + (TILE.height - sprite.body.height))
+                break
+        }
+        platforms.push(sprite)
     }
 }

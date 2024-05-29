@@ -2,7 +2,7 @@ import { Scene } from "phaser";
 import { CoinCounter } from "./CoinCounter";
 import { TimeCounter } from "./TimeCounter";
 import { LifeCounter } from "./LifeCounter";
-import { IPlayerStatus } from "../interfaces/_index";
+import { IPlayerStatus } from "../../interfaces/_index";
 
 export class PlayerStatus implements IPlayerStatus {
     public coinCounter: CoinCounter;

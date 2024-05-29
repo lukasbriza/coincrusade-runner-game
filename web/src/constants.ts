@@ -90,7 +90,7 @@ export enum EVENTS {
     COIN_PICKED = "coin-picked",
     COLLECT_JUMP_POWER = "collect-jump-power",
     STOP_COLLECT_JUMP_POWER = "stop-collect-jump-power",
-    SLOPE_OVERCOM = "slope-overcome"
+    SLOPE_OVERCOME = "slope-overcome"
 }
 
 export enum ANIMATION_KEYS {

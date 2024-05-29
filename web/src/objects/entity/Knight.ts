@@ -1,9 +1,9 @@
 import { Animations, Input, Physics, Scene, Tilemaps, Time } from "phaser";
-import { GAME_PARAMETERS } from "../configurations/_index";
-import { ANIMATION_KEYS, EVENTS, SPRITE_KEYS, TILE } from "../constants";
-import { ColliderObject, IKnight } from "../interfaces/_index";
+import { GAME_PARAMETERS } from "../../configurations/_index";
+import { ANIMATION_KEYS, EVENTS, SPRITE_KEYS, TILE } from "../../constants";
+import { ColliderObject, IKnight } from "../../interfaces/_index";
 import { PowerBar } from "./PowerBar";
-import { AssetHelper, Eventhelper } from "../helpers/_index";
+import { AssetHelper, Eventhelper } from "../../helpers/_index";
 
 export class Knight extends Physics.Arcade.Sprite implements IKnight {
     public inAir: boolean = false;

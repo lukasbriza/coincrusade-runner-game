@@ -1,9 +1,9 @@
 import { GameObjects, Scene } from "phaser";
-import { GAME_PARAMETERS } from "../configurations/_index";
+import { GAME_PARAMETERS } from "../../configurations/_index";
 import { Life } from "./Life";
-import { EVENTS, KEYS } from "../constants";
-import { ILifeCounter } from "../interfaces/_index";
-import { Eventhelper } from "../helpers/_index";
+import { EVENTS, KEYS } from "../../constants";
+import { ILifeCounter } from "../../interfaces/_index";
+import { Eventhelper } from "../../helpers/_index";
 
 export class LifeCounter implements ILifeCounter {
     private lifes: GameObjects.Image[] = []

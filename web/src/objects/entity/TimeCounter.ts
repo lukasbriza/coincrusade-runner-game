@@ -1,8 +1,8 @@
 import { GameObjects, Scene } from "phaser";
-import { EVENTS, FONT_KEYS } from "../constants";
-import { AssetHelper, Eventhelper } from "../helpers/_index";
-import { GAME_PARAMETERS } from "../configurations/_index";
-import { ITimeCounter } from "../interfaces/_index";
+import { EVENTS, FONT_KEYS } from "../../constants";
+import { AssetHelper, Eventhelper } from "../../helpers/_index";
+import { GAME_PARAMETERS } from "../../configurations/_index";
+import { ITimeCounter } from "../../interfaces/_index";
 
 export class TimeCounter implements ITimeCounter {
     public time: Date = new Date();

@@ -1,4 +1,4 @@
-import { IGameState } from "../interfaces/_index";
+import { IGameState } from "../../interfaces/_index";
 
 export class GameState implements IGameState {
     private pickedCoins: number = 0;
