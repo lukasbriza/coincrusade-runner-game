@@ -1,8 +1,8 @@
 import { GameObjects, Physics, Time } from "phaser";
-import { EVENTS, KEYS } from "../constants";
-import { GAME_PARAMETERS } from "../configurations/_index";
-import { IPowerbar } from "../interfaces/_index";
-import { Eventhelper, AssetHelper } from "../helpers/_index";
+import { EVENTS, KEYS } from "../../constants";
+import { GAME_PARAMETERS } from "../../configurations/_index";
+import { IPowerbar } from "../../interfaces/_index";
+import { Eventhelper, AssetHelper } from "../../helpers/_index";
 
 export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
     private assetHelper: AssetHelper;

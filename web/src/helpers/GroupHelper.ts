@@ -33,8 +33,12 @@ export class GroupHelper implements IGrouphelper {
             return pos!.x < 0
         })
     }
-    public findAllMembersByCondition(condition: (children: GameObjects.GameObject) => boolean): GameObjects.GameObject[] {
-        return this.group.children.getArray().filter(children => condition(children))
+    public findAllMembersByCondition(condition: (children: GameObjects.GameObject) => boolean, cbOnSucess?: (children: GameObjects.GameObject) => void): GameObjects.GameObject[] {
+        return this.group.children.getArray().filter(children => {
+            const resolve = condition(children)
+            resolve && cbOnSucess?.(children)
+            return resolve
+        })
     }
     public getMemberByName<T extends GameObjects.GameObject>(name: string): T | undefined {
         return this.group.children.getArray().find(children => children.name === name) as T | undefined

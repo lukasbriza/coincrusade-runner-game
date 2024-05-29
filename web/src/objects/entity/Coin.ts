@@ -1,8 +1,8 @@
 import { Physics, Scene } from "phaser";
-import { ANIMATION_KEYS, SPRITE_KEYS } from "../constants";
+import { ANIMATION_KEYS, SPRITE_KEYS } from "../../constants";
 import { CoinCounter } from "./CoinCounter";
-import { AssetHelper, Eventhelper } from "../helpers/_index";
-import { ICoin } from "../interfaces/_index";
+import { AssetHelper, Eventhelper } from "../../helpers/_index";
+import { ICoin } from "../../interfaces/_index";
 
 export class Coin extends Physics.Arcade.Sprite implements ICoin {
     private eventHelper: Eventhelper;

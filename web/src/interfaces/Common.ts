@@ -38,7 +38,13 @@ export type SpriteWithDynamicBody = Types.Physics.Arcade.SpriteWithDynamicBody |
 export type ImageWithDynamicBody = Types.Physics.Arcade.ImageWithDynamicBody
 export type ColliderObject = Tilemaps.Tile | Types.Physics.Arcade.GameObjectWithBody
 
-export type TranslationResult = { decorations: ImageWithDynamicBody[], platforms: SpriteWithDynamicBody[], coins: Coin[], obstacles: SpriteWithDynamicBody[] }
+export type TranslationResult = {
+    decorations: ImageWithDynamicBody[],
+    platforms: SpriteWithDynamicBody[],
+    coins: Coin[],
+    obstacles: SpriteWithDynamicBody[],
+    slopeTriggers: SpriteWithDynamicBody[]
+}
 
 export type PlatformMapType = {
     [key in PLATFORM_MAP_KEYS]: { path: string }

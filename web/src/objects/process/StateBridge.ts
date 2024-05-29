@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
-import { Eventhelper } from "../helpers/_index";
-import { EVENTS } from "../constants";
+import { Eventhelper } from "../../helpers/_index";
+import { EVENTS } from "../../constants";
 
 export class StateBridge {
     constructor(scene: Scene) {
@@ -9,6 +9,6 @@ export class StateBridge {
         helper.addListener(EVENTS.COIN_GENERATED, gState.incrementGeneratedCoin, gState)
         helper.addListener(EVENTS.COIN_PICKED, gState.incrementPickedCoin, gState)
         helper.addListener(EVENTS.LIVE_DECREASED, gState.incrementLostLives, gState)
-        helper.addListener(EVENTS.SLOPE_OVERCOM, gState.incrementOvercomedSlopes, gState)
+        helper.addListener(EVENTS.SLOPE_OVERCOME, gState.incrementOvercomedSlopes, gState)
     }
 }
