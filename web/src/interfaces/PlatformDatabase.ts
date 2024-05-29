@@ -1,7 +1,9 @@
 import { PLATFORM_MAP_KEYS } from "../constants"
+import { Eventhelper } from "../helpers/_index"
 import { MapType, MapTypeExtended, TranslationResult } from "./Common"
 
 export type IPlatformDatabase = {
+    eventHelper: Eventhelper
     avaliablePlatformMaps: MapType[]
     chunk: number
     generateInitialChunk: () => TranslationResult

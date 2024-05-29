@@ -1,8 +1,8 @@
 import { Scene } from "phaser"
-import { ANIMATION_KEYS, FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SCENE_KEYS, SPRITE_KEYS } from "../constants"
-import { Knight, PlatformManager, Coin, PlayerStatus } from "../objects/_index"
+import { ANIMATION_KEYS, EVENTS, FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SCENE_KEYS, SPRITE_KEYS } from "../constants"
+import { Knight, PlatformManager, Coin, PlayerStatus, StateBridge } from "../objects/_index"
 import { spreadImageOnScene } from "../utils/_index";
-import { AssetHelper } from "../helpers/_index";
+import { AssetHelper, Eventhelper } from "../helpers/_index";
 import { ColliderObject } from "../interfaces/_index";
 import { GAME_PARAMETERS } from "../configurations/_index";
 
@@ -11,81 +11,28 @@ export class GameScene extends Scene {
     public playerStatus: PlayerStatus;
     public assetHelper: AssetHelper;
     public platformManager: PlatformManager;
+    public eventHelper: Eventhelper;
 
     constructor() {
         super(SCENE_KEYS.MAIN)
         this.assetHelper = new AssetHelper(this)
+        this.eventHelper = new Eventhelper(this)
     }
     preload() {
         this.physics.world.setFPS(50)
         //LOAD ASSETS
-        this.assetHelper.loadSprites([
-            SPRITE_KEYS.SPRITE_KNIGHT_RUN,
-            SPRITE_KEYS.SPRITE_KNIGHT_ATTACK,
-            SPRITE_KEYS.SPRITE_KNIGHT_JUMP,
-            SPRITE_KEYS.SPRITE_COIN,
-            SPRITE_KEYS.SPRITE_WATER
-        ])
-        this.assetHelper.loadImages([
-            KEYS.GROUND,
-            KEYS.BACKGROUND,
-            KEYS.KNIGHT_POWERBAR,
-            KEYS.KNIGHT_SLIDE,
-            KEYS.HEART_EMPTY,
-            KEYS.HEART_HALF,
-            KEYS.HEART_FULL,
-            KEYS.ROCK1,
-            KEYS.ROCK2,
-            KEYS.GRASS1,
-            KEYS.GRASS2,
-            KEYS.GRASS3,
-            KEYS.GRASS4,
-            KEYS.GRASS5,
-            KEYS.GRASS6,
-            KEYS.SLIM_GROUND,
-            KEYS.TREE1,
-            KEYS.TREE2,
-            KEYS.STUMP1,
-            KEYS.STUMP2,
-            KEYS.TENT1,
-            KEYS.TENT2,
-            KEYS.TENT3,
-            KEYS.TENT4
-        ])
-        this.assetHelper.loadPlatformMaps([
-            PLATFORM_MAP_KEYS.BASE,
-            PLATFORM_MAP_KEYS.FLAT1,
-            PLATFORM_MAP_KEYS.FLAT2,
-            PLATFORM_MAP_KEYS.FLAT3,
-            PLATFORM_MAP_KEYS.FLAT4,
-            PLATFORM_MAP_KEYS.FLAT5,
-            PLATFORM_MAP_KEYS.FLAT6,
-            PLATFORM_MAP_KEYS.FLAT7,
-            PLATFORM_MAP_KEYS.FLAT8,
-            PLATFORM_MAP_KEYS.FLAT9,
-            PLATFORM_MAP_KEYS.FLAT10,
-            PLATFORM_MAP_KEYS.FLAT11,
-            PLATFORM_MAP_KEYS.ISLAND1,
-            PLATFORM_MAP_KEYS.ISLAND2,
-            PLATFORM_MAP_KEYS.ISLAND3,
-            PLATFORM_MAP_KEYS.ISLAND4,
-            PLATFORM_MAP_KEYS.ISLAND5,
-            PLATFORM_MAP_KEYS.ISLAND6,
-            PLATFORM_MAP_KEYS.ISLAND7,
-            PLATFORM_MAP_KEYS.ISLAND8,
-            PLATFORM_MAP_KEYS.ISLAND9,
-            PLATFORM_MAP_KEYS.ISLAND10,
-            PLATFORM_MAP_KEYS.ISLAND11,
-            PLATFORM_MAP_KEYS.ISLAND12,
-            PLATFORM_MAP_KEYS.SEA1,
-            PLATFORM_MAP_KEYS.SEA2,
-            PLATFORM_MAP_KEYS.SEA3,
-            PLATFORM_MAP_KEYS.SEA4,
-        ])
+        const sprites = Object.keys(SPRITE_KEYS).map(key => SPRITE_KEYS[key as keyof typeof SPRITE_KEYS])
+        const keys = Object.keys(KEYS).map(key => KEYS[key as keyof typeof KEYS])
+        const platforms = Object.keys(PLATFORM_MAP_KEYS).map(key => PLATFORM_MAP_KEYS[key as keyof typeof PLATFORM_MAP_KEYS])
+        this.assetHelper.loadSprites(sprites)
+        this.assetHelper.loadImages(keys)
+        this.assetHelper.loadPlatformMaps(platforms)
         this.assetHelper.loadFont(FONT_KEYS.MAIN)
     }
     create() {
+        new StateBridge(this)
         this.initAnimaitons()
+        this.initCheckers()
         //BACKGROUND SETUP
         const background = this.assetHelper.addImage(KEYS.BACKGROUND, window.game.renderer.width / 2, window.game.renderer.height * 0.60)
         spreadImageOnScene(background)
@@ -97,34 +44,26 @@ export class GameScene extends Scene {
         this.knight = new Knight(this)
 
         //COLLIDERS
-        this.physics.add.collider(
-            this.knight,
-            this.platformManager.activeGroup,
-            this.knight.onCollideWithWorld,
-            undefined,
-            this.knight
-        )
-        this.physics.add.collider(
-            this.platformManager.coinGroup,
-            this.platformManager.activeGroup,
-            undefined, (coin: ColliderObject, _) => {
-                return !(coin as Coin).isPicked
-            })
-        this.physics.add.collider(
-            this.knight,
-            this.platformManager.coinGroup,
-            undefined,
-            (_, coin: ColliderObject) => {
-                (coin as Coin)?.pickCoin(this.playerStatus.coinCounter, coin as Coin)
-                return false
-            }
-        )
-        this.physics.add.collider(this.playerStatus.coinCounter.nearTextCoin, this.platformManager.coinGroup, undefined, (_, coin: ColliderObject) => {
-            this.playerStatus.incrementCoinCounter()
-            this.platformManager.removeCoinFromGroup(coin as Coin)
+        const statusCoin = this.playerStatus.coinCounter.nearTextCoin
+        const activeGroup = this.platformManager.activeGroup
+        const coinGroup = this.platformManager.coinGroup
+        const obstacleGroup = this.platformManager.obstacleGroup
+        const coinCounter = this.playerStatus.coinCounter
+
+        this.physics.add.collider(this.knight, activeGroup, this.knight.onCollideWithWorld, undefined, this.knight)
+        this.physics.add.collider(this.knight, obstacleGroup, (_: ColliderObject, obstacle: ColliderObject) => { this.eventHelper.dispatch(EVENTS.KNIGHT_HIT, _, obstacle) })
+        this.physics.add.collider(coinGroup, activeGroup, undefined, (coin: ColliderObject, _) => { return !(coin as Coin).isPicked })
+        this.physics.add.collider(this.knight, coinGroup, undefined, (_, coin: ColliderObject) => {
+            (coin as Coin)?.pickCoin(coinCounter, coin as Coin)
+            return false
+        })
+        this.physics.add.collider(statusCoin, coinGroup, undefined, (_, coin: ColliderObject) => {
+            this.eventHelper.dispatch(EVENTS.COIN_PICKED, coin)
             coin.destroy()
             return false
         })
+
+        this.eventHelper.timer(500, () => { console.log(window.gameState.getState()) }, this, undefined, true)
     }
     update() {
         this.knight.update()
@@ -171,5 +110,17 @@ export class GameScene extends Scene {
             }),
             frameRate: 7
         })
+    }
+    private initCheckers() {
+        this.eventHelper.timer(500, () => {
+            const displayListcoins = this.sys.displayList.list.filter(el => el instanceof Coin ? (!el.onScene && !el.inCoinCounter) : false) as Coin[]
+            displayListcoins.map(coin => {
+                if (coin.x < this.renderer.width) {
+                    coin.onScene = true
+                    this.eventHelper.dispatch(EVENTS.COIN_GENERATED)
+                }
+                return coin
+            })
+        }, this, undefined, true)
     }
 }

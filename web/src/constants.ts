@@ -83,6 +83,16 @@ export enum PLATFORM_MAP_KEYS {
     SEA4 = "sea4",
 }
 
+export enum EVENTS {
+    KNIGHT_HIT = "player-hit",
+    LIVE_DECREASED = "live-decreased",
+    COIN_GENERATED = "coin-generated",
+    COIN_PICKED = "coin-picked",
+    COLLECT_JUMP_POWER = "collect-jump-power",
+    STOP_COLLECT_JUMP_POWER = "stop-collect-jump-power",
+    SLOPE_OVERCOM = "slope-overcome"
+}
+
 export enum ANIMATION_KEYS {
     ANIMATION_KNIGHT_RUN = "knight-run",
     ANIMATION_KNIGHT_JUMP = "knight-jump",

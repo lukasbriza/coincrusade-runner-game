@@ -6,6 +6,4 @@ export type IPlayerStatus = {
     coinCounter: ICoinCounter
     timeCounter: ITimeCounter
     lifeCounter: ILifeCounter
-
-    incrementCoinCounter: () => void
 }

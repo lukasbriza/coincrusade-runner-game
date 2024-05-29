@@ -1,21 +1,26 @@
-import { GameObjects, Physics } from "phaser";
-import { KEYS } from "../constants";
+import { GameObjects, Physics, Time } from "phaser";
+import { EVENTS, KEYS } from "../constants";
 import { GAME_PARAMETERS } from "../configurations/_index";
-import { AssetHelper } from "../helpers/AssetHelper";
 import { IPowerbar } from "../interfaces/_index";
+import { Eventhelper, AssetHelper } from "../helpers/_index";
 
 export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
     private assetHelper: AssetHelper;
+    private eventHelper: Eventhelper
 
     private barWidth: number;
     private boundMargin: number;
 
     public powerBar: GameObjects.Image;
     public jumpPower: number = 0;
+    private timer: Time.TimerEvent;
 
     constructor(parent: Physics.Arcade.Sprite) {
         super(parent.scene, 0, 0, KEYS.KNIGHT_POWERBAR)
         this.assetHelper = new AssetHelper(parent.scene)
+        this.eventHelper = new Eventhelper(parent.scene)
+        this.eventHelper.addListener(EVENTS.COLLECT_JUMP_POWER, this.startCollecting, this)
+        this.eventHelper.addListener(EVENTS.STOP_COLLECT_JUMP_POWER, this.stopCollecting, this)
 
         const bodyWidth = (parent.body?.width ?? parent.width) + 20
         this.barWidth = (bodyWidth / 100) * 60
@@ -42,10 +47,18 @@ export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
         this.powerBar.setCrop(0, 0, width, 4)
     }
 
-    public increaseJumpPower(): void {
+    private increaseJumpPower(): void {
         if (this.jumpPower < GAME_PARAMETERS.powerJumpMaxCap) {
             this.jumpPower++
             this.setPercents((100 / GAME_PARAMETERS.powerJumpMaxCap) * this.jumpPower)
         }
+    }
+
+    private startCollecting() {
+        this.timer = this.eventHelper.timer(GAME_PARAMETERS.powerJumpLoadDelay, this.increaseJumpPower, this, undefined, true)
+    }
+    private stopCollecting() {
+        this.eventHelper.removeTimer(this.timer)
+        this.jumpPower = 0
     }
 }
