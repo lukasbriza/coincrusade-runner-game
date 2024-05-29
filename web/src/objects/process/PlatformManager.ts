@@ -57,6 +57,11 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
         this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
         this.eventHelper.addListener(EVENTS.COIN_PICKED, this.removeCoinFromGroup, this)
+
+        /*this.eventHelper.timer(5000, () => {
+            window.configurationManager.increasePlatformSpeed(20)
+            this.reAssignPlatformSpeed()
+        }, this, undefined, true)*/
     }
     ////////////////////////////
     //CORE LOGIC
@@ -149,5 +154,19 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
             return lastPlatform.body.position.x <= POOL_CONFIG.criticalPackageWidth
         }
         return false
+    }
+    public reAssignPlatformSpeed() {
+        const speed = window.configurationManager.platformStartSpeed * -1
+        const platforms = [
+            ...this.activeGroup.getChildren(),
+            ...this.obstacleGroup.getChildren(),
+            ...this.coinGroup.getChildren(),
+            ...this.decorationGroup.getChildren(),
+            ...this.slopeGroup.getChildren()
+        ]
+        platforms.map(el => {
+            el.body!.velocity.x = speed
+            return el
+        })
     }
 }
