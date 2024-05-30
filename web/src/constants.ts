@@ -90,7 +90,11 @@ export enum EVENTS {
     COIN_PICKED = "coin-picked",
     COLLECT_JUMP_POWER = "collect-jump-power",
     STOP_COLLECT_JUMP_POWER = "stop-collect-jump-power",
-    SLOPE_OVERCOME = "slope-overcome"
+    SLOPE_OVERCOME = "slope-overcome",
+    LOG_MAP_DIFFICULTY = "log-map-difficulty",
+    SECOND_PASSED = "second-passed",
+    TIME_GAINED = "time-gained",
+    CHUNK_END = "chunk-end"
 }
 
 export enum ANIMATION_KEYS {
@@ -189,7 +193,7 @@ export const screenSizes = ({
 export const POOL_CONFIG = {
     tileSize: TILE,
     chunkSize: 15 * TILE.width,
-    maxChunkPackageWidth: 3 * (15 * TILE.width),
+    maxChunkPackageWidth: 2 * (15 * TILE.width),
     criticalPackageWidth: 2 * (15 * TILE.width)
 }
 

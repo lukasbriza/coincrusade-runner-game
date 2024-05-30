@@ -1,4 +1,4 @@
-import { Scene } from "phaser"
+import { Physics, Scene } from "phaser"
 import { ANIMATION_KEYS, EVENTS, FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SCENE_KEYS, SPRITE_KEYS } from "../constants"
 import { Knight, PlatformManager, Coin, PlayerStatus, StateBridge } from "../objects/_index"
 import { spreadImageOnScene } from "../utils/_index";
@@ -63,7 +63,7 @@ export class GameScene extends Scene {
             return false
         })
 
-        this.eventHelper.timer(500, () => { console.log(window.gameState.getState()) }, this, undefined, true)
+        //this.eventHelper.timer(1000, () => { console.log(window.gameState.getState()) }, this, undefined, true)
     }
     update() {
         this.knight.update()
@@ -111,15 +111,41 @@ export class GameScene extends Scene {
             frameRate: 7
         })
     }
+
+    //SCAN DISPLAYLIST OF SCENE AND LOG DATA TO GAME STATE
     private initCheckers() {
-        this.eventHelper.timer(500, () => {
-            const displayListcoins = this.sys.displayList.list.filter(el => el instanceof Coin ? (!el.onScene && !el.inCoinCounter) : false) as Coin[]
-            displayListcoins.map(coin => {
-                if (coin.x < this.renderer.width) {
+        this.eventHelper.timer(250, () => {
+            this.sys.displayList.list.map(el => {
+                const coinCheck = el instanceof Coin
+                    && !el.onScene
+                    && !el.inCoinCounter
+                    && el.x < this.renderer.width
+                const slopeTriggerCheck = el instanceof Physics.Arcade.Sprite
+                    && el.texture.key === KEYS.GROUND
+                    && el.alpha === 0
+                    && el.x < this.renderer.width
+                    && el.getData("checked") !== true
+
+                if (coinCheck) {
+                    let coin = el
                     coin.onScene = true
                     this.eventHelper.dispatch(EVENTS.COIN_GENERATED)
+                    return coin
                 }
-                return coin
+                if (slopeTriggerCheck) {
+                    if (typeof el.getData("mapDifficulty") === "number") {
+                        let mapLogtrigger = el
+                        mapLogtrigger.setData({ checked: true })
+                        this.eventHelper.dispatch(EVENTS.LOG_MAP_DIFFICULTY, el.getData("mapDifficulty"))
+                        return mapLogtrigger
+                    }
+                    if (el.getData("chunkEnd") !== undefined) {
+                        let chunkEndTrigger = el
+                        chunkEndTrigger.setData({ checked: true })
+                        this.eventHelper.dispatch(EVENTS.CHUNK_END)
+                    }
+                }
+                return el
             })
         }, this, undefined, true)
     }
