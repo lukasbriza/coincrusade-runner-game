@@ -12,4 +12,5 @@ export type IPlatformManager = {
     decorationGroupHelper: GroupHelper
 
     removeCoinFromGroup: (coin: GameObjects.GameObject) => void
+    reAssignPlatformSpeed: () => void
 } & IPlatformDatabase

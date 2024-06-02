@@ -8,6 +8,8 @@ export type IConfigurationManager = {
     platauGrassChance: number
     platauTreeOrStumpChance: number
     maxStumpsAndTreesOnPlatau: number
+    skillFactor: number
+    difficultyChangeBorders: [number, number]
 
     increaseMaxPlatauCount: (by?: number) => number
     decreaseMaxPlatauCount: (by?: number) => number
@@ -19,4 +21,10 @@ export type IConfigurationManager = {
     decreaseChestGenerationChance: (by?: number) => number
     increasePlatformSpeed: (by?: number) => number
     decreasePlatformSpeed: (by?: number) => number
+    increasePickedPlatformDifficulty: (by?: number) => number
+    decreasePickedPlatformDifficulty: (by?: number) => number
+    closeDifficultyChangeBorders: () => [number, number]
+    openDifficultyChangeBorders: () => [number, number]
+    resetDifficultyBorders: () => [number, number]
+    nullifyPlatformSpeed: () => void
 }

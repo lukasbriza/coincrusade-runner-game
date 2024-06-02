@@ -4,13 +4,14 @@ import { PlatformManager } from "../objects/_index";
 import { MapTypeExtended, IPlatformGenerator } from "../interfaces/_index";
 import { ENDLESS_PLAIN_GENERATOR_PARAMETERS } from "../configurations/_index";
 import { GeneratorBase } from "./GeneratorBase";
+import { Scene } from "phaser";
 
 export class EndlessPlainGenerator extends GeneratorBase implements IPlatformGenerator {
     private config = ENDLESS_PLAIN_GENERATOR_PARAMETERS;
     private groupHelper: GroupHelper;
 
-    constructor(manager: PlatformManager) {
-        super(manager)
+    constructor(manager: PlatformManager, scene: Scene) {
+        super(manager, scene)
         this.groupHelper = new GroupHelper(this.manager.activeGroup)
     }
 
@@ -18,7 +19,7 @@ export class EndlessPlainGenerator extends GeneratorBase implements IPlatformGen
         const mapArray: MapTypeExtended[] = []
         const lastMember = this.groupHelper.getLastMemberOfGroupByX()
         if (lastMember) {
-            const map = this.manager.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
+            const map = this.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
             //GET WIDTH OF SPACE THAT NEED TO GENERATE
             const difference = POOL_CONFIG.maxChunkPackageWidth - lastMember.body!.position.x
 

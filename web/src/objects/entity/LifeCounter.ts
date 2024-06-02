@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Scene, Time } from "phaser";
 import { GAME_PARAMETERS } from "../../configurations/_index";
 import { Life } from "./Life";
 import { EVENTS, KEYS } from "../../constants";
@@ -11,11 +11,13 @@ export class LifeCounter implements ILifeCounter {
     private canDecreaseLife: boolean = true;
     private eventHelper: Eventhelper
     private scene: Scene;
+    private healTimer?: Time.TimerEvent;
 
     constructor(scene: Scene) {
         this.scene = scene
         this.eventHelper = new Eventhelper(scene)
         this.eventHelper.addListener(EVENTS.KNIGHT_HIT, this.decreaseLife, this)
+
         this.drawLifes()
     }
     private drawLifes(): void {
@@ -45,6 +47,12 @@ export class LifeCounter implements ILifeCounter {
                 this.lifeValue = GAME_PARAMETERS.maxPlayerLives
             }
             this.drawLifes()
+            this.eventHelper.dispatch(EVENTS.LIFE_ADDED)
+
+            if (this.lifeValue === GAME_PARAMETERS.maxPlayerLives && this.healTimer) {
+                this.eventHelper.removeTimer(this.healTimer)
+                this.healTimer = undefined
+            }
         }
     }
     public decreaseLife(): void {
@@ -57,6 +65,14 @@ export class LifeCounter implements ILifeCounter {
             this.drawLifes()
             this.eventHelper.timer(GAME_PARAMETERS.onHitImmortalityDuration, () => { this.canDecreaseLife = true }, this)
             this.eventHelper.dispatch(EVENTS.LIVE_DECREASED)
+
+            if (!this.healTimer) this.dispatchHealtimer()
         }
+        if (this.lifeValue === 0) {
+            this.eventHelper.dispatch(EVENTS.PLAYER_DEAD)
+        }
+    }
+    private dispatchHealtimer() {
+        this.healTimer = this.eventHelper.timer(GAME_PARAMETERS.playerHealRateInSeconds * 1000, this.addLife, this, undefined, true)
     }
 }

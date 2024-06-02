@@ -1,0 +1,145 @@
+{
+  "textures": [
+    {
+      "image": "dead",
+      "format": "RGBA8888",
+      "size": {
+        "w": 377,
+        "h": 72
+      },
+      "scale": 1,
+      "frames": [
+        {
+          "filename": "dead-3",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 20,
+            "y": 95,
+            "w": 50,
+            "h": 33
+          },
+          "frame": {
+            "x": 7,
+            "y": 7,
+            "w": 50,
+            "h": 33
+          }
+        },
+        {
+          "filename": "dead-4",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 20,
+            "y": 95,
+            "w": 54,
+            "h": 33
+          },
+          "frame": {
+            "x": 71,
+            "y": 7,
+            "w": 54,
+            "h": 33
+          }
+        },
+        {
+          "filename": "dead-5",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 33,
+            "y": 95,
+            "w": 54,
+            "h": 33
+          },
+          "frame": {
+            "x": 139,
+            "y": 7,
+            "w": 54,
+            "h": 33
+          }
+        },
+        {
+          "filename": "dead-2",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 20,
+            "y": 94,
+            "w": 45,
+            "h": 34
+          },
+          "frame": {
+            "x": 207,
+            "y": 7,
+            "w": 45,
+            "h": 34
+          }
+        },
+        {
+          "filename": "dead-1",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 7,
+            "y": 83,
+            "w": 47,
+            "h": 45
+          },
+          "frame": {
+            "x": 266,
+            "y": 7,
+            "w": 47,
+            "h": 45
+          }
+        },
+        {
+          "filename": "dead-0",
+          "rotated": false,
+          "trimmed": true,
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          },
+          "spriteSourceSize": {
+            "x": 14,
+            "y": 70,
+            "w": 43,
+            "h": 58
+          },
+          "frame": {
+            "x": 327,
+            "y": 7,
+            "w": 43,
+            "h": 58
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7"
+  }
+}
