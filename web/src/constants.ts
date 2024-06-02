@@ -45,8 +45,10 @@ export enum SPRITE_KEYS {
     SPRITE_KNIGHT_RUN = "sprite-knight-run",
     SPRITE_KNIGHT_ATTACK = "sprite-knight-attack",
     SPRITE_KNIGHT_JUMP = "sprite-knight-jump",
+    SPRITE_KNIGHT_DEAD = "sprite-knight-dead",
+    SPRITE_KNIGHT_WALK = "sprite-knight-walk",
     SPRITE_COIN = "sprite-coin",
-    SPRITE_WATER = "water"
+    SPRITE_WATER = "water",
 }
 
 export enum PLATFORM_MAP_KEYS {
@@ -94,12 +96,19 @@ export enum EVENTS {
     LOG_MAP_DIFFICULTY = "log-map-difficulty",
     SECOND_PASSED = "second-passed",
     TIME_GAINED = "time-gained",
-    CHUNK_END = "chunk-end"
+    CHUNK_END = "chunk-end",
+    LIFE_ADDED = "life-added",
+    PLAYER_DEAD = "player-dead",
+    PLAYER_RELOCATE = "player-relocate",
+    ADD_NOTE = "add-note",
+    DESTROY_NOTE = "destroy-note"
 }
 
 export enum ANIMATION_KEYS {
     ANIMATION_KNIGHT_RUN = "knight-run",
     ANIMATION_KNIGHT_JUMP = "knight-jump",
+    ANIMATION_KNIGHT_DEAD = "knight-dead",
+    ANIMATION_KNIGHT_WALK = "knight-walk",
     ANIMATION_KNIGHT_ATTACK = "knight-attack",
     ANIMATION_SPRITE_COIN = "coin-rotate",
     ANIMATION_SPRITE_WATER = "water-waves"
@@ -142,6 +151,8 @@ export const SPRITES: SpriteTypes = {
     [SPRITE_KEYS.SPRITE_KNIGHT_RUN]: { atlas: "assets/sprites/knight/run.json", sheet: "assets/sprites/knight/run.png" },
     [SPRITE_KEYS.SPRITE_KNIGHT_ATTACK]: { atlas: "assets/sprites/knight/attack.json", sheet: "assets/sprites/knight/attack.png" },
     [SPRITE_KEYS.SPRITE_KNIGHT_JUMP]: { atlas: "assets/sprites/knight/jump.json", sheet: "assets/sprites/knight/jump.png" },
+    [SPRITE_KEYS.SPRITE_KNIGHT_DEAD]: { atlas: "assets/sprites/knight/dead.json", sheet: "assets/sprites/knight/dead.png" },
+    [SPRITE_KEYS.SPRITE_KNIGHT_WALK]: { atlas: "assets/sprites/knight/walk.json", sheet: "assets/sprites/knight/walk.png" },
     [SPRITE_KEYS.SPRITE_COIN]: { atlas: "assets/sprites/coin/coin.json", sheet: "assets/sprites/coin/coin.png" },
     [SPRITE_KEYS.SPRITE_WATER]: { atlas: "assets/sprites/water/water.json", sheet: "assets/sprites/water/water.png" }
 }
@@ -194,7 +205,7 @@ export const POOL_CONFIG = {
     tileSize: TILE,
     chunkSize: 15 * TILE.width,
     maxChunkPackageWidth: 2 * (15 * TILE.width),
-    criticalPackageWidth: 2 * (15 * TILE.width)
+    criticalPackageWidth: 1 * (15 * TILE.width) //generated distance after right renderer corner
 }
 
 export const tents = [KEYS.TENT1, KEYS.TENT2, KEYS.TENT3, KEYS.TENT4]

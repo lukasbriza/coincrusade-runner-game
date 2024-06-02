@@ -1,15 +1,26 @@
 import * as _ from "lodash-es";
 import { grass, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, stumpAndTrees, tents, TILE } from "../constants";
-import { MapTypeExtended, MapTypeMember } from "../interfaces/_index";
-import { PlatformManager } from "../objects/_index";
-import { randomNumber } from "../utils/_index";
+import { IPlatformManager, MapType, MapTypeExtended, MapTypeMember } from "../interfaces/_index";
+import { normalizeWeights, pickBaseOnNormalizedWeights, randomNumber } from "../utils/_index";
+import { AssetHelper, Eventhelper } from "../helpers/_index";
+import { Scene } from "phaser";
 
 export class GeneratorBase {
-    public manager: PlatformManager;
+    public eventHelper: Eventhelper;
+    public assetHelper: AssetHelper;
+    public avaliablePlatformMaps: MapType[] = [];
+    public avaliableMapRange: number[] = [];
+    public manager: IPlatformManager;
 
-    constructor(manager: PlatformManager) {
+    constructor(manager: IPlatformManager, scene: Scene) {
         this.manager = manager
+        this.assetHelper = new AssetHelper(scene)
+        this.eventHelper = new Eventhelper(scene)
+        const mapKeys = Object.keys(PLATFORM_MAP_KEYS)
+        this.avaliablePlatformMaps = mapKeys.map(key => this.assetHelper.getPlatformMap(PLATFORM_MAP_KEYS[key as keyof typeof PLATFORM_MAP_KEYS]))
+        this.avaliableMapRange = [...new Set(this.avaliablePlatformMaps.map((map) => map.difficulty).filter(diff => diff !== 0).sort((a, b) => a - b))]
     }
+
     public getChance(chance: number): boolean {
         const random = Math.random()
         return random <= chance;
@@ -28,8 +39,6 @@ export class GeneratorBase {
         })
         return coinArr
     }
-
-
     private canRenderCoin(mapType: MapTypeMember[][], columnIndex: number): boolean {
         const contraIndicationArray = [KEYS.ROCK1, KEYS.ROCK2, SPRITE_KEYS.SPRITE_WATER]
         const groundArray = [KEYS.GROUND, KEYS.SLIM_GROUND]
@@ -52,14 +61,13 @@ export class GeneratorBase {
 
         return canRender
     }
-
     public addRandomPlatau(map: MapTypeExtended) {
         let localMap = _.cloneDeep(map)
 
         const minPlatau = window.configurationManager.minPlatauCount
         const maxPlatau = window.configurationManager.maxPlatauCount
         const plataus = randomNumber(minPlatau, maxPlatau, true)
-        const base = this.manager.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
+        const base = this.getPlatformMapByKey(PLATFORM_MAP_KEYS.BASE)
         const config = window.configurationManager
 
 
@@ -106,5 +114,23 @@ export class GeneratorBase {
         }
 
         return localMap
+    }
+    public getPlatformMapByKey(key: PLATFORM_MAP_KEYS): MapType {
+        return this.assetHelper.getPlatformMap(key)
+    }
+    public getPlatformMapsByDifficulty(difficulty: number): MapType[] {
+        return this.avaliablePlatformMaps.filter(map => map.difficulty == difficulty)
+    }
+    public getAllMaps(): MapType[] {
+        return this.avaliablePlatformMaps.filter(map => map.width > TILE.width)
+    }
+    public weightedMapDifficultyPick() {
+        //WEIGHTS FOR EVERY DIFFICULTY VALUE WITH EXPONENTIAL FN
+        const config = window.configurationManager
+        const weights = this.avaliableMapRange.map(diff => Math.exp(-(diff - 1) / config.skillFactor))
+        //NORMALIZATION (SUM MUST BE 1)
+        const normalizedWeights = normalizeWeights(weights)
+        //PICK DIFFICULTY BASED ON NORMALIZED WEIGHTS
+        return this.avaliableMapRange[pickBaseOnNormalizedWeights(normalizedWeights)]
     }
 }

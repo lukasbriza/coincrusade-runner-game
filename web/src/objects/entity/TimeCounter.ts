@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Scene, Time } from "phaser";
 import { EVENTS, FONT_KEYS } from "../../constants";
 import { AssetHelper, Eventhelper } from "../../helpers/_index";
 import { GAME_PARAMETERS } from "../../configurations/_index";
@@ -10,6 +10,7 @@ export class TimeCounter implements ITimeCounter {
     public addTimetext: GameObjects.BitmapText;
     public addTimeCounter: number = 0;
 
+    private secondTimer?: Time.TimerEvent;
     private eventHelper: Eventhelper;
 
     constructor(scene: Scene, y?: number) {
@@ -28,18 +29,27 @@ export class TimeCounter implements ITimeCounter {
         this.addTimetext.setPosition(scene.renderer.width - 25, (y ?? 0) + this.timeText.height - 15)
         this.addTimetext.setAlpha(0)
 
-        this.eventHelper.timer(1000, this.secondPassed, this, undefined, true)
         this.eventHelper.addListener(EVENTS.COIN_PICKED, this.addTime, this)
+        this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.stopCounter, this)
     }
     private init(): void {
         this.time.setFullYear(2000, 1, 1)
         this.time.setHours(0, 0, 0, 0)
-        this.time.setMinutes(2)
+        this.time.setMinutes(GAME_PARAMETERS.baseTimeInMinutes)
+        this.secondTimer = this.eventHelper.timer(1000, this.secondPassed, this, undefined, true)
+    }
+
+    private stopCounter() {
+        if (this.secondTimer) {
+            this.eventHelper.removeTimer(this.secondTimer)
+            this.secondTimer = undefined
+        }
     }
 
     private secondPassed(): void {
         this.time.setSeconds(this.time.getSeconds() - 1)
         this.timeText.text = this.getTimeStringFormat()
+        this.eventHelper.dispatch(EVENTS.SECOND_PASSED)
     }
 
     private getTimeStringFormat(): string {
@@ -55,6 +65,7 @@ export class TimeCounter implements ITimeCounter {
         if (this.addTimeCounter >= GAME_PARAMETERS.addTimeEveryNumberOfCoins) {
             this.time.setSeconds(this.time.getSeconds() + GAME_PARAMETERS.timeAdditionInSeconds)
             this.showAdditionTextAnnouncement()
+            this.eventHelper.dispatch(EVENTS.TIME_GAINED, GAME_PARAMETERS.timeAdditionInSeconds)
             this.addTimeCounter = 0
         }
     }

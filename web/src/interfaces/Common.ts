@@ -18,9 +18,12 @@ export type AppParameters = {
     timeAdditionInSeconds: number
     addTimeEveryNumberOfCoins: number
     maxPlayerLives: number
+    playerHealRateInSeconds: number
     onHitImmortalityDuration: number
+    baseTimeInMinutes: number
+    difficultyChangeBorderMinGap: number
 
-    currentGenerator: "Endless" | "AllTest"
+    currentGenerator: "Endless" | "AllTest" | "NoAiAdaptive"
 }
 
 export type Image = { path: string }

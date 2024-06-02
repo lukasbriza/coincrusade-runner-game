@@ -1,12 +1,13 @@
 import { GameObjects } from "phaser";
 import { PlatformDatabase } from "./PlatformDatabase"
-import { EVENTS, POOL_CONFIG, TILE } from "../../constants";
+import { EVENTS, KEYS, POOL_CONFIG, TILE } from "../../constants";
 import { GroupHelper } from "../../helpers/GroupHelper";
 import { GameScene } from "../../scenes/GameScene";
-import { AllPlatformTestGenerator, EndlessPlainGenerator } from "../../generators/_index";
+import { AllPlatformTestGenerator, EndlessPlainGenerator, NoAIAdaptiveGenerator } from "../../generators/_index";
 import { GAME_PARAMETERS } from "../../configurations/_index";
 import { IPlatformManager } from "../../interfaces/_index";
 import { Eventhelper } from "../../helpers/_index";
+import { Knight } from "../_index";
 
 export class PlatformManager extends PlatformDatabase implements IPlatformManager {
     public activeGroup: GameObjects.Group;
@@ -25,6 +26,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     //GENERATORS
     private endlessPlainGenerator: EndlessPlainGenerator;
     private allPlatgormTestGenerator: AllPlatformTestGenerator;
+    private noAiAdaptiveGenerator: NoAIAdaptiveGenerator;
     //
 
     constructor(scene: GameScene) {
@@ -34,7 +36,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.coinGroup = scene.add.group()
         this.decorationGroup = scene.add.group()
         this.obstacleGroup = scene.add.group()
-        this.slopeGroup = scene.add.group({ removeCallback: () => this.eventHelper.dispatch(EVENTS.SLOPE_OVERCOME) })
+        this.slopeGroup = scene.add.group({ removeCallback: () => this.slopeTriggerRemoveCallback() })
 
         const initChunk = this.generateInitialChunk()
         this.activeGroup.addMultiple(initChunk.platforms, true)
@@ -50,24 +52,28 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.eventHelper = new Eventhelper(scene)
 
         //GENERATORS INIT
-        this.endlessPlainGenerator = new EndlessPlainGenerator(this)
-        this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this)
+        this.endlessPlainGenerator = new EndlessPlainGenerator(this, scene)
+        this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this, scene)
+        this.noAiAdaptiveGenerator = new NoAIAdaptiveGenerator(this, scene)
         //
 
         this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
-        this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
+        //this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
         this.eventHelper.addListener(EVENTS.COIN_PICKED, this.removeCoinFromGroup, this)
+        this.eventHelper.addListener(EVENTS.CHUNK_END, this.startPlatformGenerationProcess, this)
+        this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.stopPlatforms, this)
+        this.eventHelper.addListener(EVENTS.PLAYER_RELOCATE, this.playerRelocate, this)
 
-        /*this.eventHelper.timer(5000, () => {
-            window.configurationManager.increasePlatformSpeed(20)
-            this.reAssignPlatformSpeed()
-        }, this, undefined, true)*/
+        this.generatePlatforms()
     }
     ////////////////////////////
     //CORE LOGIC
     private generatePlatforms(): void {
         const maps = this.resolveGenerator().generate()
-        const lastMemberX = this.activeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
+        console.group("generated maps:")
+        console.log(maps)
+        console.groupEnd()
+        const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?
             this.translateMaptypes(maps, lastMemberX + TILE.width) :
             this.translateMaptype(maps, lastMemberX + TILE.width)
@@ -85,6 +91,8 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
                 return this.allPlatgormTestGenerator;
             case "Endless":
                 return this.endlessPlainGenerator;
+            case "NoAiAdaptive":
+                return this.noAiAdaptiveGenerator;
         }
     }
     ////////////////////////////
@@ -92,25 +100,25 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     private processOutOfWorldMembers(): void {
         if (this.activeGroup.getLength() > 0) {
             this.activeGroupHelper.findAllMembersByCondition(
-                ch => ch.body!.position.x < -TILE.width,
+                ch => ch.body!.position.x < -(3 * TILE.width),
                 ch => this.removePlatformFromGroup(ch)
             )
         }
         if (this.coinGroup.getLength() > 0) {
             this.coinGroupHelper.findAllMembersByCondition(
-                ch => ch.body!.position.x < -TILE.width,
+                ch => ch.body!.position.x < -(3 * TILE.width),
                 ch => this.removeCoinFromGroup(ch)
             )
         }
         if (this.decorationGroup.getLength() > 0) {
             this.decorationGroupHelper.findAllMembersByCondition(
-                ch => ch.body!.position.x < -TILE.width,
+                ch => ch.body!.position.x < -(3 * TILE.width),
                 ch => this.removeDecorationFromGroup(ch)
             )
         }
         if (this.obstacleGroup.getLength() > 0) {
             this.obstacleGroupHelper.findAllMembersByCondition(
-                ch => ch.body!.position.x < -TILE.width,
+                ch => ch.body!.position.x < -(3 * TILE.width),
                 ch => this.removeObstacleFromGroup(ch)
             )
         }
@@ -123,10 +131,32 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private startPlatformGenerationProcess(): void {
         if (this.hasToGenerateNewPlatforms()) {
+            console.log("generate platforms")
             this.generatePlatforms()
         }
     }
-
+    private slopeTriggerRemoveCallback() {
+        //LOG RUNNED DISTANCE
+        this.eventHelper.dispatch(EVENTS.SLOPE_OVERCOME)
+    }
+    private playerRelocate(knight: Knight) {
+        const el = this.activeGroup.getChildren().find((ch) => {
+            if (
+                ch instanceof GameObjects.Sprite &&
+                ch.body!.position.x > (TILE.width * 4) &&
+                ch.body!.position.x < (this.scene.renderer.width - TILE.width * 2) &&
+                (ch.texture.key === KEYS.GROUND || ch.texture.key === KEYS.SLIM_GROUND)
+            ) {
+                return true
+            }
+        })
+        if (el) {
+            knight.setX(el.body!.position.x)
+            knight.setY(el.body!.position.y - (TILE.height))
+            return
+        }
+        console.error("Cant find element for relocation")
+    }
     //UTILITY METHODS
     public removeCoinFromGroup(coin: GameObjects.GameObject): void {
         this.coinGroup.remove(coin, true, true)
@@ -151,7 +181,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     private hasToGenerateNewPlatforms(): boolean {
         const lastPlatform = this.activeGroupHelper.getLastMemberOfGroupByX()
         if (lastPlatform && lastPlatform.body?.position.x) {
-            return lastPlatform.body.position.x <= POOL_CONFIG.criticalPackageWidth
+            return lastPlatform.body.position.x <= this.scene.renderer.width + POOL_CONFIG.criticalPackageWidth
         }
         return false
     }
@@ -168,5 +198,9 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
             el.body!.velocity.x = speed
             return el
         })
+    }
+    private stopPlatforms() {
+        window.configurationManager.nullifyPlatformSpeed()
+        this.reAssignPlatformSpeed()
     }
 }

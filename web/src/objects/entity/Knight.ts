@@ -14,10 +14,12 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     private keyK?: Input.Keyboard.Key;
     private keyD?: Input.Keyboard.Key;
     private keyA?: Input.Keyboard.Key;
+    private keyR?: Input.Keyboard.Key;
 
     private eventHelper: Eventhelper;
     private assetHelper: AssetHelper
 
+    private tinted: boolean = false;
     private immortalAnimation: boolean = false;
     private immortalEvent?: Time.TimerEvent;
 
@@ -31,6 +33,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
             this.startImmortalityAnimation()
             this.onCollideWithWorld(_, worldObject)
         }, this)
+        this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.knightDead, this)
 
         //corect sprite position and collision box
         this.setOrigin(0, 0.5)
@@ -43,6 +46,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyK = scene.input.keyboard?.addKey("K", false, false)
         this.keyD = scene.input.keyboard?.addKey("D", false, false)
         this.keyA = scene.input.keyboard?.addKey("A", false, false)
+        this.keyR = scene.input.keyboard?.addKey("R", false, false)
 
         //enable body collisions
         this.getBody().setCollideWorldBounds(false, undefined, undefined, true)
@@ -64,13 +68,20 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyW?.on("down", this.startCollectingPower, this)
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
+        this.keyR?.on("down", this.restartGame, this)
+    }
+    private removeListeners(): void {
+        this.scene.input.keyboard?.destroy()
     }
 
     //ABL
-    private onWorldBound(): void {
-        this.setFlipX(false)
+    private onRightWorldBound(): void {
         this.setVelocityX(0)
-        this.setX(this.scene.renderer.width)
+        this.setX(this.scene.renderer.width - (TILE.width))
+    }
+    private onLeftWorldBound(): void {
+        this.eventHelper.dispatch(EVENTS.KNIGHT_HIT)
+        this.eventHelper.dispatch(EVENTS.PLAYER_RELOCATE, this)
     }
     private run(): void {
         this.runSetup()
@@ -126,58 +137,85 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     }
     public startImmortalityAnimation(): void {
         if (!this.immortalEvent) {
+            this.immortalAnimation = true
             const delay = 250
             const repeat = Math.floor(GAME_PARAMETERS.onHitImmortalityDuration / delay)
             const cb = () => {
-                if (!this.immortalAnimation) {
+                if (!this.tinted) {
                     this.setTintFill(0xffffff)
-                    this.immortalAnimation = true
+                    this.tinted = true
                     return
                 }
                 this.clearTint()
-                this.immortalAnimation = false
-
+                this.tinted = false
             }
             const clear = () => {
                 this.clearTint()
                 this.eventHelper.removeTimer(this.immortalEvent as Time.TimerEvent)
                 this.immortalEvent = undefined
+                this.immortalAnimation = false
             }
 
             this.immortalEvent = this.eventHelper.timer(delay, cb, this, repeat)
             this.eventHelper.timer((repeat + 1) * delay, clear, this)
         }
     }
+    public knightDead() {
+        window.gameState.setPlayerDead()
+        this.removeListeners()
+        this.clearTint()
+        this.setVelocityX(0)
+        this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_DEAD }, true)
+    }
+    private restartGame() {
+        if (window.gameState.playerIsDead) {
+            document.location.reload()
+        }
+    }
 
     //LOOP
     update(): void {
+        const isDead = window.gameState.playerIsDead
+
         //Update powerbar position on every frame
         const x = this.body?.x ?? this.x
         const y = this.body?.y ?? this.y
         this.powerBar?.setBarPosition(x, y - 25, true)
 
         //Callback when on right side of world
-        if ((this.body!.x + this.body!.width) >= this.scene.renderer.width) {
-            this.onWorldBound()
+        if ((this.body!.x + this.body!.width) >= (this.scene.renderer.width - (TILE.width / 2))) {
+            !this.keyA?.isDown && this.onRightWorldBound()
+        }
+        //Callback when on left side of world
+        if (this.body!.x <= 10 && !this.immortalAnimation && !isDead) {
+            this.onLeftWorldBound()
+        }
+        if (this.body!.x <= 0 && this.immortalAnimation) {
+            this.setX(10)
         }
 
         //A
-        if (this.keyA?.isDown && this.keyD?.isUp && this.body?.velocity.x !== GAME_PARAMETERS.knightMoveVelocityLeftX) {
+        const canLeftRun = this.keyA?.isDown && this.keyD?.isUp && this.body?.velocity.x !== GAME_PARAMETERS.knightMoveVelocityLeftX
+        if (canLeftRun && !isDead) {
             this.runSlover()
         }
-        if (this.keyA?.isUp && this.inAir && this.body?.velocity.x === GAME_PARAMETERS.knightMoveVelocityLeftX) {
+        const handleAirAkey = this.keyA?.isUp && this.inAir && this.body?.velocity.x === GAME_PARAMETERS.knightMoveVelocityLeftX
+        if (handleAirAkey && !isDead) {
             this.setVelocityX(0)
         }
         //D
-        if (this.keyD?.isDown && this.body!.velocity.x !== GAME_PARAMETERS.knightMoveVelocityRightX) {
+        const canRightRun = this.keyD?.isDown && this.body!.velocity.x !== GAME_PARAMETERS.knightMoveVelocityRightX
+        if (canRightRun && !isDead) {
             this.runQuicker()
         }
-        if (this.keyD?.isUp && this.inAir && this.body!.velocity.x === GAME_PARAMETERS.knightMoveVelocityRightX) {
+        const handleAirDkey = this.keyD?.isUp && this.inAir && this.body!.velocity.x === GAME_PARAMETERS.knightMoveVelocityRightX
+        if (handleAirDkey && !isDead) {
             this.setVelocityX(0)
         }
 
         //DEFAULT
-        if (this.keyA?.isUp && this.keyD?.isUp && !this.inAir && this.body!.velocity.x !== 0) {
+        const canRun = this.keyA?.isUp && this.keyD?.isUp && !this.inAir && this.body!.velocity.x !== 0
+        if (canRun && !isDead) {
             this.run()
         }
 

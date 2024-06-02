@@ -5,13 +5,13 @@ import { GameScene } from '../../scenes/_index';
 import { cleanTileName, isDecorationSprite, isObstacleSprite, setupDynamicSpriteBase, setupImageBase } from '../../utils/_index';
 import { Water } from '../entity/Water';
 import { setupAssetbase } from '../../utils/setupAssetBase';
-import * as _ from "lodash-es";
 import { Eventhelper, AssetHelper } from "../../helpers/_index";
 import { Physics } from "phaser";
+import * as _ from "lodash-es";
 
 
 export class PlatformDatabase implements IPlatformDatabase {
-    private scene: GameScene;
+    public scene: GameScene;
     private assetHelper: AssetHelper;
     public eventHelper: Eventhelper;
     public chunk: number = POOL_CONFIG.chunkSize;
@@ -89,11 +89,14 @@ export class PlatformDatabase implements IPlatformDatabase {
                     slopeTrigger.resetCollisionCategory()
                     slopeTrigger.setAlpha(0)
                     slopeTrigger.setDataEnabled()
+                    slopeTrigger.setData("isSlopeTrigger", true)
 
                     //MARK FOR CHUNK END LOG
                     if (chunkEnd) {
-                        console.log("chunkend generated")
                         slopeTrigger.setData("chunkEnd", true)
+                        slopeTrigger.setAlpha(1)
+                        slopeTrigger.setDepth(10)
+                        slopeTrigger.setTintFill(0xff0000)
                     }
                     //MARK FOR MAP DIFFICULTY LOG
                     if (isFirstColumn) {
