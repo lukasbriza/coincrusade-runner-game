@@ -1,5 +1,5 @@
-import { IConfigurationManager, IGeneratorParameters } from "../interfaces/_index";
-import { ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS, ENDLESS_PLAIN_GENERATOR_PARAMETERS, GAME_PARAMETERS, NO_AI_ADAPTIVE_GENERATOR_PARAMETERS } from "./parameters";
+import { Generators, IConfigurationManager, IGeneratorParameters } from "../interfaces/_index";
+import { ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS, ENDLESS_PLAIN_GENERATOR_PARAMETERS, GAME_PARAMETERS, HAMLET_SYSTEM_GENERATOR_PARAMETERS, NO_AI_ADAPTIVE_GENERATOR_PARAMETERS } from "./parameters";
 
 export class ConfigurationManager implements IConfigurationManager {
     public maxPlatauCount: number;
@@ -13,10 +13,14 @@ export class ConfigurationManager implements IConfigurationManager {
     public maxStumpsAndTreesOnPlatau: number;
     public skillFactor: number;
     public difficultyChangeBorders: [number, number];
+    public currentGenerator: Generators = "NoAiAdaptive";
 
     private platformDifficultyPickStepFactor: number;
 
     constructor() {
+        this.setupParams()
+    }
+    private setupParams(): void {
         const params = this.resolveGeneratorParameters()
         this.maxPlatauCount = params.maxPlatauCount
         this.minPlatauCount = params.minPlatauCount
@@ -31,14 +35,21 @@ export class ConfigurationManager implements IConfigurationManager {
         this.difficultyChangeBorders = params.difficultyChangeBorders
     }
     private resolveGeneratorParameters(): IGeneratorParameters {
-        switch (GAME_PARAMETERS.currentGenerator) {
+        switch (this.currentGenerator) {
             case "AllTest":
                 return ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS
             case "Endless":
                 return ENDLESS_PLAIN_GENERATOR_PARAMETERS
             case "NoAiAdaptive":
                 return NO_AI_ADAPTIVE_GENERATOR_PARAMETERS
+            case "HamletSystem":
+                return HAMLET_SYSTEM_GENERATOR_PARAMETERS
         }
+    }
+    public changeGenerator(generator: Generators) {
+        this.currentGenerator = generator
+        this.setupParams()
+        //TODO restart
     }
 
     //PLATAU
@@ -101,6 +112,9 @@ export class ConfigurationManager implements IConfigurationManager {
     }
     public nullifyPlatformSpeed(): void {
         this.platformStartSpeed = 0
+    }
+    public resetPlatformSpeed(): void {
+        this.platformStartSpeed = GAME_PARAMETERS.platformStartSpeed
     }
 
     //PLATFORM SELECTION

@@ -5,7 +5,7 @@
     "module": "ESNext",
     "outDir": "./dist",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "typeRoots": ["./node_modules/phaser/types"],
+    "typeRoots": ["./node_modules/phaser/types", "@types"],
 
     "skipLibCheck": true,
     "allowJs": true,

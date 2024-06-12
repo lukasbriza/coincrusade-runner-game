@@ -1,16 +1,22 @@
+import { ChangeTypes, Generators } from "./_index"
+
 export type IGameState = {
     chunksData: IChunkLog[]
     playerIsDead: boolean
     elapsedSeconds: number
     gainedSeconds: number
+    actualLives: number
+    incrementDifficultyScore: () => void
+    decreaseDifficultyScore: () => void
     incrementPickedCoin: () => void
     incrementGeneratedCoin: () => void
     incrementOvercomedSlopes: () => void
     incrementLostLives: () => void
-    //decreaseLastchunkLostLives: () => void
     incrementElapsedSeconds: () => void
     incrementGainedSeconds: (by?: number) => void
+    logSuggestedAction: (action: "increase" | "decrease" | "neutral") => void
     logMapDifficulty: (diff: number) => void
+    setParameterChange: (change: ChangeTypes) => void
     saveChunk: () => void
     getState: () => {
         pickedCoins: number,
@@ -29,6 +35,7 @@ export type IGameState = {
     getLastChunk: () => IChunkLog | undefined
     getLastTwoChunks: () => IChunkLog[] | undefined
     setPlayerDead: () => void
+    gameStateRestart: () => void
 }
 
 export type IChunkLog = {
@@ -40,4 +47,11 @@ export type IChunkLog = {
     created: Date
     mapDifficulties: number[]
     mapSkillFactor: number
+    platformSpeed: number
+    totalElapsedSeconds: number
+    totalGainedSeconds: number
+    suggestedAction?: "increase" | "decrease" | "neutral"
+    engine: Generators
+    changed?: ChangeTypes
+    actualDifficultySkore: number
 }

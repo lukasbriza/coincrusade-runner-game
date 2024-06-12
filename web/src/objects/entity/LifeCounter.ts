@@ -17,6 +17,7 @@ export class LifeCounter implements ILifeCounter {
         this.scene = scene
         this.eventHelper = new Eventhelper(scene)
         this.eventHelper.addListener(EVENTS.KNIGHT_HIT, this.decreaseLife, this)
+        this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.reset, this)
 
         this.drawLifes()
     }
@@ -43,6 +44,7 @@ export class LifeCounter implements ILifeCounter {
     public addLife(by: number = 1): void {
         if (this.lifeValue < GAME_PARAMETERS.maxPlayerLives) {
             this.lifeValue = this.lifeValue + by
+
             if (this.lifeValue > GAME_PARAMETERS.maxPlayerLives) {
                 this.lifeValue = GAME_PARAMETERS.maxPlayerLives
             }
@@ -53,12 +55,15 @@ export class LifeCounter implements ILifeCounter {
                 this.eventHelper.removeTimer(this.healTimer)
                 this.healTimer = undefined
             }
+
+            window.gameState.actualLives = this.lifeValue
         }
     }
     public decreaseLife(): void {
         if (this.lifeValue !== 0 && this.canDecreaseLife) {
             this.canDecreaseLife = false
             this.lifeValue = this.lifeValue - 1
+
             if (this.lifeValue < 0) {
                 this.lifeValue = 0
             }
@@ -67,12 +72,21 @@ export class LifeCounter implements ILifeCounter {
             this.eventHelper.dispatch(EVENTS.LIVE_DECREASED)
 
             if (!this.healTimer) this.dispatchHealtimer()
+            window.gameState.actualLives = this.lifeValue
         }
         if (this.lifeValue === 0) {
             this.eventHelper.dispatch(EVENTS.PLAYER_DEAD)
+            if (this.healTimer) this.eventHelper.removeTimer(this.healTimer)
         }
     }
     private dispatchHealtimer() {
         this.healTimer = this.eventHelper.timer(GAME_PARAMETERS.playerHealRateInSeconds * 1000, this.addLife, this, undefined, true)
+    }
+    private reset() {
+        this.lifeValue = GAME_PARAMETERS.maxPlayerLives
+        if (this.healTimer) {
+            this.eventHelper.removeTimer(this.healTimer)
+        }
+        this.drawLifes()
     }
 }

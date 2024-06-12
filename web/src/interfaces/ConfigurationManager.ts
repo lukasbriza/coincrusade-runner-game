@@ -1,3 +1,5 @@
+import { Generators } from "./Common"
+
 export type IConfigurationManager = {
     maxPlatauCount: number
     minPlatauCount: number
@@ -10,6 +12,7 @@ export type IConfigurationManager = {
     maxStumpsAndTreesOnPlatau: number
     skillFactor: number
     difficultyChangeBorders: [number, number]
+    currentGenerator: Generators
 
     increaseMaxPlatauCount: (by?: number) => number
     decreaseMaxPlatauCount: (by?: number) => number
@@ -27,4 +30,6 @@ export type IConfigurationManager = {
     openDifficultyChangeBorders: () => [number, number]
     resetDifficultyBorders: () => [number, number]
     nullifyPlatformSpeed: () => void
+    resetPlatformSpeed: () => void
+    changeGenerator: (generator: Generators) => void
 }

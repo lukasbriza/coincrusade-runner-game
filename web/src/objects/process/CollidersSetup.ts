@@ -19,14 +19,14 @@ export class CollidersSetup {
                 scene.eventHelper.dispatch(EVENTS.PLAYER_RELOCATE, scene.knight)
             }
         })
-        scene.physics.add.collider(coinGroup, activeGroup, undefined, (coin: ColliderObject, _) => { return !(coin as Coin).isPicked })
+        scene.physics.add.collider(coinGroup, activeGroup, undefined, (coin: ColliderObject, _) => { return !(coin as Coin)?.isPicked })
         scene.physics.add.collider(scene.knight, coinGroup, undefined, (_, coin: ColliderObject) => {
             (coin as Coin)?.pickCoin(coinCounter, coin as Coin)
             return false
         })
         scene.physics.add.collider(statusCoin, coinGroup, undefined, (_, coin: ColliderObject) => {
             scene.eventHelper.dispatch(EVENTS.COIN_PICKED, coin)
-            coin.destroy()
+            coin?.destroy()
             return false
         })
     }

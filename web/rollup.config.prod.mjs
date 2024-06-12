@@ -7,6 +7,7 @@ import copy from "rollup-plugin-copy";
 import url from "@rollup/plugin-url";
 import glslify from "rollup-plugin-glslify";
 import postcss from "rollup-plugin-postcss";
+import json from "@rollup/plugin-json";
 
 // Production
 import terser from "@rollup/plugin-terser";
@@ -20,12 +21,17 @@ export default {
     sourcemap: true,
   },
   plugins: [
+    json(),
     glslify(),
     nodeResolve({
+      jsnext: true,
+      preferBuiltins: true,
       browser: true,
-      extensions: ["ts", "tsx"],
+      extensions: ["ts", "tsx", ".json"],
     }),
-    typescript(),
+    typescript({
+      resolveJsonModule: true,
+    }),
     postcss({
       extensions: [".css"],
     }),

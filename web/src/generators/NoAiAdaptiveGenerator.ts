@@ -63,7 +63,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
         }
 
         //PERFORMANCE SCORE
-        const performance = (coinRatio + lifeLossRatio - timePenalty) / 2
+        const performance = (coinRatio + (lifeLossRatio < 0 ? 0 : lifeLossRatio) - timePenalty) / 2
 
         console.group("PERFORMANCE")
         console.log({
@@ -102,10 +102,12 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
 
         //DECREASE DIFFICULTY
         if (performance <= config.difficultyChangeBorders[0]) {
+            this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "decrease")
+            this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_DECREASE)
             switch (pickIndex) {
                 case 0:
-
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Increase coin generation")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreaseCoinChance")
 
                     console.group()
                     console.log("increase coin generation")
@@ -116,6 +118,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
                     break;
                 case 1:
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Decrease platform speed")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreasePlatformSpeed")
 
                     console.group()
                     console.log("decrease platform speed")
@@ -127,6 +130,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
                     break;
                 case 2:
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Decrease platform pick difficulty")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreaseMapDifficulty")
 
                     console.group()
                     console.log("decrease platform pick difficulty")
@@ -141,9 +145,12 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
         }
         //INCREASE DIFFICULTY
         if (performance >= config.difficultyChangeBorders[1]) {
+            this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "increase")
+            this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_INCREASE)
             switch (pickIndex) {
                 case 0:
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Decrease coin drop")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreaseCoinChance")
 
                     console.group()
                     console.log("decrease coin drop")
@@ -154,6 +161,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
                     break;
                 case 1:
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Increase platform speed")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreasePlatformSpeed")
 
                     console.group()
                     console.log("increase platform speed")
@@ -165,6 +173,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
                     break;
                 case 2:
                     this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Increase platform pick difficulty")
+                    this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreaseMapDifficulty")
 
                     console.group()
                     console.log("increase platform pick difficulty")
@@ -179,6 +188,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
         }
         //TIGHTEN BORDER AND DO NOTHING TO SKILL SCORE
         if (performance > config.difficultyChangeBorders[0] && performance < config.difficultyChangeBorders[1]) {
+            this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "neutral")
             generateMap()
             config.closeDifficultyChangeBorders()
         }

@@ -8,9 +8,9 @@ export class CheckersSetup {
     constructor(scene: Scene) {
         const eventHelper = new Eventhelper(scene)
         eventHelper.timer(250, () => {
-            scene.sys.displayList.list.map(el => {
+            scene.sys.displayList.list?.map(el => {
                 const coinCheck = el instanceof Coin
-                    && !el.onScene
+                    && !el?.onScene
                     && !el.inCoinCounter
                     && el.x < scene.renderer.width
                 const slopeTriggerCheck = el instanceof Physics.Arcade.Sprite

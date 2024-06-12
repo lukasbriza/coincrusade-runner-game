@@ -8,5 +8,4 @@ export type ITimeCounter = {
 
     addTime: () => void
     showAdditionTextAnnouncement: () => void
-    reset: () => void
 }

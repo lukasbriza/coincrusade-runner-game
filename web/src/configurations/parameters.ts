@@ -8,6 +8,7 @@ export const GAME_PARAMETERS: AppParameters = {
     powerMultiplicator: 12,
     platformStartSpeed: 180,
     minimalPlatformSpeed: 50,
+    maximumPlatformSpeed: 300,
 
     knightStartFramerate: 12,
     knightMoveVelocityRightX: 300,
@@ -21,7 +22,7 @@ export const GAME_PARAMETERS: AppParameters = {
     baseTimeInMinutes: 2,
     difficultyChangeBorderMinGap: 0.2,
 
-    currentGenerator: "NoAiAdaptive",
+    sendLogs: true
 }
 
 const GENERATOR_BASE_PARAMETERS = {
@@ -65,6 +66,16 @@ export const ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS: IGeneratorParameters = {
 }
 
 export const NO_AI_ADAPTIVE_GENERATOR_PARAMETERS: IGeneratorParameters = {
+    ...GENERATOR_BASE_PARAMETERS,
+    difficultyChangeBorders: [0.4, 0.6],
+
+    coinDifficultyChangeDistributionValue: 0.05,
+    chestDifficultyChangeDistributionValue: 0.1,
+    platformSpeedDifficultyChangeDistributionValue: 0.6,
+    platformPickDifficultyChangeDistributionValue: 0.3
+}
+
+export const HAMLET_SYSTEM_GENERATOR_PARAMETERS: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
     difficultyChangeBorders: [0.4, 0.6],
 

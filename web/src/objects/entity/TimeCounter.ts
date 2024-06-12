@@ -74,8 +74,4 @@ export class TimeCounter implements ITimeCounter {
         this.addTimetext.setAlpha(1)
         this.eventHelper.timer(1250, () => { this.addTimetext.setAlpha(0) }, this)
     }
-
-    public reset(): void {
-        this.init()
-    }
 }

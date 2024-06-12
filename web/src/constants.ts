@@ -101,7 +101,12 @@ export enum EVENTS {
     PLAYER_DEAD = "player-dead",
     PLAYER_RELOCATE = "player-relocate",
     ADD_NOTE = "add-note",
-    DESTROY_NOTE = "destroy-note"
+    DESTROY_NOTE = "destroy-note",
+    SUGGESTED_ACTION = "suggested-action",
+    PARAMETER_CHANGED = "parameter-changed",
+    DIFFICULTY_SCORE_INCREASE = "difficulty-score-increase",
+    DIFFICULTY_SCORE_DECREASE = "difficulty-score-decrease",
+    GAME_RESTART = "restart-game"
 }
 
 export enum ANIMATION_KEYS {

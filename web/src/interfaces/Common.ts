@@ -2,6 +2,17 @@ import { Physics, Tilemaps, Types } from "phaser"
 import { FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS } from "../constants"
 import { Coin } from "../objects/_index"
 
+export type Generators = "Endless" | "AllTest" | "NoAiAdaptive" | "HamletSystem"
+
+export type ChangeTypes = "IncreasePlatformSpeed" |
+    "DecreasePlatformSpeed" |
+    "IncreaseCoinChance" |
+    "DecreaseCoinChance" |
+    "IncreaseMapDifficulty" |
+    "DecreaseMapDifficulty" |
+    "IncreaseChestChance" |
+    "DecreaseChestChance"
+
 export type AppParameters = {
     debug: boolean
     playerGravityY: number
@@ -10,6 +21,7 @@ export type AppParameters = {
     powerMultiplicator: number
     platformStartSpeed: number
     minimalPlatformSpeed: number
+    maximumPlatformSpeed: number
 
     knightStartFramerate: number
     knightMoveVelocityRightX: number
@@ -23,7 +35,7 @@ export type AppParameters = {
     baseTimeInMinutes: number
     difficultyChangeBorderMinGap: number
 
-    currentGenerator: "Endless" | "AllTest" | "NoAiAdaptive"
+    sendLogs: boolean
 }
 
 export type Image = { path: string }

@@ -1,10 +1,9 @@
 import { GameObjects } from "phaser";
 import { PlatformDatabase } from "./PlatformDatabase"
 import { EVENTS, KEYS, POOL_CONFIG, TILE } from "../../constants";
-import { GroupHelper } from "../../helpers/GroupHelper";
-import { GameScene } from "../../scenes/GameScene";
-import { AllPlatformTestGenerator, EndlessPlainGenerator, NoAIAdaptiveGenerator } from "../../generators/_index";
-import { GAME_PARAMETERS } from "../../configurations/_index";
+import { GroupHelper } from "../../helpers/_index";
+import { GameScene } from "../../scenes/_index";
+import { AllPlatformTestGenerator, EndlessPlainGenerator, NoAIAdaptiveGenerator, HamletSystemGenerator } from "../../generators/_index";
 import { IPlatformManager } from "../../interfaces/_index";
 import { Eventhelper } from "../../helpers/_index";
 import { Knight } from "../_index";
@@ -27,6 +26,7 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     private endlessPlainGenerator: EndlessPlainGenerator;
     private allPlatgormTestGenerator: AllPlatformTestGenerator;
     private noAiAdaptiveGenerator: NoAIAdaptiveGenerator;
+    private hamletSystemGenerator: HamletSystemGenerator
     //
 
     constructor(scene: GameScene) {
@@ -55,24 +55,33 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.endlessPlainGenerator = new EndlessPlainGenerator(this, scene)
         this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this, scene)
         this.noAiAdaptiveGenerator = new NoAIAdaptiveGenerator(this, scene)
+        this.hamletSystemGenerator = new HamletSystemGenerator(this, scene)
         //
 
         this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
-        //this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
         this.eventHelper.addListener(EVENTS.COIN_PICKED, this.removeCoinFromGroup, this)
         this.eventHelper.addListener(EVENTS.CHUNK_END, this.startPlatformGenerationProcess, this)
         this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.stopPlatforms, this)
         this.eventHelper.addListener(EVENTS.PLAYER_RELOCATE, this.playerRelocate, this)
+        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.restartPlatforms, this)
 
         this.generatePlatforms()
     }
     ////////////////////////////
     //CORE LOGIC
+    private init() {
+        const initChunk = this.generateInitialChunk()
+        this.activeGroup.addMultiple(initChunk.platforms, true)
+        this.decorationGroup.addMultiple(initChunk.decorations, true)
+        this.slopeGroup.addMultiple(initChunk.slopeTriggers, true)
+    }
     private generatePlatforms(): void {
         const maps = this.resolveGenerator().generate()
+
         console.group("generated maps:")
         console.log(maps)
         console.groupEnd()
+
         const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?
             this.translateMaptypes(maps, lastMemberX + TILE.width) :
@@ -85,14 +94,27 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.obstacleGroup.addMultiple(translationResult.obstacles, true)
         this.slopeGroup.addMultiple(translationResult.slopeTriggers, true)
     }
+    private restartPlatforms(): void {
+        this.activeGroup = this.activeGroup.clear(true, true)
+        this.coinGroup = this.coinGroup.clear(true, true)
+        this.decorationGroup = this.decorationGroup.clear(true, true)
+        this.obstacleGroup = this.obstacleGroup.clear(true, true)
+        this.slopeGroup = this.slopeGroup.clear(true, true)
+        this.init()
+        this.generatePlatforms()
+        window.configurationManager.resetPlatformSpeed()
+        this.reAssignPlatformSpeed()
+    }
     private resolveGenerator() {
-        switch (GAME_PARAMETERS.currentGenerator) {
+        switch (window.configurationManager.currentGenerator) {
             case "AllTest":
                 return this.allPlatgormTestGenerator;
             case "Endless":
                 return this.endlessPlainGenerator;
             case "NoAiAdaptive":
                 return this.noAiAdaptiveGenerator;
+            case "HamletSystem":
+                return this.hamletSystemGenerator;
         }
     }
     ////////////////////////////
