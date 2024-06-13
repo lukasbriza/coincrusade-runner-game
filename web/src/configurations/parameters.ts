@@ -22,7 +22,7 @@ export const GAME_PARAMETERS: AppParameters = {
     baseTimeInMinutes: 2,
     difficultyChangeBorderMinGap: 0.2,
 
-    sendLogs: true
+    sendLogs: false
 }
 
 const GENERATOR_BASE_PARAMETERS = {

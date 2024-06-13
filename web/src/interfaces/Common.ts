@@ -78,3 +78,7 @@ export type MapType = {
 }
 
 export type MapTypeExtended = { coins: (string | null)[] } & MapType
+
+export type HamletPredictionRepsonse = {
+    data: [number, number, number]
+}

@@ -1,6 +1,7 @@
+import { sendLogsToApi } from "../../api/_index";
 import { GAME_PARAMETERS } from "../../configurations/parameters";
 import { ChangeTypes, IChunkLog, IGameState } from "../../interfaces/_index";
-import { sendLogsToApi } from "../../utils/_index";
+
 
 export class GameState implements IGameState {
     private pickedCoins: number = 0;

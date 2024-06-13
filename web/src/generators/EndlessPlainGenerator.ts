@@ -15,7 +15,7 @@ export class EndlessPlainGenerator extends GeneratorBase implements IPlatformGen
         this.groupHelper = new GroupHelper(this.manager.activeGroup)
     }
 
-    public generate(): MapTypeExtended[] {
+    public async generate(): Promise<MapTypeExtended[]> {
         const mapArray: MapTypeExtended[] = []
         const lastMember = this.groupHelper.getLastMemberOfGroupByX()
         if (lastMember) {

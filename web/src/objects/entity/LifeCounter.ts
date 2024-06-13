@@ -17,7 +17,7 @@ export class LifeCounter implements ILifeCounter {
         this.scene = scene
         this.eventHelper = new Eventhelper(scene)
         this.eventHelper.addListener(EVENTS.KNIGHT_HIT, this.decreaseLife, this)
-        this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.reset, this)
+        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.reset, this)
 
         this.drawLifes()
     }

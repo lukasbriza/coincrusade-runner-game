@@ -1,5 +1,5 @@
 {
   "api": "http://46.135.235.18:8080/api",
   "api-dev": "http://localhost:3000/api",
-  "development": false
+  "development": true
 }

@@ -15,7 +15,7 @@ export const predictWithHamletModel = async (chunk: ChunkLog) => {
         chunk.gainedSeconds,
         computePlatformModifier(0.3, 300, chunk.platformSpeed)
     ]
-    const model = await tf.loadGraphModel(path.resolve("./hamlet_81") + "model.json")
+    const model = await tf.loadLayersModel("file://" + path.resolve("dist", "ml-models", "trained_models", "hamlet_86", "model.json"))
     const prediction = model.predict(tf.tensor2d([input]))
     const result = (prediction as tf.Tensor<any>).arraySync()[0] as NeuralNetworkOutputShape
     return result

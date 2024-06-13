@@ -75,8 +75,8 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.decorationGroup.addMultiple(initChunk.decorations, true)
         this.slopeGroup.addMultiple(initChunk.slopeTriggers, true)
     }
-    private generatePlatforms(): void {
-        const maps = this.resolveGenerator().generate()
+    private async generatePlatforms(): Promise<void> {
+        const maps = await this.resolveGenerator().generate()
 
         console.group("generated maps:")
         console.log(maps)

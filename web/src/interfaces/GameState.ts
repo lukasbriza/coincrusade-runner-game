@@ -47,7 +47,7 @@ export type IChunkLog = {
     created: Date
     mapDifficulties: number[]
     mapSkillFactor: number
-    platformSpeed: number
+    platformSpeed: number //run speed
     totalElapsedSeconds: number
     totalGainedSeconds: number
     suggestedAction?: "increase" | "decrease" | "neutral"

@@ -1,17 +1,17 @@
 import { Scene } from "phaser";
 import { POOL_CONFIG, TILE } from "../constants";
-import { MapTypeExtended } from "../interfaces/_index";
+import { IPlatformGenerator, MapTypeExtended } from "../interfaces/_index";
 import { PlatformManager } from "../objects/_index";
 import { randomNumber } from "../utils/_index";
 import { GeneratorBase } from "./GeneratorBase";
 
-export class AllPlatformTestGenerator extends GeneratorBase {
+export class AllPlatformTestGenerator extends GeneratorBase implements IPlatformGenerator {
 
     constructor(manager: PlatformManager, scene: Scene) {
         super(manager, scene)
     }
 
-    public generate(): MapTypeExtended[] {
+    public async generate(): Promise<MapTypeExtended[]> {
         const allMaps = this.getAllMaps();
 
         const finalMaps: MapTypeExtended[] = []

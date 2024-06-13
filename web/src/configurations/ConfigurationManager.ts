@@ -13,7 +13,7 @@ export class ConfigurationManager implements IConfigurationManager {
     public maxStumpsAndTreesOnPlatau: number;
     public skillFactor: number;
     public difficultyChangeBorders: [number, number];
-    public currentGenerator: Generators = "NoAiAdaptive";
+    public currentGenerator: Generators = "HamletSystem";
 
     private platformDifficultyPickStepFactor: number;
 
