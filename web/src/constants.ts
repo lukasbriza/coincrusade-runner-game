@@ -4,6 +4,17 @@ export const SCENE_KEYS = {
     MAIN: "game-scene"
 }
 
+export enum DIFF_POLICY {
+    DECREASE = 0,
+    NOTHING = 1,
+    INCREASE = 2
+}
+export enum POLICY {
+    COIN = 0,
+    PLATFORM = 1,
+    PLATFORM_DIFFICULTY = 2
+}
+
 export enum KEYS {
     KNIGHT_POWERBAR = "knight-powerbar",
     KNIGHT_SLIDE = "knight-slide",
@@ -101,7 +112,12 @@ export enum EVENTS {
     PLAYER_DEAD = "player-dead",
     PLAYER_RELOCATE = "player-relocate",
     ADD_NOTE = "add-note",
-    DESTROY_NOTE = "destroy-note"
+    DESTROY_NOTE = "destroy-note",
+    SUGGESTED_ACTION = "suggested-action",
+    PARAMETER_CHANGED = "parameter-changed",
+    DIFFICULTY_SCORE_INCREASE = "difficulty-score-increase",
+    DIFFICULTY_SCORE_DECREASE = "difficulty-score-decrease",
+    GAME_RESTART = "restart-game"
 }
 
 export enum ANIMATION_KEYS {

@@ -21,7 +21,7 @@ export const GAME_PARAMETERS: AppParameters = {
     baseTimeInMinutes: 2,
     difficultyChangeBorderMinGap: 0.2,
 
-    currentGenerator: "NoAiAdaptive",
+    sendLogs: false
 }
 
 const GENERATOR_BASE_PARAMETERS = {
@@ -33,7 +33,7 @@ const GENERATOR_BASE_PARAMETERS = {
     maxChestGenerationChance: 0.4,
     minChestGenerationChance: 0.1,
 
-    skillFactorDefault: 0.5,
+    skillFactorDefault: 1,
     platformDifficultyPickStepFactor: 0.3,
 
     maxPlatauCount: 4,
@@ -44,32 +44,69 @@ const GENERATOR_BASE_PARAMETERS = {
     maxStumpsAndTreesOnPlatau: 2,
 }
 
-export const ENDLESS_PLAIN_GENERATOR_PARAMETERS: IGeneratorParameters = {
+export const LINEAR_GENERATOR: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.3, 0.7],
+    difficultyChangeBorders: [0.4, 0.6],
 
-    coinDifficultyChangeDistributionValue: 0.1,
-    chestDifficultyChangeDistributionValue: 0.1,
-    platformSpeedDifficultyChangeDistributionValue: 0.1,
-    platformPickDifficultyChangeDistributionValue: 0.1
+    //INT VALUES
+    changeDistribution: {
+        coinChance: 3,
+        platformSpeed: 6,
+        platformDifficulty: 4,
+        chestChance: 1
+    }
 }
 
-export const ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS: IGeneratorParameters = {
+export const NEURAL_NETWORK_GENERATOR: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.3, 0.7],
+    difficultyChangeBorders: [0.4, 0.6],
 
-    coinDifficultyChangeDistributionValue: 0.1,
-    chestDifficultyChangeDistributionValue: 0.1,
-    platformSpeedDifficultyChangeDistributionValue: 0.1,
-    platformPickDifficultyChangeDistributionValue: 0.1
+    //INT VALUES
+    changeDistribution: {
+        coinChance: 1,
+        platformSpeed: 6,
+        platformDifficulty: 3,
+        chestChance: 2
+    }
+}
+
+export const HAMLET_SYSTEM_GENERATOR_PARAMETERS: IGeneratorParameters = {
+    ...GENERATOR_BASE_PARAMETERS,
+    difficultyChangeBorders: [0.4, 0.6],
+
+    //INT VALUES
+    changeDistribution: {
+        coinChance: 1,
+        platformSpeed: 6,
+        platformDifficulty: 3,
+        chestChance: 1
+    }
+}
+
+export const REINFORCEMENT_LEARNING_GENERATOR: IGeneratorParameters = {
+
+    ...GENERATOR_BASE_PARAMETERS,
+    difficultyChangeBorders: [0.4, 0.6],
+
+    //INT VALUES
+    changeDistribution: {
+        coinChance: 1,
+        platformSpeed: 6,
+        platformDifficulty: 3,
+        chestChance: 1
+    }
 }
 
 export const NO_AI_ADAPTIVE_GENERATOR_PARAMETERS: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
     difficultyChangeBorders: [0.4, 0.6],
 
-    coinDifficultyChangeDistributionValue: 0.05,
-    chestDifficultyChangeDistributionValue: 0.1,
-    platformSpeedDifficultyChangeDistributionValue: 0.6,
-    platformPickDifficultyChangeDistributionValue: 0.3
+    //INT VALUES
+    changeDistribution: {
+        coinChance: 1,
+        platformSpeed: 6,
+        platformDifficulty: 3,
+        chestChance: 1
+    }
 }
+

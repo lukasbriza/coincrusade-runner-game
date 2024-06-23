@@ -9,6 +9,7 @@ import glslify from "rollup-plugin-glslify";
 import copy from "rollup-plugin-copy";
 import postcss from "rollup-plugin-postcss";
 import builtins from "rollup-plugin-node-builtins";
+import json from "@rollup/plugin-json";
 
 export default {
   input: "src/main.ts",
@@ -21,18 +22,24 @@ export default {
     minifyInternalExports: false,
   },
   plugins: [
+    json(),
     url({
       emitFiles: true,
     }),
     builtins(),
-    typescript(),
+    typescript({
+      resolveJsonModule: true,
+    }),
     postcss({
       extensions: [".css"],
     }),
 
     glslify(),
     nodeResolve({
-      extensions: ["ts", "tsx"],
+      jsnext: true,
+      preferBuiltins: true,
+      browser: true,
+      extensions: ["ts", "tsx", ".json"],
     }),
     commonjs({
       sourceMap: true,

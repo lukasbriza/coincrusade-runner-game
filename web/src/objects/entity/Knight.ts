@@ -34,6 +34,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
             this.onCollideWithWorld(_, worldObject)
         }, this)
         this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.knightDead, this)
+        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.knightreset, this)
 
         //corect sprite position and collision box
         this.setOrigin(0, 0.5)
@@ -68,10 +69,16 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyW?.on("down", this.startCollectingPower, this)
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
-        this.keyR?.on("down", this.restartGame, this)
+        this.keyR?.on("down", this.restartProcess, this)
     }
     private removeListeners(): void {
-        this.scene.input.keyboard?.destroy()
+        this.keyW?.removeListener("down", this.startCollectingPower, this)
+        this.keyW?.removeListener("up", this.jump, this)
+        this.keyK?.removeListener("down", this.attack, this)
+    }
+    private knightreset() {
+        this.initListeners()
+        this.setBottomY(this.scene.game.renderer.height - TILE.height)
     }
 
     //ABL
@@ -80,6 +87,10 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.setX(this.scene.renderer.width - (TILE.width))
     }
     private onLeftWorldBound(): void {
+        if (window.gameState.actualLives === 1) {
+            this.eventHelper.dispatch(EVENTS.KNIGHT_HIT)
+            return
+        }
         this.eventHelper.dispatch(EVENTS.KNIGHT_HIT)
         this.eventHelper.dispatch(EVENTS.PLAYER_RELOCATE, this)
     }
@@ -129,10 +140,10 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (worldObject instanceof Tilemaps.Tile) {
             return
         }
-        if (this.inAir && worldObject.body.checkCollision.up) {
+        if (this.inAir && worldObject?.body?.checkCollision?.up) {
             this.inAir = false
             this.powerBar?.setPercents(0)
-            this.run()
+            !window.gameState.playerIsDead && this.run()
         }
     }
     public startImmortalityAnimation(): void {
@@ -161,15 +172,20 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         }
     }
     public knightDead() {
-        window.gameState.setPlayerDead()
-        this.removeListeners()
-        this.clearTint()
-        this.setVelocityX(0)
-        this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_DEAD }, true)
+        this.eventHelper.timer(300, () => {
+            this.removeListeners()
+            this.clearTint()
+            this.setVelocityX(0)
+            if (this.body!.x < 10) {
+                this.setPosition(10, this.body?.y)
+            }
+            this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_DEAD }, false)
+        }, this, undefined, false)
     }
-    private restartGame() {
+    private restartProcess() {
         if (window.gameState.playerIsDead) {
-            document.location.reload()
+            this.eventHelper.dispatch(EVENTS.GAME_RESTART)
+            this.run()
         }
     }
 
@@ -190,7 +206,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (this.body!.x <= 10 && !this.immortalAnimation && !isDead) {
             this.onLeftWorldBound()
         }
-        if (this.body!.x <= 0 && this.immortalAnimation) {
+        if (this.body!.x <= 0 && this.immortalAnimation && !isDead) {
             this.setX(10)
         }
 
@@ -218,8 +234,6 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (canRun && !isDead) {
             this.run()
         }
-
-
     }
 
     //HELPERS

@@ -2,6 +2,17 @@ import { Physics, Tilemaps, Types } from "phaser"
 import { FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS } from "../constants"
 import { Coin } from "../objects/_index"
 
+export type Generators = "NoAiAdaptive" | "HamletSystem" | "LinearGenerator" | "NeuralNetworkGenerator" | "ReinforcementLearningGenerator"
+
+export type ChangeTypes = "IncreasePlatformSpeed" |
+    "DecreasePlatformSpeed" |
+    "IncreaseCoinChance" |
+    "DecreaseCoinChance" |
+    "IncreaseMapDifficulty" |
+    "DecreaseMapDifficulty" |
+    "IncreaseChestChance" |
+    "DecreaseChestChance"
+
 export type AppParameters = {
     debug: boolean
     playerGravityY: number
@@ -23,7 +34,7 @@ export type AppParameters = {
     baseTimeInMinutes: number
     difficultyChangeBorderMinGap: number
 
-    currentGenerator: "Endless" | "AllTest" | "NoAiAdaptive"
+    sendLogs: boolean
 }
 
 export type Image = { path: string }
@@ -66,3 +77,7 @@ export type MapType = {
 }
 
 export type MapTypeExtended = { coins: (string | null)[] } & MapType
+
+export type NeuralPredictionRepsonse = {
+    data: [number, number, number]
+}

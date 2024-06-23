@@ -1,10 +1,9 @@
 import { GameObjects } from "phaser";
 import { PlatformDatabase } from "./PlatformDatabase"
 import { EVENTS, KEYS, POOL_CONFIG, TILE } from "../../constants";
-import { GroupHelper } from "../../helpers/GroupHelper";
-import { GameScene } from "../../scenes/GameScene";
-import { AllPlatformTestGenerator, EndlessPlainGenerator, NoAIAdaptiveGenerator } from "../../generators/_index";
-import { GAME_PARAMETERS } from "../../configurations/_index";
+import { GroupHelper } from "../../helpers/_index";
+import { GameScene } from "../../scenes/_index";
+import { NoAIAdaptiveGenerator, HamletSystemGenerator, NeuralNetworkGenerator, LinearGenerator, ReinforcementLearningGenerator } from "../../generators/_index";
 import { IPlatformManager } from "../../interfaces/_index";
 import { Eventhelper } from "../../helpers/_index";
 import { Knight } from "../_index";
@@ -24,8 +23,11 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
 
 
     //GENERATORS
-    private endlessPlainGenerator: EndlessPlainGenerator;
-    private allPlatgormTestGenerator: AllPlatformTestGenerator;
+    private linearGenerator: LinearGenerator;
+    private hamletSystemGenerator: HamletSystemGenerator;
+    private neuralNetworkGenerator: NeuralNetworkGenerator;
+    private reinforcementLearningGenerator: ReinforcementLearningGenerator
+
     private noAiAdaptiveGenerator: NoAIAdaptiveGenerator;
     //
 
@@ -52,27 +54,37 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.eventHelper = new Eventhelper(scene)
 
         //GENERATORS INIT
-        this.endlessPlainGenerator = new EndlessPlainGenerator(this, scene)
-        this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this, scene)
+        this.linearGenerator = new LinearGenerator(this, scene)
+        this.neuralNetworkGenerator = new NeuralNetworkGenerator(this, scene)
         this.noAiAdaptiveGenerator = new NoAIAdaptiveGenerator(this, scene)
+        this.hamletSystemGenerator = new HamletSystemGenerator(this, scene)
+        this.reinforcementLearningGenerator = new ReinforcementLearningGenerator(this, scene)
         //
 
         this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
-        //this.eventHelper.timer(1000, this.startPlatformGenerationProcess, this, undefined, true)
         this.eventHelper.addListener(EVENTS.COIN_PICKED, this.removeCoinFromGroup, this)
         this.eventHelper.addListener(EVENTS.CHUNK_END, this.startPlatformGenerationProcess, this)
         this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.stopPlatforms, this)
         this.eventHelper.addListener(EVENTS.PLAYER_RELOCATE, this.playerRelocate, this)
+        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.restartPlatforms, this)
 
         this.generatePlatforms()
     }
     ////////////////////////////
     //CORE LOGIC
-    private generatePlatforms(): void {
-        const maps = this.resolveGenerator().generate()
+    private init() {
+        const initChunk = this.generateInitialChunk()
+        this.activeGroup.addMultiple(initChunk.platforms, true)
+        this.decorationGroup.addMultiple(initChunk.decorations, true)
+        this.slopeGroup.addMultiple(initChunk.slopeTriggers, true)
+    }
+    private async generatePlatforms(): Promise<void> {
+        const maps = await this.resolveGenerator().generate()
+        /*
         console.group("generated maps:")
         console.log(maps)
         console.groupEnd()
+        */
         const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?
             this.translateMaptypes(maps, lastMemberX + TILE.width) :
@@ -85,12 +97,27 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.obstacleGroup.addMultiple(translationResult.obstacles, true)
         this.slopeGroup.addMultiple(translationResult.slopeTriggers, true)
     }
+    private restartPlatforms(): void {
+        this.activeGroup = this.activeGroup.clear(true, true)
+        this.coinGroup = this.coinGroup.clear(true, true)
+        this.decorationGroup = this.decorationGroup.clear(true, true)
+        this.obstacleGroup = this.obstacleGroup.clear(true, true)
+        this.slopeGroup = this.slopeGroup.clear(true, true)
+        this.init()
+        this.generatePlatforms()
+        window.configurationManager.resetPlatformSpeed()
+        this.reAssignPlatformSpeed()
+    }
     private resolveGenerator() {
-        switch (GAME_PARAMETERS.currentGenerator) {
-            case "AllTest":
-                return this.allPlatgormTestGenerator;
-            case "Endless":
-                return this.endlessPlainGenerator;
+        switch (window.configurationManager.currentGenerator) {
+            case "LinearGenerator":
+                return this.linearGenerator;
+            case "HamletSystem":
+                return this.hamletSystemGenerator;
+            case "NeuralNetworkGenerator":
+                return this.neuralNetworkGenerator;
+            case "ReinforcementLearningGenerator":
+                return this.reinforcementLearningGenerator;
             case "NoAiAdaptive":
                 return this.noAiAdaptiveGenerator;
         }
@@ -131,12 +158,10 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private startPlatformGenerationProcess(): void {
         if (this.hasToGenerateNewPlatforms()) {
-            console.log("generate platforms")
             this.generatePlatforms()
         }
     }
     private slopeTriggerRemoveCallback() {
-        //LOG RUNNED DISTANCE
         this.eventHelper.dispatch(EVENTS.SLOPE_OVERCOME)
     }
     private playerRelocate(knight: Knight) {

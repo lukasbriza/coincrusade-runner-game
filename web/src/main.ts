@@ -3,7 +3,6 @@ import { Game, Types, Scale, WEBGL } from "phaser";
 import { screenSizes } from "./constants";
 import { GameScene } from "./scenes/_index";
 import { GAME_PARAMETERS } from "./configurations/_index";
-import { onWindowResize } from "./utils/onWindowResize";
 import { ConfigurationManager } from "./configurations/_index";
 import { GameState } from "./objects/_index";
 
@@ -40,4 +39,3 @@ const gameConfig: Types.Core.GameConfig = {
 window.game = new Game(gameConfig);
 window.configurationManager = new ConfigurationManager()
 window.gameState = new GameState()
-window.onresize = () => onWindowResize()

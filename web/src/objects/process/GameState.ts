@@ -1,12 +1,18 @@
-import { IChunkLog, IGameState } from "../../interfaces/_index";
+import { sendLogsToApi } from "../../api/_index";
+import { GAME_PARAMETERS } from "../../configurations/parameters";
+import { ChangeTypes, IChunkLog, IGameState } from "../../interfaces/_index";
+
 
 export class GameState implements IGameState {
     private pickedCoins: number = 0;
     private generatedCoins: number = 0;
     private overcomedSlopes: number = 0;
     private lostLives: number = 0;
+    public actualLives: number = GAME_PARAMETERS.maxPlayerLives;
     public elapsedSeconds: number = 0;
     public gainedSeconds: number = 0;
+
+    public difficultyScore: number = 0;
 
     private lastChunkElapsedSeconds: number = 0;
     private lastChunkGainedSeconds: number = 0;
@@ -14,6 +20,8 @@ export class GameState implements IGameState {
     private lastChunkPickedCoins: number = 0;
     private lastChunkGeneratedCoins: number = 0;
     private lastChunkMapDifficulties: number[] = [];
+    private lastChunkSuggestedAction?: "increase" | "decrease" | "neutral" = undefined;
+    private lastChunkChange?: ChangeTypes = undefined;
 
     public chunksData: IChunkLog[] = [];
     public playerIsDead: boolean = false;
@@ -33,9 +41,6 @@ export class GameState implements IGameState {
         this.lostLives++
         this.lastChunkLostLives++
     }
-    /*public decreaseLastchunkLostLives(): void {
-        this.lostLives--
-    }*/
     public incrementElapsedSeconds(): void {
         this.elapsedSeconds++
         this.lastChunkElapsedSeconds++
@@ -47,6 +52,18 @@ export class GameState implements IGameState {
     public logMapDifficulty(diff: number): void {
         this.lastChunkMapDifficulties.push(diff)
     }
+    public logSuggestedAction(action: "increase" | "decrease" | "neutral"): void {
+        this.lastChunkSuggestedAction = action
+    }
+    public incrementDifficultyScore() {
+        this.difficultyScore++
+    }
+    public decreaseDifficultyScore() {
+        this.difficultyScore--
+    }
+    public setParameterChange(change: ChangeTypes) {
+        this.lastChunkChange = change
+    }
     //CHUNK METHODS
     public saveChunk(): void {
         const log: IChunkLog = {
@@ -57,11 +74,18 @@ export class GameState implements IGameState {
             generatedCoins: this.lastChunkGeneratedCoins,
             mapDifficulties: this.lastChunkMapDifficulties,
             mapSkillFactor: window.configurationManager.skillFactor,
+            platformSpeed: window.configurationManager.platformStartSpeed,
+            totalElapsedSeconds: window.gameState.elapsedSeconds,
+            totalGainedSeconds: window.gameState.gainedSeconds,
+            suggestedAction: this.lastChunkSuggestedAction,
+            engine: window.configurationManager.currentGenerator,
+            changed: this.lastChunkChange,
+            actualDifficultySkore: this.difficultyScore,
             created: new Date()
         }
         this.chunksData.push(log)
         this.resetLastChunkData()
-        console.log("chunkSaved", this.getState())
+        //console.log("chunkSaved", this.getState())
     }
     private resetLastChunkData(): void {
         this.lastChunkElapsedSeconds = 0
@@ -70,6 +94,8 @@ export class GameState implements IGameState {
         this.lastChunkPickedCoins = 0
         this.lastChunkGeneratedCoins = 0
         this.lastChunkMapDifficulties = []
+        this.lastChunkSuggestedAction = undefined
+        this.lastChunkChange = undefined
     }
     public getState() {
         return {
@@ -97,5 +123,23 @@ export class GameState implements IGameState {
     }
     public setPlayerDead(): void {
         this.playerIsDead = true
+        console.log(this.getState())
+        if (GAME_PARAMETERS.sendLogs) {
+            sendLogsToApi(this.chunksData)
+        }
+    }
+    public gameStateRestart() {
+        if (this.playerIsDead) {
+            this.resetLastChunkData()
+            this.pickedCoins = 0
+            this.generatedCoins = 0
+            this.overcomedSlopes = 0
+            this.lostLives = 0
+            this.elapsedSeconds = 0
+            this.gainedSeconds = 0
+            this.difficultyScore = 0
+            this.playerIsDead = false
+            this.chunksData = []
+        }
     }
 }

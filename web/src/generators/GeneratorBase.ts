@@ -1,7 +1,7 @@
 import * as _ from "lodash-es";
-import { grass, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS, stumpAndTrees, tents, TILE } from "../constants";
+import { EVENTS, grass, KEYS, PLATFORM_MAP_KEYS, POLICY, SPRITE_KEYS, stumpAndTrees, tents, TILE } from "../constants";
 import { IPlatformManager, MapType, MapTypeExtended, MapTypeMember } from "../interfaces/_index";
-import { normalizeWeights, pickBaseOnNormalizedWeights, randomNumber } from "../utils/_index";
+import { pickBasedOnWeights, randomNumber } from "../utils/_index";
 import { AssetHelper, Eventhelper } from "../helpers/_index";
 import { Scene } from "phaser";
 
@@ -61,7 +61,7 @@ export class GeneratorBase {
 
         return canRender
     }
-    public addRandomPlatau(map: MapTypeExtended) {
+    public addRandomPlatau(map: MapTypeExtended): MapTypeExtended {
         let localMap = _.cloneDeep(map)
 
         const minPlatau = window.configurationManager.minPlatauCount
@@ -128,9 +128,85 @@ export class GeneratorBase {
         //WEIGHTS FOR EVERY DIFFICULTY VALUE WITH EXPONENTIAL FN
         const config = window.configurationManager
         const weights = this.avaliableMapRange.map(diff => Math.exp(-(diff - 1) / config.skillFactor))
-        //NORMALIZATION (SUM MUST BE 1)
-        const normalizedWeights = normalizeWeights(weights)
+        //PREPARE WEIGHTS
+        const preparedWeights = weights.map((w) => Math.round(w * 10))
         //PICK DIFFICULTY BASED ON NORMALIZED WEIGHTS
-        return this.avaliableMapRange[pickBaseOnNormalizedWeights(normalizedWeights)]
+        const pickIndex = pickBasedOnWeights(preparedWeights)
+        return this.avaliableMapRange[pickIndex]
+    }
+    //CHANCES METHODS
+    public increaseCoinGenerationChance() {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Increase coin generation")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreaseCoinChance")
+        config.increaseCoinGenerationChance()
+    }
+    public decreaseCoinGenerationChance() {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Decrease coin drop")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreaseCoinChance")
+        config.decreaseCoinGenerationChance()
+    }
+    public increasePlatformSpeed(by: number) {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Increase platform speed")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreasePlatformSpeed")
+        config.increasePlatformSpeed(by)
+        this.manager.reAssignPlatformSpeed()
+    }
+    public decreasePlatformSpeed(by: number) {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Decrease platform speed")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreasePlatformSpeed")
+        config.decreasePlatformSpeed(by)
+        this.manager.reAssignPlatformSpeed()
+    }
+    public increasePickedPlatformDifficulty() {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "ID: Increase platform pick difficulty")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "IncreaseMapDifficulty")
+        config.increasePickedPlatformDifficulty()
+    }
+    public decreasePickedPlatformDifficulty() {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.ADD_NOTE, "DD: Decrease platform pick difficulty")
+        this.eventHelper.dispatch(EVENTS.PARAMETER_CHANGED, "DecreaseMapDifficulty")
+        config.decreasePickedPlatformDifficulty()
+    }
+    public applyDifficultyIncreasePolicy(pickIndex: number, platformSpeedChange = 20) {
+        const config = window.configurationManager
+        this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "increase")
+        this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_INCREASE)
+        switch (pickIndex) {
+            case POLICY.COIN:
+                if (config.isMinCoinchance) {
+                    console.log("Coin chance on maximum.")
+                    this.increasePlatformSpeed(platformSpeedChange)
+                    break;
+                }
+                this.decreaseCoinGenerationChance()
+                break;
+            case POLICY.PLATFORM:
+                this.increasePlatformSpeed(20)
+                break;
+            case POLICY.PLATFORM_DIFFICULTY:
+                this.increasePickedPlatformDifficulty()
+                break;
+        }
+    }
+    public applyDifficultyDecreasePolicy(pickIndex: number, platformSpeedChange = 20) {
+        this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "decrease")
+        this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_DECREASE)
+        switch (pickIndex) {
+            case POLICY.COIN:
+                this.increaseCoinGenerationChance()
+                break;
+            case POLICY.PLATFORM:
+                this.decreasePlatformSpeed(platformSpeedChange)
+                break;
+            case POLICY.PLATFORM_DIFFICULTY:
+                this.decreasePickedPlatformDifficulty()
+                break;
+        }
     }
 }
