@@ -1,5 +1,5 @@
 import { Generators, IConfigurationManager, IGeneratorParameters } from "../interfaces/_index";
-import { ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS, ENDLESS_PLAIN_GENERATOR_PARAMETERS, GAME_PARAMETERS, HAMLET_SYSTEM_GENERATOR_PARAMETERS, NO_AI_ADAPTIVE_GENERATOR_PARAMETERS } from "./parameters";
+import { GAME_PARAMETERS, HAMLET_SYSTEM_GENERATOR_PARAMETERS, LINEAR_GENERATOR, NEURAL_NETWORK_GENERATOR, NO_AI_ADAPTIVE_GENERATOR_PARAMETERS, REINFORCEMENT_LEARNING_GENERATOR } from "./parameters";
 
 export class ConfigurationManager implements IConfigurationManager {
     public maxPlatauCount: number;
@@ -13,7 +13,11 @@ export class ConfigurationManager implements IConfigurationManager {
     public maxStumpsAndTreesOnPlatau: number;
     public skillFactor: number;
     public difficultyChangeBorders: [number, number];
-    public currentGenerator: Generators = "HamletSystem";
+    public currentGenerator: Generators = "ReinforcementLearningGenerator";
+
+    //CAP
+    public isMaxCoinChance: boolean = false
+    public isMinCoinchance: boolean = false
 
     private platformDifficultyPickStepFactor: number;
 
@@ -36,20 +40,17 @@ export class ConfigurationManager implements IConfigurationManager {
     }
     private resolveGeneratorParameters(): IGeneratorParameters {
         switch (this.currentGenerator) {
-            case "AllTest":
-                return ALL_PLATFORMS_TEST_GENERATOR_PARAMETERS
-            case "Endless":
-                return ENDLESS_PLAIN_GENERATOR_PARAMETERS
             case "NoAiAdaptive":
                 return NO_AI_ADAPTIVE_GENERATOR_PARAMETERS
             case "HamletSystem":
                 return HAMLET_SYSTEM_GENERATOR_PARAMETERS
+            case "LinearGenerator":
+                return LINEAR_GENERATOR
+            case "NeuralNetworkGenerator":
+                return NEURAL_NETWORK_GENERATOR
+            case "ReinforcementLearningGenerator":
+                return REINFORCEMENT_LEARNING_GENERATOR
         }
-    }
-    public changeGenerator(generator: Generators) {
-        this.currentGenerator = generator
-        this.setupParams()
-        //TODO restart
     }
 
     //PLATAU
@@ -77,12 +78,22 @@ export class ConfigurationManager implements IConfigurationManager {
         const maxChance = this.resolveGeneratorParameters().maxCoinGenerationChance
         const temp = this.coinGenerationChance + (by ?? 0.1)
         this.coinGenerationChance = temp > maxChance ? maxChance : temp
+
+        if (this.coinGenerationChance === maxChance) {
+            this.isMaxCoinChance = true
+        }
+        this.isMinCoinchance = false
         return this.coinGenerationChance
     }
     public decreaseCoinGenerationChance(by?: number): number {
         const minChance = this.resolveGeneratorParameters().minCoinGenerationChance
         const temp = this.coinGenerationChance - (by ?? 0.1)
         this.coinGenerationChance = temp < minChance ? minChance : temp
+        this.isMaxCoinChance = false
+
+        if (this.coinGenerationChance === minChance) {
+            this.isMinCoinchance = true
+        }
         return this.coinGenerationChance
     }
 
@@ -126,57 +137,10 @@ export class ConfigurationManager implements IConfigurationManager {
         const base = this.resolveGeneratorParameters().skillFactorDefault
         const temp = this.skillFactor - (by ?? this.platformDifficultyPickStepFactor)
         if (temp < base) {
-            console.error("DecreasePickedPlatformDifficulty border.")
             this.skillFactor = base
         } else {
             this.skillFactor = temp
         }
         return this.skillFactor
-    }
-
-    //DIFFICULTY CHANGE BORDERS
-    public closeDifficultyChangeBorders(): [number, number] {
-        const minBorder = this.difficultyChangeBorders[0] + 0.05
-        const maxBorder = this.difficultyChangeBorders[1] - 0.05
-        this.difficultyChangeBorders[0] = minBorder
-        this.difficultyChangeBorders[1] = maxBorder
-
-        if (this.difficultyChangeBorders[0] > (0.5 - 0.05)) {
-            this.difficultyChangeBorders[0] = 0.5 - 0.05
-        }
-        if (this.difficultyChangeBorders[1] < (0.5 + 0.05)) {
-            this.difficultyChangeBorders[1] = 0.5 + 0.05
-        }
-        if (this.difficultyChangeBorders[1] > (1 - GAME_PARAMETERS.difficultyChangeBorderMinGap)) {
-            this.difficultyChangeBorders[1] = 1 - GAME_PARAMETERS.difficultyChangeBorderMinGap
-        }
-        if (this.difficultyChangeBorders[0] < GAME_PARAMETERS.difficultyChangeBorderMinGap) {
-            this.difficultyChangeBorders[0] = GAME_PARAMETERS.difficultyChangeBorderMinGap
-        }
-        return this.difficultyChangeBorders
-    }
-    public openDifficultyChangeBorders(): [number, number] {
-        const minBorder = this.difficultyChangeBorders[0] - 0.05
-        const maxBorder = this.difficultyChangeBorders[1] + 0.05
-        this.difficultyChangeBorders[0] = minBorder
-        this.difficultyChangeBorders[1] = maxBorder
-
-        if (this.difficultyChangeBorders[0] < GAME_PARAMETERS.difficultyChangeBorderMinGap) {
-            this.difficultyChangeBorders[0] = GAME_PARAMETERS.difficultyChangeBorderMinGap
-        }
-        if (this.difficultyChangeBorders[0] > (0.5 - 0.05)) {
-            this.difficultyChangeBorders[0] = 0.5 - 0.05
-        }
-        if (this.difficultyChangeBorders[1] < (0.5 + 0.05)) {
-            this.difficultyChangeBorders[1] = 0.5 + 0.05
-        }
-        if (this.difficultyChangeBorders[1] > (1 - GAME_PARAMETERS.difficultyChangeBorderMinGap)) {
-            this.difficultyChangeBorders[1] = 1 - GAME_PARAMETERS.difficultyChangeBorderMinGap
-        }
-        return this.difficultyChangeBorders
-    }
-    public resetDifficultyBorders(): [number, number] {
-        this.difficultyChangeBorders = this.resolveGeneratorParameters().difficultyChangeBorders
-        return this.difficultyChangeBorders
     }
 }

@@ -18,8 +18,7 @@ const prepareData = async () => {
     const gamedata = await conn?.model<GameDataSchemaType>("GameData").find()
 
     const evalSequences: ChunkLog[] = []
-    //SHAPE [mapsum, coinPerformance, lifePerformance, timePerformance, platformPerformanceModifier]
-    //SHAPE [decrease, neutral, increase]
+
     const evalData: [NeuralNetworkInputShape, NeuralNetworkOutputShape][] = []
 
     if (gamedata) {
@@ -38,8 +37,6 @@ const prepareData = async () => {
 
             const perfomanceResult: NeuralNetworkOutputShape = resolvePerformance(performance)
 
-            //[mapsum, coinPerformance, lifePerformance, timePerformance, platformPerformanceModifier]
-            //evalData.push([[mapSum, coinPerformance, lifePerformance, timePerformance, platformPerformanceModifier], perfomanceResult])
             evalData.push([
                 [
                     mapSum,

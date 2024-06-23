@@ -26,19 +26,24 @@ export class PlayerStatus implements IPlayerStatus {
         this.eventHelper.addListener(EVENTS.ADD_NOTE, this.handleAddNote, this)
         this.eventHelper.addListener(EVENTS.DESTROY_NOTE, this.drawNotes, this)
         this.eventHelper.addListener(EVENTS.PLAYER_DEAD, this.playerDeadNote, this)
-        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.init, this)
+        this.eventHelper.addListener(EVENTS.GAME_RESTART, this.reset, this)
     }
 
     private init() {
-        this.coinCounter?.nearTextCoin.destroy(true)
-        this.coinCounter?.textTexture.destroy(true)
-        this.timeCounter?.timeText.destroy(true)
-
         this.coinCounter = new CoinCounter(this.scene, 0)
         this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height)
 
         this.notes.forEach(note => note.note?.destroy(true))
         this.notes = []
+    }
+
+    private reset() {
+        this.coinCounter.reset()
+        this.timeCounter.timeText?.destroy(true)
+        this.notes.forEach(note => note.note?.destroy(true))
+        this.notes = []
+
+        this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height)
     }
 
     private handleAddNote(note: string, warning: boolean = false, duration: number = 10000) {

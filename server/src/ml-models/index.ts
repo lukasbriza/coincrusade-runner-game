@@ -1,1 +1,1 @@
-export * from "./predictWithHamletModel"
+export * from "./predictWithNnModel"

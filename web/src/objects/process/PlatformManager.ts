@@ -3,7 +3,7 @@ import { PlatformDatabase } from "./PlatformDatabase"
 import { EVENTS, KEYS, POOL_CONFIG, TILE } from "../../constants";
 import { GroupHelper } from "../../helpers/_index";
 import { GameScene } from "../../scenes/_index";
-import { AllPlatformTestGenerator, EndlessPlainGenerator, NoAIAdaptiveGenerator, HamletSystemGenerator } from "../../generators/_index";
+import { NoAIAdaptiveGenerator, HamletSystemGenerator, NeuralNetworkGenerator, LinearGenerator, ReinforcementLearningGenerator } from "../../generators/_index";
 import { IPlatformManager } from "../../interfaces/_index";
 import { Eventhelper } from "../../helpers/_index";
 import { Knight } from "../_index";
@@ -23,10 +23,12 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
 
 
     //GENERATORS
-    private endlessPlainGenerator: EndlessPlainGenerator;
-    private allPlatgormTestGenerator: AllPlatformTestGenerator;
+    private linearGenerator: LinearGenerator;
+    private hamletSystemGenerator: HamletSystemGenerator;
+    private neuralNetworkGenerator: NeuralNetworkGenerator;
+    private reinforcementLearningGenerator: ReinforcementLearningGenerator
+
     private noAiAdaptiveGenerator: NoAIAdaptiveGenerator;
-    private hamletSystemGenerator: HamletSystemGenerator
     //
 
     constructor(scene: GameScene) {
@@ -52,10 +54,11 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         this.eventHelper = new Eventhelper(scene)
 
         //GENERATORS INIT
-        this.endlessPlainGenerator = new EndlessPlainGenerator(this, scene)
-        this.allPlatgormTestGenerator = new AllPlatformTestGenerator(this, scene)
+        this.linearGenerator = new LinearGenerator(this, scene)
+        this.neuralNetworkGenerator = new NeuralNetworkGenerator(this, scene)
         this.noAiAdaptiveGenerator = new NoAIAdaptiveGenerator(this, scene)
         this.hamletSystemGenerator = new HamletSystemGenerator(this, scene)
+        this.reinforcementLearningGenerator = new ReinforcementLearningGenerator(this, scene)
         //
 
         this.eventHelper.timer(2000, this.processOutOfWorldMembers, this, undefined, true)
@@ -77,11 +80,11 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private async generatePlatforms(): Promise<void> {
         const maps = await this.resolveGenerator().generate()
-
+        /*
         console.group("generated maps:")
         console.log(maps)
         console.groupEnd()
-
+        */
         const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?
             this.translateMaptypes(maps, lastMemberX + TILE.width) :
@@ -107,14 +110,16 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private resolveGenerator() {
         switch (window.configurationManager.currentGenerator) {
-            case "AllTest":
-                return this.allPlatgormTestGenerator;
-            case "Endless":
-                return this.endlessPlainGenerator;
-            case "NoAiAdaptive":
-                return this.noAiAdaptiveGenerator;
+            case "LinearGenerator":
+                return this.linearGenerator;
             case "HamletSystem":
                 return this.hamletSystemGenerator;
+            case "NeuralNetworkGenerator":
+                return this.neuralNetworkGenerator;
+            case "ReinforcementLearningGenerator":
+                return this.reinforcementLearningGenerator;
+            case "NoAiAdaptive":
+                return this.noAiAdaptiveGenerator;
         }
     }
     ////////////////////////////
@@ -153,12 +158,10 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
     }
     private startPlatformGenerationProcess(): void {
         if (this.hasToGenerateNewPlatforms()) {
-            console.log("generate platforms")
             this.generatePlatforms()
         }
     }
     private slopeTriggerRemoveCallback() {
-        //LOG RUNNED DISTANCE
         this.eventHelper.dispatch(EVENTS.SLOPE_OVERCOME)
     }
     private playerRelocate(knight: Knight) {

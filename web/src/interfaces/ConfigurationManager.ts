@@ -13,6 +13,8 @@ export type IConfigurationManager = {
     skillFactor: number
     difficultyChangeBorders: [number, number]
     currentGenerator: Generators
+    isMaxCoinChance: boolean
+    isMinCoinchance: boolean
 
     increaseMaxPlatauCount: (by?: number) => number
     decreaseMaxPlatauCount: (by?: number) => number
@@ -26,10 +28,6 @@ export type IConfigurationManager = {
     decreasePlatformSpeed: (by?: number) => number
     increasePickedPlatformDifficulty: (by?: number) => number
     decreasePickedPlatformDifficulty: (by?: number) => number
-    closeDifficultyChangeBorders: () => [number, number]
-    openDifficultyChangeBorders: () => [number, number]
-    resetDifficultyBorders: () => [number, number]
     nullifyPlatformSpeed: () => void
     resetPlatformSpeed: () => void
-    changeGenerator: (generator: Generators) => void
 }

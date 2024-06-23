@@ -12,7 +12,7 @@ dotenv.config();
 import "./db/conn"
 import "./ml-models/tfNeuralNetwork"
 import gameDataRouter from "./router/gameData";
-import hamletRouter from "./router/hamlet";
+import neuralRouter from "./router/neural";
 
 const PORT = process.env.PORT
 
@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "public")))
 /* api routes */
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerJson))
 app.use("/api", gameDataRouter)
-app.use("/api/hamlet", hamletRouter)
+app.use("/api/nn", neuralRouter)
 
 app.get("/", (_, res: Response) => {
     res.sendFile(path.resolve(__dirname, "public", "index.html"))

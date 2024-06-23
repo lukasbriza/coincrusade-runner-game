@@ -75,7 +75,7 @@ export class LifeCounter implements ILifeCounter {
             window.gameState.actualLives = this.lifeValue
         }
         if (this.lifeValue === 0) {
-            this.eventHelper.dispatch(EVENTS.PLAYER_DEAD)
+            if (!window.gameState.playerIsDead) this.eventHelper.dispatch(EVENTS.PLAYER_DEAD)
             if (this.healTimer) this.eventHelper.removeTimer(this.healTimer)
         }
     }

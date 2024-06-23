@@ -6,6 +6,7 @@ export type IGameState = {
     elapsedSeconds: number
     gainedSeconds: number
     actualLives: number
+    difficultyScore: number
     incrementDifficultyScore: () => void
     decreaseDifficultyScore: () => void
     incrementPickedCoin: () => void

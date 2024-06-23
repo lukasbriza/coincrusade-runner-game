@@ -1,2 +1,2 @@
-export * from "./hamletPrediction"
+export * from "./neuralPrediction"
 export * from "./sendLogsToApi"

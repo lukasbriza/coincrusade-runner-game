@@ -4,6 +4,17 @@ export const SCENE_KEYS = {
     MAIN: "game-scene"
 }
 
+export enum DIFF_POLICY {
+    DECREASE = 0,
+    NOTHING = 1,
+    INCREASE = 2
+}
+export enum POLICY {
+    COIN = 0,
+    PLATFORM = 1,
+    PLATFORM_DIFFICULTY = 2
+}
+
 export enum KEYS {
     KNIGHT_POWERBAR = "knight-powerbar",
     KNIGHT_SLIDE = "knight-slide",

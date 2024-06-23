@@ -12,7 +12,7 @@ export class GameState implements IGameState {
     public elapsedSeconds: number = 0;
     public gainedSeconds: number = 0;
 
-    private difficultyScore: number = 0;
+    public difficultyScore: number = 0;
 
     private lastChunkElapsedSeconds: number = 0;
     private lastChunkGainedSeconds: number = 0;
@@ -85,7 +85,7 @@ export class GameState implements IGameState {
         }
         this.chunksData.push(log)
         this.resetLastChunkData()
-        console.log("chunkSaved", this.getState())
+        //console.log("chunkSaved", this.getState())
     }
     private resetLastChunkData(): void {
         this.lastChunkElapsedSeconds = 0

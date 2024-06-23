@@ -2,7 +2,7 @@ import { Physics, Tilemaps, Types } from "phaser"
 import { FONT_KEYS, KEYS, PLATFORM_MAP_KEYS, SPRITE_KEYS } from "../constants"
 import { Coin } from "../objects/_index"
 
-export type Generators = "Endless" | "AllTest" | "NoAiAdaptive" | "HamletSystem"
+export type Generators = "NoAiAdaptive" | "HamletSystem" | "LinearGenerator" | "NeuralNetworkGenerator" | "ReinforcementLearningGenerator"
 
 export type ChangeTypes = "IncreasePlatformSpeed" |
     "DecreasePlatformSpeed" |
@@ -21,7 +21,6 @@ export type AppParameters = {
     powerMultiplicator: number
     platformStartSpeed: number
     minimalPlatformSpeed: number
-    maximumPlatformSpeed: number
 
     knightStartFramerate: number
     knightMoveVelocityRightX: number
@@ -79,6 +78,6 @@ export type MapType = {
 
 export type MapTypeExtended = { coins: (string | null)[] } & MapType
 
-export type HamletPredictionRepsonse = {
+export type NeuralPredictionRepsonse = {
     data: [number, number, number]
 }
