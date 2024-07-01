@@ -11,7 +11,6 @@ export type IConfigurationManager = {
     platauTreeOrStumpChance: number
     maxStumpsAndTreesOnPlatau: number
     skillFactor: number
-    difficultyChangeBorders: [number, number]
     currentGenerator: Generators
     isMaxCoinChance: boolean
     isMinCoinchance: boolean

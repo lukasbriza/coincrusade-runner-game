@@ -18,11 +18,9 @@ export type AppParameters = {
     playerGravityY: number
     powerJumpLoadDelay: number
     powerJumpMaxCap: number
-    powerMultiplicator: number
     platformStartSpeed: number
     minimalPlatformSpeed: number
 
-    knightStartFramerate: number
     knightMoveVelocityRightX: number
     knightMoveVelocityLeftX: number
 
@@ -30,9 +28,7 @@ export type AppParameters = {
     addTimeEveryNumberOfCoins: number
     maxPlayerLives: number
     playerHealRateInSeconds: number
-    onHitImmortalityDuration: number
     baseTimeInMinutes: number
-    difficultyChangeBorderMinGap: number
 
     sendLogs: boolean
 }

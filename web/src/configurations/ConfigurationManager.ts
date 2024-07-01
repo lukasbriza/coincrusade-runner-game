@@ -12,7 +12,6 @@ export class ConfigurationManager implements IConfigurationManager {
     public platauTreeOrStumpChance: number;
     public maxStumpsAndTreesOnPlatau: number;
     public skillFactor: number;
-    public difficultyChangeBorders: [number, number];
     public currentGenerator: Generators = "ReinforcementLearningGenerator";
 
     //CAP
@@ -36,7 +35,6 @@ export class ConfigurationManager implements IConfigurationManager {
         this.maxStumpsAndTreesOnPlatau = params.maxStumpsAndTreesOnPlatau
         this.skillFactor = params.skillFactorDefault
         this.platformDifficultyPickStepFactor = params.platformDifficultyPickStepFactor
-        this.difficultyChangeBorders = params.difficultyChangeBorders
     }
     private resolveGeneratorParameters(): IGeneratorParameters {
         switch (this.currentGenerator) {

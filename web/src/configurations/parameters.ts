@@ -5,11 +5,9 @@ export const GAME_PARAMETERS: AppParameters = {
     playerGravityY: 800,
     powerJumpLoadDelay: 5,
     powerJumpMaxCap: 60,
-    powerMultiplicator: 12,
     platformStartSpeed: 180,
     minimalPlatformSpeed: 50,
 
-    knightStartFramerate: 12,
     knightMoveVelocityRightX: 300,
     knightMoveVelocityLeftX: -480,
 
@@ -17,9 +15,7 @@ export const GAME_PARAMETERS: AppParameters = {
     addTimeEveryNumberOfCoins: 5,
     maxPlayerLives: 3,
     playerHealRateInSeconds: 30,
-    onHitImmortalityDuration: 4000,
     baseTimeInMinutes: 2,
-    difficultyChangeBorderMinGap: 0.2,
 
     sendLogs: false
 }
@@ -46,67 +42,57 @@ const GENERATOR_BASE_PARAMETERS = {
 
 export const LINEAR_GENERATOR: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.4, 0.6],
 
     //INT VALUES
     changeDistribution: {
-        coinChance: 3,
-        platformSpeed: 6,
-        platformDifficulty: 4,
-        chestChance: 1
+        coinChance: 2,
+        platformSpeed: 5,
+        platformDifficulty: 3,
     }
 }
 
 export const NEURAL_NETWORK_GENERATOR: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.4, 0.6],
 
     //INT VALUES
     changeDistribution: {
-        coinChance: 1,
-        platformSpeed: 6,
+        coinChance: 2,
+        platformSpeed: 5,
         platformDifficulty: 3,
-        chestChance: 2
     }
 }
 
 export const HAMLET_SYSTEM_GENERATOR_PARAMETERS: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.4, 0.6],
 
     //INT VALUES
     changeDistribution: {
-        coinChance: 1,
-        platformSpeed: 6,
+        coinChance: 2,
+        platformSpeed: 5,
         platformDifficulty: 3,
-        chestChance: 1
     }
 }
 
 export const REINFORCEMENT_LEARNING_GENERATOR: IGeneratorParameters = {
 
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.4, 0.6],
 
     //INT VALUES
     changeDistribution: {
-        coinChance: 1,
-        platformSpeed: 6,
+        coinChance: 2,
+        platformSpeed: 5,
         platformDifficulty: 3,
-        chestChance: 1
     }
 }
 
 export const NO_AI_ADAPTIVE_GENERATOR_PARAMETERS: IGeneratorParameters = {
     ...GENERATOR_BASE_PARAMETERS,
-    difficultyChangeBorders: [0.4, 0.6],
 
     //INT VALUES
     changeDistribution: {
-        coinChance: 1,
-        platformSpeed: 6,
+        coinChance: 2,
+        platformSpeed: 5,
         platformDifficulty: 3,
-        chestChance: 1
     }
 }
 

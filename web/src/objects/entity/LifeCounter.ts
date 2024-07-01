@@ -68,7 +68,7 @@ export class LifeCounter implements ILifeCounter {
                 this.lifeValue = 0
             }
             this.drawLifes()
-            this.eventHelper.timer(GAME_PARAMETERS.onHitImmortalityDuration, () => { this.canDecreaseLife = true }, this)
+            this.eventHelper.timer(4000, () => { this.canDecreaseLife = true }, this)
             this.eventHelper.dispatch(EVENTS.LIVE_DECREASED)
 
             if (!this.healTimer) this.dispatchHealtimer()

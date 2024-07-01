@@ -37,11 +37,11 @@ export class PlatformDatabase implements IPlatformDatabase {
             }
             chunkMap.push({ ...localMap, coins: [null] })
         }
-        return this.translateMaptypes(chunkMap, 0)
+        return this.translateMapTypes(chunkMap, 0)
     }
 
     //ABL METHODS
-    public translateMaptypes(map: MapTypeExtended[], xStartPosition: number): TranslationResult {
+    public translateMapTypes(map: MapTypeExtended[], xStartPosition: number): TranslationResult {
         let cumulativeMapWidth = 0
         const translateResult: TranslationResult[] = map.map((mapType, xOffset) => {
             //RESOLVE IF LAST FROM CHUNK
@@ -49,7 +49,7 @@ export class PlatformDatabase implements IPlatformDatabase {
 
             const xStart = cumulativeMapWidth + xStartPosition
             cumulativeMapWidth = cumulativeMapWidth + mapType.width
-            return this.translateMaptype(mapType, xStart, isLastFromChunk)
+            return this.translateMapType(mapType, xStart, isLastFromChunk)
         })
         return translateResult.reduce((prev, curr) => ({
             coins: prev.coins.concat(curr.coins),
@@ -61,7 +61,7 @@ export class PlatformDatabase implements IPlatformDatabase {
     }
 
     //UTILITY METHODS
-    public translateMaptype(jsonMap: MapTypeExtended, xStartPosition: number = 0, lastMapFromGeneratedChunk: boolean = false): TranslationResult {
+    public translateMapType(jsonMap: MapTypeExtended, xStartPosition: number = 0, lastMapFromGeneratedChunk: boolean = false): TranslationResult {
         //PLACE TILES AND DECORATIONS ON MAP
         const tiles = this.tileTranslationMatrix(jsonMap, xStartPosition, lastMapFromGeneratedChunk)
         //PLACE COINS ON MAP

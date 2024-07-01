@@ -5,6 +5,6 @@ export type IPlatformDatabase = {
     eventHelper: Eventhelper
     chunk: number
     generateInitialChunk: () => TranslationResult
-    translateMaptypes: (map: MapTypeExtended[], xStartPosition: number) => TranslationResult
-    translateMaptype: (jsonMap: MapTypeExtended, xStartPosition: number) => TranslationResult
+    translateMapTypes: (map: MapTypeExtended[], xStartPosition: number) => TranslationResult
+    translateMapType: (jsonMap: MapTypeExtended, xStartPosition: number) => TranslationResult
 }

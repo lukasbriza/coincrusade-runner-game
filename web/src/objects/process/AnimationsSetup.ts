@@ -1,6 +1,5 @@
 import { Scene } from "phaser";
 import { ANIMATION_KEYS, SPRITE_KEYS } from "../../constants";
-import { GAME_PARAMETERS } from "../../configurations/_index";
 
 export class AnimationsSetup {
     constructor(scene: Scene) {
@@ -10,7 +9,7 @@ export class AnimationsSetup {
                 prefix: "run-",
                 end: 6,
             }),
-            frameRate: GAME_PARAMETERS.knightStartFramerate,
+            frameRate: 12,
         })
         scene.anims.create({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_JUMP,

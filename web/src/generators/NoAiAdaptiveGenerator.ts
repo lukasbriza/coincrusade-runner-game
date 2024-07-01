@@ -86,7 +86,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
         }
 
         //DECREASE DIFFICULTY
-        if (performance <= config.difficultyChangeBorders[0]) {
+        if (performance <= 0.4) {
             this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "decrease")
             this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_DECREASE)
             switch (pickIndex) {
@@ -103,7 +103,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
             generateMap()
         }
         //INCREASE DIFFICULTY
-        if (performance >= config.difficultyChangeBorders[1]) {
+        if (performance >= 0.6) {
             this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "increase")
             this.eventHelper.dispatch(EVENTS.DIFFICULTY_SCORE_INCREASE)
             switch (pickIndex) {
@@ -120,7 +120,7 @@ export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGen
             generateMap()
         }
         //TIGHTEN BORDER AND DO NOTHING TO SKILL SCORE
-        if (performance > config.difficultyChangeBorders[0] && performance < config.difficultyChangeBorders[1]) {
+        if (performance > 0.4 && performance < 0.6) {
             this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "neutral")
             generateMap()
         }

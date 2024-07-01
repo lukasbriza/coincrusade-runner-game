@@ -180,7 +180,7 @@ export class GeneratorBase {
         switch (pickIndex) {
             case POLICY.COIN:
                 if (config.isMinCoinchance) {
-                    console.log("Coin chance on maximum.")
+                    console.log("Coin chance on minimum.")
                     this.increasePlatformSpeed(platformSpeedChange)
                     break;
                 }

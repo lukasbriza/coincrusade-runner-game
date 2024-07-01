@@ -98,7 +98,7 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
             return this.QTable[stateKey][0] > this.QTable[stateKey][1] ? DIFF_POLICY.INCREASE : DIFF_POLICY.DECREASE
         }
         //RETURN RANDOM ACTION
-        console.log("If dont know bes action choose random.")
+        console.log("If dont know best action, choose random.")
         return _.sample([DIFF_POLICY.DECREASE, DIFF_POLICY.INCREASE])
     }
 

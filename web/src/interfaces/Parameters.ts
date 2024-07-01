@@ -8,7 +8,6 @@ export type IGeneratorParameters = {
     minChestGenerationChance: number
 
     skillFactorDefault: number
-    difficultyChangeBorders: [number, number]
     platformDifficultyPickStepFactor: number
 
 
@@ -23,6 +22,5 @@ export type IGeneratorParameters = {
         coinChance: number
         platformSpeed: number
         platformDifficulty: number
-        chestChance: number
     }
 }

@@ -99,7 +99,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.anims.play({
             key: ANIMATION_KEYS.ANIMATION_KNIGHT_RUN,
             repeat: -1,
-            frameRate: GAME_PARAMETERS.knightStartFramerate
+            frameRate: 12
         }, true)
     }
     private runSlover(): void {
@@ -116,7 +116,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (this.inAir) return
 
         this.inAir = true
-        this.body!.velocity.y = -this.powerBar!.jumpPower * GAME_PARAMETERS.powerMultiplicator
+        this.body!.velocity.y = -this.powerBar!.jumpPower * 12
         this.eventHelper.dispatch(EVENTS.STOP_COLLECT_JUMP_POWER)
         this.anims.play({ key: ANIMATION_KEYS.ANIMATION_KNIGHT_JUMP }, true)
     }
@@ -150,7 +150,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (!this.immortalEvent) {
             this.immortalAnimation = true
             const delay = 250
-            const repeat = Math.floor(GAME_PARAMETERS.onHitImmortalityDuration / delay)
+            const repeat = Math.floor(4000 / delay)
             const cb = () => {
                 if (!this.tinted) {
                     this.setTintFill(0xffffff)

@@ -87,8 +87,8 @@ export class PlatformManager extends PlatformDatabase implements IPlatformManage
         */
         const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()!.body!.position.x
         const translationResult = Array.isArray(maps) ?
-            this.translateMaptypes(maps, lastMemberX + TILE.width) :
-            this.translateMaptype(maps, lastMemberX + TILE.width)
+            this.translateMapTypes(maps, lastMemberX + TILE.width) :
+            this.translateMapType(maps, lastMemberX + TILE.width)
 
         //ADD TO GROUPS
         this.activeGroup.addMultiple(translationResult.platforms, true)
