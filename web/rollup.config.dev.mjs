@@ -12,15 +12,25 @@ import builtins from "rollup-plugin-node-builtins";
 import json from "@rollup/plugin-json";
 
 export default {
-  input: "src/main.ts",
-  output: {
-    file: "./dist/bundle.js",
-    name: "PhaserTemplate",
-    format: "iife",
+  input: {
+    main: "src/main.ts",
+    game: "src/game.ts"
+  },
+  output: [{
+    dir: "./dist/",
+    name: "HomePage",
+    format: "es",
     indent: false,
     sourcemap: true,
     minifyInternalExports: false,
-  },
+  }, {
+    dir: "./dist/",
+    name: "PhaserTemplate",
+    format: "es",
+    indent: false,
+    sourcemap: true,
+    minifyInternalExports: false,
+  }],
   plugins: [
     json(),
     url({
@@ -63,7 +73,10 @@ export default {
       runOnce: true,
     }),
     copy({
-      targets: [{ src: "index.html", dest: "dist/" }],
+      targets: [
+        { src: "index.html", dest: "dist/" },
+        { src:"game.html", dest: "dist/" }
+      ],
       copyOnce: true,
     }),
   ],

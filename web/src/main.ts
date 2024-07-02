@@ -1,41 +1,16 @@
-import "./styles/style.css"
-import { Game, Types, Scale, WEBGL } from "phaser";
-import { screenSizes } from "./constants";
-import { GameScene } from "./scenes/_index";
-import { GAME_PARAMETERS } from "./configurations/_index";
-import { ConfigurationManager } from "./configurations/_index";
-import { GameState } from "./objects/_index";
+import "./styles/main.css"
 
-const parent = document.getElementById("gameContainer")
+const form = document.getElementById("generatorForm");
 
-const gameConfig: Types.Core.GameConfig = {
-    type: WEBGL,
-    scale: {
-        mode: Scale.ScaleModes.NONE,
-        width: screenSizes.width,
-        height: screenSizes.height,
-
-    },
-    physics: {
-        default: "arcade",
-        arcade: {
-            debug: GAME_PARAMETERS.debug,
-        },
-
-    },
-    render: {
-        antialiasGL: false,
-        pixelArt: true
-    },
-    parent: parent ?? undefined,
-    canvasStyle: "display:block; width: 100%; height:100%",
-    autoFocus: true,
-    callbacks: {
-
-    },
-    scene: GameScene
+const changeGenerator = ()=> {
+  const select = document.getElementById("generatorSelect");
+  if(select){
+    console.log("here")
+    window.location.href = `/game.html?generator=${(select as any).value}` 
+  }
 }
 
-window.game = new Game(gameConfig);
-window.configurationManager = new ConfigurationManager()
-window.gameState = new GameState()
+form?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  changeGenerator();
+});

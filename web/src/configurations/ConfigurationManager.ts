@@ -12,7 +12,7 @@ export class ConfigurationManager implements IConfigurationManager {
     public platauTreeOrStumpChance: number;
     public maxStumpsAndTreesOnPlatau: number;
     public skillFactor: number;
-    public currentGenerator: Generators = "ReinforcementLearningGenerator";
+    public currentGenerator: Generators = "LinearGenerator";
 
     //CAP
     public isMaxCoinChance: boolean = false
@@ -21,7 +21,17 @@ export class ConfigurationManager implements IConfigurationManager {
     private platformDifficultyPickStepFactor: number;
 
     constructor() {
+        this.getGeneratorNamefromUrl()
         this.setupParams()
+    }
+    private getGeneratorNamefromUrl(){
+        const query = window.location.search
+        const params = new URLSearchParams(query)
+        const generator = params.get("generator")
+        if(generator){
+            this.currentGenerator = generator as Generators
+            console.log({currentGenerator: this.currentGenerator})
+        }
     }
     private setupParams(): void {
         const params = this.resolveGeneratorParameters()

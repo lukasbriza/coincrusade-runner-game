@@ -15,6 +15,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     private keyD?: Input.Keyboard.Key;
     private keyA?: Input.Keyboard.Key;
     private keyR?: Input.Keyboard.Key;
+    private keyQ?: Input.Keyboard.Key;
 
     private eventHelper: Eventhelper;
     private assetHelper: AssetHelper
@@ -48,6 +49,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyD = scene.input.keyboard?.addKey("D", false, false)
         this.keyA = scene.input.keyboard?.addKey("A", false, false)
         this.keyR = scene.input.keyboard?.addKey("R", false, false)
+        this.keyQ = scene.input.keyboard?.addKey("Q", false, false)
 
         //enable body collisions
         this.getBody().setCollideWorldBounds(false, undefined, undefined, true)
@@ -70,6 +72,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.keyW?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
         this.keyR?.on("down", this.restartProcess, this)
+        this.keyQ?.on("down", this.quitProcess, this)
     }
     private removeListeners(): void {
         this.keyW?.removeListener("down", this.startCollectingPower, this)
@@ -186,6 +189,11 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         if (window.gameState.playerIsDead) {
             this.eventHelper.dispatch(EVENTS.GAME_RESTART)
             this.run()
+        }
+    }
+    private quitProcess(){
+        if (window.gameState.playerIsDead) {
+            window.location.href = "/"
         }
     }
 
