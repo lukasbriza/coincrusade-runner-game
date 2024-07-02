@@ -13,13 +13,21 @@ import json from "@rollup/plugin-json";
 import terser from "@rollup/plugin-terser";
 
 export default {
-  input: "src/main.ts",
-  output: {
-    file: "./dist/bundle.js",
-    name: "PhaserTemplate",
-    format: "iife",
-    sourcemap: true,
+  input: {
+    main: "src/main.ts",
+    game: "src/game.ts"
   },
+  output: [{
+    dir: "./dist/",
+    name: "HomePage",
+    format: "es",
+    sourcemap: true,
+  },{
+    dir: "./dist/",
+    name: "PhaserTemplate",
+    format: "es",
+    sourcemap: true,
+  }],
   plugins: [
     json(),
     glslify(),
@@ -58,6 +66,7 @@ export default {
     copy({
       targets: [
         { src: "index.html", dest: "dist/" },
+        { src:"game.html", dest: "dist/" },
         { src: "public/*", dest: "dist/" },
       ],
     }),

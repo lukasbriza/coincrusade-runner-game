@@ -8,7 +8,6 @@ import * as _ from "lodash-es";
 export class NoAIAdaptiveGenerator extends GeneratorBase implements IPlatformGenerator {
     public async generate() {
         const logs = window.gameState.getLastTwoChunks()
-        const config = window.configurationManager
 
         const finalMaps: MapTypeExtended[] = []
         let maxLenght = POOL_CONFIG.maxChunkPackageWidth

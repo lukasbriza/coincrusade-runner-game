@@ -16,11 +16,14 @@ export class PlayerStatus implements IPlayerStatus {
     private eventHelper: Eventhelper;
     private notes: Note[] = [];
 
+    private generatorNote: Note;
+    private restartNotes:Note[] = []
+
     constructor(scene: Scene) {
         this.scene = scene
         this.lifeCounter = new LifeCounter(scene)
+        this.addGeneratorNote()
         this.init()
-
 
         this.eventHelper = new Eventhelper(scene)
         this.eventHelper.addListener(EVENTS.ADD_NOTE, this.handleAddNote, this)
@@ -44,6 +47,16 @@ export class PlayerStatus implements IPlayerStatus {
         this.notes = []
 
         this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height)
+    }
+
+    private addGeneratorNote(){
+        this.generatorNote = new Note(this.scene);
+        this.generatorNote.showNote(
+            window.configurationManager.currentGenerator,
+            this.scene.renderer.width/2,
+            this.scene.renderer.height - 70
+        )
+        this.generatorNote.note?.setDepth(100)
     }
 
     private handleAddNote(note: string, warning: boolean = false, duration: number = 10000) {
@@ -70,35 +83,36 @@ export class PlayerStatus implements IPlayerStatus {
     }
 
     private playerDeadNote() {
-        //CLEANUP
-        this.notes.forEach(note => {
-            if (note.note) {
-                note.note.destroy(true)
-            }
-        })
-        this.notes = []
 
         const gameOverNote = new Note(this.scene)
         const restartNote = new Note(this.scene)
+        const quitNote = new Note(this.scene) 
 
         gameOverNote.showNote("GAME OVER", 0, 0)
-        restartNote.showNote(`Press "R" for restart`, 0, 0)
+        restartNote.showNote(`Stiskni "R" pro restart`, 0, 0)
+        quitNote.showNote(`Pro odchod ze hry stiskni "Q"`, 0, 0)
+
 
         gameOverNote.note?.setOrigin(0.5, 0.5)
         gameOverNote.note?.setScale(4, 4)
         gameOverNote.note?.setTintFill(0xEF3A0C)
+        gameOverNote.note?.setDepth(100)
 
         restartNote.note?.setOrigin(0.5, 0.5)
         restartNote.note?.setScale(2, 2)
         restartNote.note?.setTintFill(0xEF3A0C)
+        restartNote.note?.setDepth(100)
 
-        this.notes.push(gameOverNote)
-        this.notes.push(restartNote)
+        quitNote.note?.setOrigin(0.5, 0.5)
+        quitNote.note?.setScale(2, 2)
+        quitNote.note?.setTintFill(0xEF3A0C)
+        quitNote.note?.setDepth(100)
 
-        let cumulativeHeight = 0
-        this.notes.forEach(n => { cumulativeHeight = cumulativeHeight + n.note!.height })
-
-        gameOverNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) - cumulativeHeight / 2)
         restartNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2))
+        gameOverNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) - (restartNote.note?.height ?? 0))
+        quitNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) + ((restartNote.note?.height ?? 0)/2) + 10)
+
+        this.restartNotes.push(gameOverNote)
+        this.restartNotes.push(restartNote)
     }
 }

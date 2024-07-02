@@ -94,7 +94,7 @@ export class PlatformDatabase implements IPlatformDatabase {
                     //MARK FOR CHUNK END LOG
                     if (chunkEnd) {
                         slopeTrigger.setData("chunkEnd", true)
-                        slopeTrigger.setAlpha(1)
+                        slopeTrigger.setAlpha(0)
                         slopeTrigger.setDepth(10)
                         slopeTrigger.setTintFill(0xff0000)
                     }

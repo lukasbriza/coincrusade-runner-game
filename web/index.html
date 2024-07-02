@@ -7,9 +7,19 @@
   </head>
 
   <body>
-    <div id="gameContainer">
-      <div id="test"></div>
-    </div>
-    <script src="./bundle.js" type="text/javascript"></script>
+    <section id="main">
+      <h1>Výběr algoritmu</h1>
+      <form id="generatorForm" action="">
+          <select name="generators" id="generatorSelect">
+            <option value="LinearGenerator">Lineární generátor</option>
+            <option value="HamletSystem">Hamlet Systém generátor</option>
+            <option value="NeuralNetworkGenerator">Generátor s neuronovou sítí</option>
+            <option value="ReinforcementLearningGenerator">Generátor s posilovaným učením (Q-learning)</option>
+          </select>
+          <br>
+        <button type="submit">Vybrat</button>
+      </form>
+    </section>
+    <script src="./main.js" type="module"></script>
   </body>
 </html>
