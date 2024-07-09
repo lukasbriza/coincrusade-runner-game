@@ -45,7 +45,7 @@
         }
       }
     },
-    "/api/hamlet/predict": {
+    "/api/nn/predict": {
       "post": {
         "description": "",
         "parameters": [

@@ -10,12 +10,13 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     public isAttacking: boolean = false;
     private powerBar?: PowerBar;
 
-    private keyW?: Input.Keyboard.Key;
     private keyK?: Input.Keyboard.Key;
-    private keyD?: Input.Keyboard.Key;
-    private keyA?: Input.Keyboard.Key;
     private keyR?: Input.Keyboard.Key;
     private keyQ?: Input.Keyboard.Key;
+    private keyLeft?: Input.Keyboard.Key;
+    private keyRight?: Input.Keyboard.Key;
+    private keyUp?: Input.Keyboard.Key;
+    private keySpace?: Input.Keyboard.Key;
 
     private eventHelper: Eventhelper;
     private assetHelper: AssetHelper
@@ -44,10 +45,11 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         this.setDepth(1)
         this.setBottomY(this.scene.game.renderer.height - TILE.height)
         //init key objects
-        this.keyW = scene.input.keyboard?.addKey("W", false, false)
+        this.keyUp = scene.input.keyboard?.addKey("up", false, false)
+        this.keySpace = scene.input.keyboard?.addKey("space", false, false)
+        this.keyLeft = scene.input.keyboard?.addKey("left", false, false)
+        this.keyRight = scene.input.keyboard?.addKey("right", false, false)
         this.keyK = scene.input.keyboard?.addKey("K", false, false)
-        this.keyD = scene.input.keyboard?.addKey("D", false, false)
-        this.keyA = scene.input.keyboard?.addKey("A", false, false)
         this.keyR = scene.input.keyboard?.addKey("R", false, false)
         this.keyQ = scene.input.keyboard?.addKey("Q", false, false)
 
@@ -68,15 +70,17 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 
     //INIT
     private initListeners(): void {
-        this.keyW?.on("down", this.startCollectingPower, this)
-        this.keyW?.on("up", this.jump, this)
+        this.keySpace?.on("down", this.startCollectingPower, this)
+        this.keySpace?.on("up", this.jump, this)
+        this.keyUp?.on("down", this.startCollectingPower, this)
+        this.keyUp?.on("up", this.jump, this)
         this.keyK?.on("down", this.attack, this)
         this.keyR?.on("down", this.restartProcess, this)
         this.keyQ?.on("down", this.quitProcess, this)
     }
     private removeListeners(): void {
-        this.keyW?.removeListener("down", this.startCollectingPower, this)
-        this.keyW?.removeListener("up", this.jump, this)
+        this.keyUp?.removeListener("down", this.startCollectingPower, this)
+        this.keyUp?.removeListener("up", this.jump, this)
         this.keyK?.removeListener("down", this.attack, this)
     }
     private knightreset() {
@@ -191,7 +195,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
             this.run()
         }
     }
-    private quitProcess(){
+    private quitProcess() {
         if (window.gameState.playerIsDead) {
             window.location.href = "/"
         }
@@ -208,7 +212,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 
         //Callback when on right side of world
         if ((this.body!.x + this.body!.width) >= (this.scene.renderer.width - (TILE.width / 2))) {
-            !this.keyA?.isDown && this.onRightWorldBound()
+            !this.keyLeft?.isDown && this.onRightWorldBound()
         }
         //Callback when on left side of world
         if (this.body!.x <= 10 && !this.immortalAnimation && !isDead) {
@@ -219,26 +223,26 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
         }
 
         //A
-        const canLeftRun = this.keyA?.isDown && this.keyD?.isUp && this.body?.velocity.x !== GAME_PARAMETERS.knightMoveVelocityLeftX
+        const canLeftRun = this.keyLeft?.isDown && this.keyRight?.isUp && this.body?.velocity.x !== GAME_PARAMETERS.knightMoveVelocityLeftX
         if (canLeftRun && !isDead) {
             this.runSlover()
         }
-        const handleAirAkey = this.keyA?.isUp && this.inAir && this.body?.velocity.x === GAME_PARAMETERS.knightMoveVelocityLeftX
+        const handleAirAkey = this.keyLeft?.isUp && this.inAir && this.body?.velocity.x === GAME_PARAMETERS.knightMoveVelocityLeftX
         if (handleAirAkey && !isDead) {
             this.setVelocityX(0)
         }
         //D
-        const canRightRun = this.keyD?.isDown && this.body!.velocity.x !== GAME_PARAMETERS.knightMoveVelocityRightX
+        const canRightRun = this.keyRight?.isDown && this.body!.velocity.x !== GAME_PARAMETERS.knightMoveVelocityRightX
         if (canRightRun && !isDead) {
             this.runQuicker()
         }
-        const handleAirDkey = this.keyD?.isUp && this.inAir && this.body!.velocity.x === GAME_PARAMETERS.knightMoveVelocityRightX
+        const handleAirDkey = this.keyRight?.isUp && this.inAir && this.body!.velocity.x === GAME_PARAMETERS.knightMoveVelocityRightX
         if (handleAirDkey && !isDead) {
             this.setVelocityX(0)
         }
 
         //DEFAULT
-        const canRun = this.keyA?.isUp && this.keyD?.isUp && !this.inAir && this.body!.velocity.x !== 0
+        const canRun = this.keyLeft?.isUp && this.keyRight?.isUp && !this.inAir && this.body!.velocity.x !== 0
         if (canRun && !isDead) {
             this.run()
         }

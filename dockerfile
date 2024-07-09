@@ -11,6 +11,7 @@ RUN npm install && npm run build
 WORKDIR /usr/app/server
 COPY server/*json server/.env ./
 COPY server/src ./src
+COPY server/scripts ./scripts
 RUN npm install && npm run build
 
 #stage 2
