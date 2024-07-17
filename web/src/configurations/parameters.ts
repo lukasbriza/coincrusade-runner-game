@@ -17,7 +17,7 @@ export const GAME_PARAMETERS: AppParameters = {
     playerHealRateInSeconds: 30,
     baseTimeInMinutes: 2,
 
-    sendLogs: false
+    sendLogs: true
 }
 
 const GENERATOR_BASE_PARAMETERS = {

@@ -6,6 +6,7 @@ import { EVENTS } from "../../constants";
 import { Note } from "./Note";
 import { IPlayerStatus } from "../../interfaces/_index";
 import { Eventhelper } from "../../helpers/_index";
+import { GAME_PARAMETERS } from "../../configurations/_index";
 
 export class PlayerStatus implements IPlayerStatus {
     public coinCounter: CoinCounter;
@@ -17,7 +18,7 @@ export class PlayerStatus implements IPlayerStatus {
     private notes: Note[] = [];
 
     private generatorNote: Note;
-    private restartNotes:Note[] = []
+    private restartNotes: Note[] = []
 
     constructor(scene: Scene) {
         this.scene = scene
@@ -41,35 +42,32 @@ export class PlayerStatus implements IPlayerStatus {
     }
 
     private reset() {
-        this.coinCounter.reset()
-        this.timeCounter.timeText?.destroy(true)
-        this.notes.forEach(note => note.note?.destroy(true))
-        this.notes = []
-
-        this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height)
+        location.reload()
     }
 
-    private addGeneratorNote(){
+    private addGeneratorNote() {
         this.generatorNote = new Note(this.scene);
         this.generatorNote.showNote(
             window.configurationManager.currentGenerator,
-            this.scene.renderer.width/2,
+            this.scene.renderer.width / 2,
             this.scene.renderer.height - 70
         )
         this.generatorNote.note?.setDepth(100)
     }
 
     private handleAddNote(note: string, warning: boolean = false, duration: number = 10000) {
-        const warningColor = 0xEF3A0C
-        const okColor = 0x5eb138
-        const noteInstance = new Note(this.scene)
+        if (GAME_PARAMETERS.debug && !warning) {
+            const warningColor = 0xEF3A0C
+            const okColor = 0x5eb138
+            const noteInstance = new Note(this.scene)
 
-        noteInstance.showNote(note, "center", 0)
-        noteInstance.note?.setTintFill(warning ? warningColor : okColor)
-        noteInstance.destroyAfter(duration)
+            noteInstance.showNote(note, "center", 0)
+            noteInstance.note?.setTintFill(warning ? warningColor : okColor)
+            noteInstance.destroyAfter(duration)
 
-        this.notes.push(noteInstance)
-        this.drawNotes()
+            this.notes.push(noteInstance)
+            this.drawNotes()
+        }
     }
 
     private drawNotes() {
@@ -86,7 +84,7 @@ export class PlayerStatus implements IPlayerStatus {
 
         const gameOverNote = new Note(this.scene)
         const restartNote = new Note(this.scene)
-        const quitNote = new Note(this.scene) 
+        const quitNote = new Note(this.scene)
 
         gameOverNote.showNote("GAME OVER", 0, 0)
         restartNote.showNote(`Stiskni "R" pro restart`, 0, 0)
@@ -110,7 +108,7 @@ export class PlayerStatus implements IPlayerStatus {
 
         restartNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2))
         gameOverNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) - (restartNote.note?.height ?? 0))
-        quitNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) + ((restartNote.note?.height ?? 0)/2) + 10)
+        quitNote.note?.setPosition(this.scene.renderer.width / 2, (this.scene.renderer.height / 2) + ((restartNote.note?.height ?? 0) / 2) + 10)
 
         this.restartNotes.push(gameOverNote)
         this.restartNotes.push(restartNote)

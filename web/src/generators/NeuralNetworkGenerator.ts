@@ -45,12 +45,15 @@ export class NeuralNetworkGenerator extends GeneratorBase implements IPlatformGe
         //ADJUSTMENT
         switch (indexOfHighestValue) {
             case DIFF_POLICY.DECREASE:
+                console.log("decrease")
                 this.applyDifficultyDecreasePolicy(pickIndex)
                 break;
             case DIFF_POLICY.NOTHING:
+                console.log("nothing")
                 this.eventHelper.dispatch(EVENTS.SUGGESTED_ACTION, "neutral")
                 break;
             case DIFF_POLICY.INCREASE:
+                console.log("increase")
                 this.applyDifficultyIncreasePolicy(pickIndex)
                 break;
         }

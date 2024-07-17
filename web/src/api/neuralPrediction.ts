@@ -5,7 +5,7 @@ import axios from "axios";
 export const getNeuralPrediction = async (chunk: IChunkLog) => {
     const api = config.development ? config["api-dev"] : config.api
     try {
-        const result = await axios.post<NeuralPredictionRepsonse>(api + "/hamlet/predict", { data: chunk })
+        const result = await axios.post<NeuralPredictionRepsonse>(api + "/nn/predict", { data: chunk })
         return result.data.data
     } catch (error) {
         console.log(error)

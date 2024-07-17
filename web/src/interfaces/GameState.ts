@@ -1,5 +1,7 @@
 import { ChangeTypes, Generators } from "./_index"
 
+export type ActionType = "increase" | "decrease" | "neutral"
+
 export type IGameState = {
     chunksData: IChunkLog[]
     playerIsDead: boolean
@@ -15,7 +17,7 @@ export type IGameState = {
     incrementLostLives: () => void
     incrementElapsedSeconds: () => void
     incrementGainedSeconds: (by?: number) => void
-    logSuggestedAction: (action: "increase" | "decrease" | "neutral") => void
+    logSuggestedAction: (action: ActionType) => void
     logMapDifficulty: (diff: number) => void
     setParameterChange: (change: ChangeTypes) => void
     saveChunk: () => void
@@ -51,7 +53,7 @@ export type IChunkLog = {
     platformSpeed: number //run speed
     totalElapsedSeconds: number
     totalGainedSeconds: number
-    suggestedAction?: "increase" | "decrease" | "neutral"
+    suggestedAction?: ActionType
     engine: Generators
     changed?: ChangeTypes
     actualDifficultySkore: number

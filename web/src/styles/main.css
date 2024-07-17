@@ -31,6 +31,14 @@ body{
   transform: translateX(-50%);
 }
 
+#controls{
+  margin-top: 50px;
+  position:relative;
+  width:fit-content;
+  left:50%;
+  transform: translateX(-50%);
+}
+
 h1{
   text-align: center;
   text-transform: uppercase;

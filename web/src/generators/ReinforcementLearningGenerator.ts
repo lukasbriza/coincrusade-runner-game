@@ -1,6 +1,6 @@
 import { GAME_PARAMETERS, REINFORCEMENT_LEARNING_GENERATOR } from "../configurations/_index";
 import { DIFF_POLICY, POOL_CONFIG } from "../constants";
-import { IChunkLog, IPlatformGenerator, MapTypeExtended } from "../interfaces/_index";
+import { ActionType, IChunkLog, IPlatformGenerator, MapTypeExtended } from "../interfaces/_index";
 import { generateMap, getChangeDistributions, pickBasedOnWeights } from "../utils/_index";
 import { GeneratorBase } from "./GeneratorBase"
 import * as _ from "lodash-es";
@@ -46,10 +46,10 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
 
         //GET PREV STATE
         const state = this.getState(chunks[0])
-        //GET ACTION BASED ON PREV STATE
-        const action = this.chooseAction(state)
         //GET ACTUAL STATE
         const nextState = this.getState(chunks[1])
+        //GET ACTION BASED ON PREV STATE
+        const action = this.chooseAction(state, nextState, chunks[0].suggestedAction)
         //GET REWARD
         const reward = this.calculateReward(state)
         //Q LEARNING
@@ -84,7 +84,7 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
     }
 
     //CHOOSE ACTION USING EPSILON GREEDY STRATEGY
-    private chooseAction(state: State): DIFF_POLICY {
+    private chooseAction(state: State, actualState: State, prevSuggestion?: ActionType): DIFF_POLICY {
         //PROPABILITY TO CHOOSE RANDOM ACTION
         if (Math.random() < this.epsilon) {
             console.log("Choosed exploration.")
@@ -94,6 +94,15 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         const stateKey = this.stateToKey(state)
         const hasKey = Object.keys(this.QTable).find(k => k === stateKey)
         if (hasKey) {
+
+            const stateSum = (state.coinRatio + state.liveRatio + state.timeRatio) / 3;
+            const actualStateSum = (actualState.coinRatio + actualState.liveRatio + actualState.timeRatio) / 3;
+
+            if (prevSuggestion === "decrease" && actualStateSum > stateSum) {
+                console.log("Edge policy applied.")
+                return DIFF_POLICY.INCREASE
+            }
+
             console.log("Choosed best action from QTable.", this.QTable[stateKey])
             return this.QTable[stateKey][0] > this.QTable[stateKey][1] ? DIFF_POLICY.INCREASE : DIFF_POLICY.DECREASE
         }
