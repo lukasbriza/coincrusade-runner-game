@@ -68,21 +68,6 @@ const prepareData = async () => {
         const nTrainData = neutralData.slice(nFloor + 1, neutralData.length - 1)
         const dTrainData = decreaseData.slice(dFloor + 1, decreaseData.length - 1)
 
-        /*
-        console.log("traindata:", evalData)
-        console.log("resultdata:", evalData)
-        console.log("nOfDecrease:", evalData.filter(x => x[1][0] === 1).length)
-        console.log("nOdNeutral:", evalData.filter(x => x[1][1] === 1).length)
-        console.log("nOfIncrease:", evalData.filter(x => x[1][2] === 1).length)
-        console.log({
-            iControlData,
-            nControlData,
-            dControlData,
-            iTrainData,
-            nTrainData,
-            dTrainData
-        })*/
-
         return { trainData: iTrainData.concat(nTrainData, dTrainData), testData: iControlData.concat(nControlData, dControlData) }
     }
 }

@@ -1,7 +1,7 @@
 import { AppParameters, IGeneratorParameters } from "../interfaces/_index"
 
 export const GAME_PARAMETERS: AppParameters = {
-    debug: false,
+    debug: true,
     playerGravityY: 1000,
     powerJumpLoadDelay: 5,
     powerJumpMaxCap: 60,

@@ -85,7 +85,6 @@ export class GameState implements IGameState {
         }
         this.chunksData.push(log)
         this.resetLastChunkData()
-        //console.log("chunkSaved", this.getState())
     }
     private resetLastChunkData(): void {
         this.lastChunkElapsedSeconds = 0

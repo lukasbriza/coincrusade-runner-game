@@ -1,6 +1,6 @@
 import { GAME_PARAMETERS, REINFORCEMENT_LEARNING_GENERATOR } from "../configurations/_index";
 import { DIFF_POLICY, POOL_CONFIG } from "../constants";
-import { ActionType, IChunkLog, IPlatformGenerator, MapTypeExtended } from "../interfaces/_index";
+import { IChunkLog, IPlatformGenerator, MapTypeExtended } from "../interfaces/_index";
 import { generateMap, getChangeDistributions, pickBasedOnWeights } from "../utils/_index";
 import { GeneratorBase } from "./GeneratorBase"
 import * as _ from "lodash-es";
@@ -12,10 +12,11 @@ type State = {
 }
 //[INCREASE Q,DECREASE Q]
 type QTableType = { [key: string]: [number, number] }
+const possibleParamStates = [0, 0.5, 1]
 
 export class ReinforcementLearningGenerator extends GeneratorBase implements IPlatformGenerator {
     private QTable: QTableType = {};
-    private alpha: number = 0.1; //learning rate
+    private alpha: number = 0.4; //learning rate
     private gamma: number = 0.9; //discont factor
     private epsilon: number = 0.2; //discovery ratio
 
@@ -27,9 +28,13 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         let lenght = 0
 
         //INITIAL STATE
-        const initialState = this.stateToKey({ coinRatio: 1, liveRatio: 1, timeRatio: 1 })
-        if (!this.QTable[initialState]) {
-            this.QTable[initialState] = [1, 0]
+        const initialState1 = this.stateToKey({ coinRatio: 1, liveRatio: 1, timeRatio: 1 })
+        const initialState2 = this.stateToKey({ coinRatio: 0, liveRatio: 0, timeRatio: 0 })
+        if (!this.QTable[initialState1]) {
+            this.QTable[initialState1] = [1, 0]
+        }
+        if (!this.QTable[initialState2]) {
+            this.QTable[initialState2] = [0, 1]
         }
 
         //ADJUSTMENT DISTRIBUTION CHANCES
@@ -49,9 +54,9 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         //GET ACTUAL STATE
         const nextState = this.getState(chunks[1])
         //GET ACTION BASED ON PREV STATE
-        const action = this.chooseAction(state, nextState, chunks[0].suggestedAction)
+        const action = this.chooseAction(state /*nextState, chunks[0].suggestedAction*/)
         //GET REWARD
-        const reward = this.calculateReward(state)
+        const reward = this.calculateReward(state, nextState)
         //Q LEARNING
         this.qLearning(state, nextState, action, reward)
 
@@ -66,7 +71,6 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         }
 
         //MAP GENERATION
-        console.log(this.QTable)
         generateMap(this, finalMaps, lenght, maxLenght)
         return finalMaps
     }
@@ -80,39 +84,38 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         const maxQOfNextState = this.getMaxQ(nextStateKey)
         const actionIndex = action === DIFF_POLICY.INCREASE ? 0 : 1
 
-        this.QTable[stateKey][actionIndex] += this.alpha * (reward + this.gamma * maxQOfNextState - this.QTable[stateKey][actionIndex])
+        this.QTable[stateKey][actionIndex] = this.QTable[stateKey][actionIndex] + this.alpha * (reward + (this.gamma * maxQOfNextState - this.QTable[stateKey][actionIndex]))
     }
 
     //CHOOSE ACTION USING EPSILON GREEDY STRATEGY
-    private chooseAction(state: State, actualState: State, prevSuggestion?: ActionType): DIFF_POLICY {
+    private chooseAction(state: State): DIFF_POLICY {
         //PROPABILITY TO CHOOSE RANDOM ACTION
         if (Math.random() < this.epsilon) {
-            console.log("Choosed exploration.")
             return _.sample([DIFF_POLICY.DECREASE, DIFF_POLICY.INCREASE])
         }
         //GET ACTION FROM QTABLE
         const stateKey = this.stateToKey(state)
         const hasKey = Object.keys(this.QTable).find(k => k === stateKey)
         if (hasKey) {
-
-            const stateSum = (state.coinRatio + state.liveRatio + state.timeRatio) / 3;
-            const actualStateSum = (actualState.coinRatio + actualState.liveRatio + actualState.timeRatio) / 3;
-
-            if (prevSuggestion === "decrease" && actualStateSum > stateSum) {
-                console.log("Edge policy applied.")
-                return DIFF_POLICY.INCREASE
-            }
-
-            console.log("Choosed best action from QTable.", this.QTable[stateKey])
             return this.QTable[stateKey][0] > this.QTable[stateKey][1] ? DIFF_POLICY.INCREASE : DIFF_POLICY.DECREASE
         }
         //RETURN RANDOM ACTION
-        console.log("If dont know best action, choose random.")
         return _.sample([DIFF_POLICY.DECREASE, DIFF_POLICY.INCREASE])
     }
 
     private stateToKey({ coinRatio, liveRatio, timeRatio }: State): string {
-        return `${coinRatio.toFixed(1)}-${liveRatio.toFixed(1)}-${timeRatio.toFixed(1)}`
+
+        const stateConvert = (num: number) => {
+            if (num <= 0.33) {
+                return possibleParamStates[0]
+            }
+            if (num > 0.67) {
+                return possibleParamStates[2]
+            }
+            return possibleParamStates[1]
+        }
+
+        return `${stateConvert(coinRatio)}-${stateConvert(liveRatio)}-${stateConvert(timeRatio)}`
     }
 
     //GET MAX Q VALUE OF STATE
@@ -137,11 +140,25 @@ export class ReinforcementLearningGenerator extends GeneratorBase implements IPl
         return { coinRatio, timeRatio, liveRatio }
     }
 
-    private calculateReward(state: State) {
+    private calculateReward(state: State, nextState: State) {
+        /*
         const rewardMultiplier = 1
         const coinReward = state.coinRatio * rewardMultiplier
         const timeReward = state.timeRatio * rewardMultiplier
         const liveReward = state.liveRatio * rewardMultiplier
-        return coinReward + timeReward + liveReward
+        return coinReward + timeReward + liveReward*/
+        const stateValue = (state.coinRatio + state.liveRatio + state.timeRatio) / 3
+        const nextStateValue = (nextState.coinRatio + nextState.liveRatio + nextState.timeRatio) / 3
+
+        const diffFromOptimalState = stateValue < 0.5 ? 0.5 - stateValue : stateValue - 0.5
+        const diffFromOptimalNextState = nextStateValue < 0.5 ? 0.5 - nextStateValue : nextStateValue - 0.5
+
+        //REWARD
+        if (diffFromOptimalState >= diffFromOptimalNextState) {
+            return (diffFromOptimalState - diffFromOptimalNextState) * 10
+        } else {
+            //PUNISHMENT
+            return - (diffFromOptimalNextState - diffFromOptimalState) * 10
+        }
     }
 }
