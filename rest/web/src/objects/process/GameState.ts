@@ -4,24 +4,24 @@ import { ChangeTypes, IChunkLog, IGameState } from "../../interfaces/_index";
 
 
 export class GameState implements IGameState {
-  private pickedCoins: number = 0;
-  private generatedCoins: number = 0;
-  private overcomedSlopes: number = 0;
-  private lostLives: number = 0;
-  public actualLives: number = GAME_PARAMETERS.maxPlayerLives;
-  public elapsedSeconds: number = 0;
-  public gainedSeconds: number = 0;
+  private pickedCoins: number = 0; //
+  private generatedCoins: number = 0; //
+  private overcomedSlopes: number = 0; //
+  private lostLives: number = 0; //
+  public actualLives: number = GAME_PARAMETERS.maxPlayerLives; //
+  public elapsedSeconds: number = 0; //
+  public gainedSeconds: number = 0; //
 
-  public difficultyScore: number = 0;
+  public difficultyScore: number = 0; //
 
-  private lastChunkElapsedSeconds: number = 0;
-  private lastChunkGainedSeconds: number = 0;
-  private lastChunkLostLives: number = 0;
-  private lastChunkPickedCoins: number = 0;
-  private lastChunkGeneratedCoins: number = 0;
-  private lastChunkMapDifficulties: number[] = [];
-  private lastChunkSuggestedAction?: "increase" | "decrease" | "neutral" = undefined;
-  private lastChunkChange?: ChangeTypes = undefined;
+  private lastChunkElapsedSeconds: number = 0; //
+  private lastChunkGainedSeconds: number = 0; //
+  private lastChunkLostLives: number = 0; //
+  private lastChunkPickedCoins: number = 0; //
+  private lastChunkGeneratedCoins: number = 0; //
+  private lastChunkMapDifficulties: number[] = []; //
+  private lastChunkSuggestedAction?: "increase" | "decrease" | "neutral" = undefined; //
+  private lastChunkChange?: ChangeTypes = undefined; //
 
   public chunksData: IChunkLog[] = [];
   public playerIsDead: boolean = false;

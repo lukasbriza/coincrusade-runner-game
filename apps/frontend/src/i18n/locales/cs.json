@@ -1,0 +1,59 @@
+{
+  "video":{
+    "cantLoad": "Váš prohlížeč nepodporuje video tag."
+  },
+  "anchors": {
+    "game": "Hra",
+    "controls": "Ovládání",
+    "contact": "Kontakt"
+  },
+  "home": {
+    "heroMain": "COIN CRUSADE",
+    "heroSubtitle": "KNIGHT´S QUEST",
+    "engines": {
+      "linear": {
+        "header": "Lineární generátor",
+        "content": "Lorem ipsum"
+      },
+      "hamlet-system": {
+        "header": "Hamlet systém",
+        "content": "Lorem ipsum2"
+      },
+      "neural-network": {
+        "header": "Neuronová síť",
+        "content": "Lorem ipsum3"
+      },
+      "reinforcement-learning": {
+        "header": "Posilované učení",
+        "content": "Lorem ipsum 4"
+      },
+      "button": "Hrát"
+    },
+    "controls": {
+      "header": "Ovládání",
+      "movement": {
+        "headerRight": "Pohyb doprava",
+        "headerLeft": "Pohyb doleva",
+        "headerJump": "Skok",
+        "right": {
+          "text": "Stisknutím šipky doprava je provedeno zrychlení postavy ve směru automatického pohybu."
+        },
+        "left": {
+          "text": "Stisknutím šipky doleva je provedeno zrychlení postavy ve směru proti automatickému pohybu."
+        },
+        "jump": {
+          "text": "Podržením šipky nahoru nebo mezerníku je proveden skok. Čím déle je klávesa stisknuta, tím je skok větší. Během probíhajícího skoku nelze zahájit skok nový."
+        }
+      }
+    },
+    "contact": {
+      "header": "Kontakt",
+      "text": "Našli jste nějakou chybu, nebo máte nápad jak hru zlepšit? Budeme rádi, když se nám ozvete.",
+      "form": {
+        "email": "E-mail",
+        "message": "Zpráva",
+        "send": "Odeslat"
+      }
+    }
+  }
+}

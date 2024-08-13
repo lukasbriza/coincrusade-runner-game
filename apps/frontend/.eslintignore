@@ -1,0 +1,5 @@
+/**/*.generated.*
+/.next
+/public
+global.d.ts
+next.config.mjs
