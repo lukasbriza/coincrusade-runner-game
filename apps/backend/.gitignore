@@ -1,0 +1,6 @@
+/**/*.generated.ts
+/prisma/**/generated
+/schema.graphql
+/tyr.schema.graphql
+node_modules
+/**/prisma/generated
