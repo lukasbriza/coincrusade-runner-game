@@ -9,8 +9,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { EventBus, EventBusEvents, getGameInstance } from '@/lib/phaser'
 
-import { GameScene } from '../scenes'
-
 export type GameContextProps = {
   game: Game | null
   gameContainer: HTMLDivElement | null
@@ -37,8 +35,7 @@ const GameProvider: FC<{ children?: ReactNode }> = ({ children }) => {
     if (gameContainer && gameStateLoaded) {
       const initPhaser = async () => {
         if (parent) {
-          const scenes = [GameScene]
-          const phaserGame = await getGameInstance(parent, scenes)
+          const phaserGame = await getGameInstance(parent)
           setGame(phaserGame)
         }
       }
@@ -51,7 +48,10 @@ const GameProvider: FC<{ children?: ReactNode }> = ({ children }) => {
   }, [gameContainer, gameStateLoaded])
 
   useEffect(() => {
+    // GAME STATE INITILIZED
     EventBus.on(EventBusEvents.GameStateInitialization, () => setGameStateLoaded(true))
+
+    EventBus.on(EventBusEvents.ThrowError, (message: string) => console.log(message))
   }, [])
 
   const context: GameContextProps = useMemo(() => ({ game, gameContainer, setGameContainer }), [game])

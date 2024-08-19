@@ -1,4 +1,4 @@
-import type { LastChunk } from '@/shared'
+import type { LastChunk } from '@/lib/phaser'
 
 export const initLastChunk = (): LastChunk => ({
   lastChunkLostLives: 0,

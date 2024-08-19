@@ -4,25 +4,24 @@ export const EventBus = new Events.EventEmitter()
 
 export enum EventBusEvents {
   GameStateInitialization = 'game-state-initialization',
-  KnightHit = 'player-hit',
-  LiveDecreased = 'live-decreased',
+
+  KnightHit = 'knight-hit',
+  KnightHitCallback = 'knight-hit-callback',
+  KnightLeftSideCollision = 'knight-left-side-collision',
+  KnightDead = 'knight-dead',
+
   CoinGenerated = 'coin-generated',
-  CoinPicked = 'coin-picked',
-  CollectJumpPower = 'collect-jump-power',
-  StopCollectJumpPower = 'stop-collect-jump-power',
-  SlopeOvercomed = 'slope-overcomed',
+
   LogMapDifficulty = 'log-map-difficulty',
+
+  NoteDestroyed = 'note-destroyed',
+
   SecondPassed = 'second-passed',
-  TimeGained = 'time-gained',
-  ChunkEnded = 'chunk-ended',
-  LifeAdded = 'life-added',
-  PlayerDead = 'player-dead',
-  PlayerRelocated = 'player-relocated',
-  AddNote = 'add-note',
-  DestroyNote = 'destroy-note',
-  SuggestedAction = 'suggested-action',
-  ParametrChanged = 'parameter-changed',
-  DifficultyScoreIncrease = 'difficulty-score-increase',
-  DifficultyScoreDecrease = 'difficulty-score-decrease',
+  SecondsGain = 'seconds-gain',
+
+  PlayerRelocate = 'player-relocate',
   RestartGame = 'restart-game',
+  EndGame = 'end-game',
+  ChunkEnd = 'chunk-end',
+  ThrowError = 'throw-error',
 }

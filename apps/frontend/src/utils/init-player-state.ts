@@ -1,4 +1,4 @@
-import type { PlayerState } from '@/shared'
+import type { PlayerState } from '@/lib/phaser'
 
 export const initPlayerState = (): PlayerState => ({
   difficultyScore: 0,
