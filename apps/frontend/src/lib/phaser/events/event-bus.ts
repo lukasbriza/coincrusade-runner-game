@@ -10,6 +10,8 @@ export enum EventBusEvents {
   KnightLeftSideCollision = 'knight-left-side-collision',
   KnightDead = 'knight-dead',
 
+  LifeAdded = 'life-added',
+
   CoinGenerated = 'coin-generated',
 
   LogMapDifficulty = 'log-map-difficulty',

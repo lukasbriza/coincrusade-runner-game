@@ -1,4 +1,4 @@
-import { EventBus, EventBusEvents } from '../event-bus'
+import { EventBus, EventBusEvents } from '../events/event-bus'
 
 export const emitError = (message: string) => {
   EventBus.emit(EventBusEvents.ThrowError)

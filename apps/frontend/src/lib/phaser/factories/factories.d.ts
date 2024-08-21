@@ -39,7 +39,7 @@ declare interface ICoinCounter {
 }
 
 declare interface ILifeCounter {
-  addLife: (by: number) => void
+  addLife: () => void
   decreaseLife: () => void
   reset: () => void
 }
@@ -72,7 +72,7 @@ declare namespace Phaser.GameObjects {
   interface GameObjectFactory {
     knight(): IKnight
     coin(): ICoin
-    life(): Phaser.Physics.Arcade.Sprite
+    life(scene: Phaser.Scene, x?: number, y?: number, full: boolean): Phaser.Physics.Arcade.Sprite
     water(): Phaser.Physics.Arcade.Sprite
     powerbar(parent: Physics.Arcade.Sprite, id: number): IPowerbar
     timeCounter(): ITimeCounter

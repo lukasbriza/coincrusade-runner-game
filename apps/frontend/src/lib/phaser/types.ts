@@ -35,6 +35,7 @@ export type LastChunk = {
   lastChunkMapDifficulties: number[]
   lastChunkSuggestedAction: SuggesteAction
   lastChunkChange?: ChangeTypes | undefined
+  lastChunkPlatformSpeed: number
 }
 
 export type PlayerState = {

@@ -2,7 +2,8 @@
 import type { GameObjects, Scene, Time } from 'phaser'
 
 import { ADD_TIME_EVERY_NUMBER_OF_COINS, BASE_TIME_IN_MINUTES, TIME_ADDITION_IN_SECONDS } from '../constants'
-import { EventBus, EventBusEvents } from '../event-bus'
+import { secondPassedEmiter } from '../events'
+import { EventBus, EventBusEvents } from '../events/event-bus'
 import type { ITimerHelper } from '../helpers'
 
 const formatSeconds = (seconds: number) => {
@@ -59,7 +60,7 @@ export class TimeCounter implements ITimeCounter {
   private secondPassed = () => {
     this.time.setSeconds(this.time.getSeconds() - 1)
     this.timeText.text = this.getTimeStringFormat()
-    EventBus.emit(EventBusEvents.SecondPassed)
+    secondPassedEmiter()
   }
 
   private stopCounter = () => {

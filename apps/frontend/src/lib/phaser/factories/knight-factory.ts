@@ -14,7 +14,8 @@ import {
 } from '../animations'
 import { SPRITE_KEYS } from '../assets'
 import { KNIGHT_LEFT_SPEED, KNIGHT_RIGHT_SPEED, PLAYER_GRAVITY, TILE_HEIGHT, TILE_WIDTH } from '../constants'
-import { EventBus, EventBusEvents } from '../event-bus'
+import { knightDeadListener, knightHitCallbackListener, knightLeftSideCollisionEmiter } from '../events'
+import { EventBus, EventBusEvents } from '../events/event-bus'
 import type { ITimerHelper } from '../helpers'
 import { isKnightOnLeftSideCorner, isKnightOnLeftSideOfWorld, isKnightOnRightSideOfWorld } from '../utils'
 
@@ -62,15 +63,15 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   }
 
   private initListeners() {
-    EventBus.on(EventBusEvents.KnightHitCallback, this.knightHit, this)
-    EventBus.on(EventBusEvents.KnightDead, this.knightDead, this)
+    knightHitCallbackListener((knight, worldObject) => this.knightHit(knight, worldObject))
+    knightDeadListener(this.knightDead)
 
     this.keySpace?.on('down', this.startCollectingPower, this)
     this.keySpace?.on('up', this.jump, this)
     this.keyUp?.on('down', this.startCollectingPower, this)
     this.keyUp?.on('up', this.jump, this)
     this.keyR?.on('down', this.knightReset, this)
-    this.keyQ?.on('down', () => EventBus.emit(EventBusEvents.EndGame), this)
+    this.keyQ?.on('down', this.gameQuit, this)
   }
   public removeListeners() {
     this.keyUp?.removeListener('down', this.startCollectingPower, this)
@@ -103,7 +104,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.setVelocityX(0)
     this.setX(this.scene.renderer.width - TILE_WIDTH)
   }
-  public onCollideWithWorld(_: ColliderObject, worldObject: ColliderObject) {
+  public onCollideWithWorld(_: IKnight, worldObject: ColliderObject) {
     if (worldObject instanceof Tilemaps.Tile) {
       return
     }
@@ -119,7 +120,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
       this.powerBar.startCollecting()
     }
   }
-  public knightHit = (knight: ColliderObject, worldObject: ColliderObject) => {
+  public knightHit = (knight: IKnight, worldObject: ColliderObject) => {
     this.run()
     this.immortalityAnimation()
     this.onCollideWithWorld(knight, worldObject)
@@ -129,6 +130,11 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
       EventBus.emit(EventBusEvents.RestartGame)
       this.run()
       this.resetState()
+    }
+  }
+  private gameQuit = () => {
+    if (this.deadEvent) {
+      EventBus.emit(EventBusEvents.EndGame)
     }
   }
 
@@ -177,7 +183,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
       }
       // Callback when on left side of world
       if (isKnightOnLeftSideOfWorld(this)) {
-        EventBus.emit(EventBusEvents.KnightLeftSideCollision, this)
+        knightLeftSideCollisionEmiter(this)
       }
       if (isKnightOnLeftSideCorner(this)) {
         this.setX(10)

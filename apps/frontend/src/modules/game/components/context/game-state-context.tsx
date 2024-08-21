@@ -5,16 +5,32 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import type { ChunkLog, LastChunk, PlayerState } from '@/lib/phaser'
 import { EventBus, EventBusEvents } from '@/lib/phaser'
+import {
+  chunkEndListener,
+  coinGeneratedListener,
+  knightDeadEmiter,
+  knightHitCallbackEmiter,
+  knightHitListener,
+  knightLeftSideCollisionListener,
+  lifeAddedListener,
+  logMapDifficultyListener,
+  playerRelocateEmiter,
+  secondPassedListener,
+  secondsGainListener,
+} from '@/lib/phaser/events'
 import type { ColliderObject } from '@/lib/phaser/factories'
 import { initLastChunk, initPlayerState } from '@/utils'
 
-export type SuggesteAction = 'decrease' | 'increase' | 'neutral' | undefined
-
-export type GameStateContextProps = {
-  state: PlayerState
-  lastChunk: LastChunk
-  chunksData: ChunkLog[]
-}
+import {
+  createAddSecondAction,
+  createChunkEndAction,
+  createCoinGeneratedAction,
+  createLifeAddedAction,
+  createLogMapDifficultyAction,
+  createOnHitAction,
+  createSecondsGainAction,
+} from './game-state-context-methods'
+import type { GameStateContextProps } from './types'
 
 const defaultValue: GameStateContextProps = {
   state: initPlayerState(),
@@ -27,7 +43,7 @@ const GameStateContext = createContext<GameStateContextProps>(defaultValue)
 const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<PlayerState>(defaultValue.state)
   const [lastChunk, setLastChunk] = useState<LastChunk>(defaultValue.lastChunk)
-  const [chunksData] = useState<ChunkLog[]>(defaultValue.chunksData)
+  const [chunksData, setChunksData] = useState<ChunkLog[]>(defaultValue.chunksData)
 
   const context: GameStateContextProps = useMemo(
     () => ({
@@ -38,50 +54,55 @@ const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => {
     [chunksData, lastChunk, state],
   )
 
-  // TODO dát do jednotlivých funkcí
+  const lifeAdded = createLifeAddedAction(setState, setLastChunk)
+  const onHit = createOnHitAction(setState, setLastChunk)
+  const addSecond = createAddSecondAction(setState, setLastChunk)
+  const coinGenerated = createCoinGeneratedAction(setState, setLastChunk)
+  const logMapDifficulty = createLogMapDifficultyAction(setLastChunk)
+  const chunkEnd = createChunkEndAction(setLastChunk, setChunksData)
+  const gainSeconds = createSecondsGainAction(setLastChunk)
+
+  const onKnightHit = (knight: IKnight, worldObject: ColliderObject) => {
+    if (!knight.immortalAnimation) {
+      onHit()
+      knightHitCallbackEmiter(knight, worldObject, context)
+    }
+  }
+
+  const onLeftSideCollision = (knight: IKnight) => {
+    if (!knight.immortalAnimation) {
+      onHit()
+    }
+    if (!state.playerIsDead) {
+      playerRelocateEmiter(knight, context)
+      return
+    }
+    knightDeadEmiter(knight, context)
+  }
+
+  const resetContext = () => {
+    setState(initPlayerState())
+    setLastChunk(initLastChunk())
+    setChunksData([])
+  }
+
   useEffect(() => {
     EventBus.emit(EventBusEvents.GameStateInitialization)
 
     // LISTENERS
-    // TODO doplnit logiku pro úpravu životů na hit
-    EventBus.on(EventBusEvents.KnightHit, (knight: ColliderObject, worldObject: ColliderObject) => {
-      setState((state) => ({
-        ...state,
-        actualLives: state.actualLives - 1,
-        lostLives: state.lostLives + 1,
-        playerIsDead: state.actualLives === 1,
-      }))
-      EventBus.emit(EventBusEvents.KnightHitCallback, knight, worldObject, context)
-    })
-    // TODO doplnit logiku pro úpravu životů na hit
-    EventBus.on(EventBusEvents.KnightLeftSideCollision, (knight: IKnight) => {
-      setState((state) => ({
-        ...state,
-        actualLives: state.actualLives - 1,
-        lostLives: state.lostLives + 1,
-        playerIsDead: state.actualLives === 1,
-      }))
-      if (!state.playerIsDead) {
-        EventBus.emit(EventBusEvents.PlayerRelocate, knight)
-        return
-      }
-      EventBus.emit(EventBusEvents.KnightDead)
-    })
-
+    knightHitListener(onKnightHit)
+    knightLeftSideCollisionListener(onLeftSideCollision)
+    coinGeneratedListener(coinGenerated)
+    lifeAddedListener(lifeAdded)
+    secondsGainListener(gainSeconds)
     // CHUNK DATA LISTENERS
-    EventBus.on(EventBusEvents.SecondPassed, () =>
-      setLastChunk((lastChunk) => ({ ...lastChunk, lastChunkElapsedSeconds: lastChunk.lastChunkElapsedSeconds + 1 })),
-    )
-    EventBus.on(EventBusEvents.SecondsGain, (seconds: number) =>
-      setLastChunk((lastChunk) => ({
-        ...lastChunk,
-        lastChunkElapsedSeconds: lastChunk.lastChunkElapsedSeconds + seconds,
-      })),
-    )
+    secondPassedListener(addSecond)
+    logMapDifficultyListener(logMapDifficulty)
+    chunkEndListener(() => chunkEnd(lastChunk, state))
 
     // GAME END ACTIONS
     EventBus.on(EventBusEvents.EndGame, () => console.log('endgame'))
-    EventBus.on(EventBusEvents.RestartGame, () => console.log('endgame'))
+    EventBus.on(EventBusEvents.RestartGame, resetContext)
 
     return () => {
       EventBus.removeAllListeners()

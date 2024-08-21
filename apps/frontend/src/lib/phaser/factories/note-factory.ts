@@ -2,7 +2,7 @@
 import type { Scene } from 'phaser'
 import { GameObjects } from 'phaser'
 
-import { EventBus, EventBusEvents } from '../event-bus'
+import { EventBus, EventBusEvents } from '../events/event-bus'
 
 import { Text } from './text-factory'
 
