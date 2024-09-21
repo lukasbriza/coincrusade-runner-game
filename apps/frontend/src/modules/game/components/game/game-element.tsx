@@ -1,19 +1,16 @@
-import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
+'use client'
 
-import { useGamecontext } from '../context'
+import type { FC } from 'react'
+import { useEffect } from 'react'
+
+import { EventBus, EventBusEvents } from '@/lib/phaser'
 
 const GameElement: FC = () => {
-  const { setGameContainer } = useGamecontext()
-  const ref = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
-    if (ref.current) {
-      setGameContainer(ref.current)
-    }
-  }, [ref, setGameContainer])
+    EventBus.emit(EventBusEvents.GameElementInitialization)
+  }, [])
 
-  return <div ref={ref} id="game-container" />
+  return <div id="game-container" />
 }
 
 export default GameElement

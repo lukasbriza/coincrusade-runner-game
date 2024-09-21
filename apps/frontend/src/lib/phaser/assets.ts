@@ -209,3 +209,11 @@ export const IMAGES: ImagesType = {
 export const FONTS: FontTypes = {
   [FONT_KEYS.MAIN]: { sheet: '/assets/fonts/main.png', bitmap: '/assets/fonts/main.xml' },
 }
+
+export const tents = [KEYS.TENT1, KEYS.TENT2, KEYS.TENT3, KEYS.TENT4]
+export const grass = [KEYS.GRASS1, KEYS.GRASS2, KEYS.GRASS3, KEYS.GRASS4, KEYS.GRASS5, KEYS.GRASS6]
+export const stumps = [KEYS.STUMP1, KEYS.STUMP2]
+export const trees = [KEYS.TREE1, KEYS.TREE2]
+export const obstacles = [SPRITE_KEYS.SPRITE_WATER, KEYS.ROCK1, KEYS.ROCK2]
+export const platform = [KEYS.GROUND, KEYS.SLIM_GROUND]
+export const stumpAndTrees = [...stumps, ...trees]

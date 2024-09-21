@@ -6,7 +6,10 @@ export type IGroupHelper = {
   findFirstMemberOfGroupByX: (
     additionalCondition?: (children: GameObjects.GameObject) => boolean,
   ) => GameObjects.GameObject | undefined
-  findAllMembersByCondition: (condition: (children: GameObjects.GameObject) => boolean) => GameObjects.GameObject[]
+  findAllMembersByCondition: (
+    condition: (children: GameObjects.GameObject) => boolean,
+    callbackOnSucess?: (children: GameObjects.GameObject) => void,
+  ) => GameObjects.GameObject[]
   getMemberByName: <T extends GameObjects.GameObject>(name: string) => T | undefined
 }
 

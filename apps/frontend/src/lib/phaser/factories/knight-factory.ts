@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/numeric-separators-style */
 /* eslint-disable lines-between-class-members */
 /* eslint-disable func-names */
 import type { Input, Scene, Time } from 'phaser'
@@ -13,15 +12,18 @@ import {
   knightRunReset,
 } from '../animations'
 import { SPRITE_KEYS } from '../assets'
-import { KNIGHT_LEFT_SPEED, KNIGHT_RIGHT_SPEED, PLAYER_GRAVITY, TILE_HEIGHT, TILE_WIDTH } from '../constants'
-import { knightDeadListener, knightHitCallbackListener, knightLeftSideCollisionEmiter } from '../events'
+import { TILE_HEIGHT, TILE_WIDTH } from '../constants'
+import { gameRestartEmiter, knightDeadListener, knightHitCallbackListener } from '../events'
 import { EventBus, EventBusEvents } from '../events/event-bus'
-import type { ITimerHelper } from '../helpers'
+import { TimerHelper, type ITimerHelper } from '../helpers'
+import { getGameStateContext } from '../singletons'
+import type { IScene } from '../types'
 import { isKnightOnLeftSideCorner, isKnightOnLeftSideOfWorld, isKnightOnRightSideOfWorld } from '../utils'
 
 import type { ColliderObject } from './types'
 
 export class Knight extends Physics.Arcade.Sprite implements IKnight {
+  public scene: IScene
   public id: number
   public inAir: boolean = false
   public isAttacking: boolean = false
@@ -42,17 +44,20 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 
   public timerHelper: ITimerHelper
 
-  constructor(scene: Scene, id: number) {
+  constructor(scene: IScene, id: number) {
     super(scene, 100, 100, SPRITE_KEYS.SPRITE_KNIGHT_RUN)
+    this.timerHelper = new TimerHelper(scene)
     this.scene.add.existing(this)
     this.scene.physics.add.existing(this)
+    this.scene = scene
     this.id = id
+
     this.setOrigin(0, 0.5)
     this.setSize(40, 65)
     this.setOffset(10, 65)
     this.setDepth(1)
     this.setBottomY(this.scene.game.renderer.height - TILE_HEIGHT)
-    this.setGravityY(PLAYER_GRAVITY)
+    this.setGravityY(this.scene.gameConfig.playerGravity)
 
     this.initKeys(scene)
     this.setupSpriteCollisions()
@@ -62,22 +67,26 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.run()
   }
 
-  private initListeners() {
-    knightHitCallbackListener((knight, worldObject) => this.knightHit(knight, worldObject))
-    knightDeadListener(this.knightDead)
-
+  private initMovementListeners() {
     this.keySpace?.on('down', this.startCollectingPower, this)
     this.keySpace?.on('up', this.jump, this)
     this.keyUp?.on('down', this.startCollectingPower, this)
     this.keyUp?.on('up', this.jump, this)
+  }
+
+  private initListeners() {
+    knightHitCallbackListener((knight, worldObject) => this.knightHit(knight, worldObject))
+    knightDeadListener(this.knightDead)
+
+    this.initMovementListeners()
     this.keyR?.on('down', this.knightReset, this)
     this.keyQ?.on('down', this.gameQuit, this)
   }
   public removeListeners() {
     this.keyUp?.removeListener('down', this.startCollectingPower, this)
     this.keyUp?.removeListener('up', this.jump, this)
-    this.keySpace?.on('down', this.startCollectingPower, this)
-    this.keySpace?.on('up', this.jump, this)
+    this.keySpace?.removeListener('down', this.startCollectingPower, this)
+    this.keySpace?.removeListener('up', this.jump, this)
   }
   private initKeys(scene: Scene) {
     this.keyUp = scene.input.keyboard?.addKey('up', false, false)
@@ -91,6 +100,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.deadEvent = false
     this.inAir = false
     this.powerBar.setPercents(0)
+    this.initMovementListeners()
   }
 
   // COLLISION
@@ -127,7 +137,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   }
   private knightReset = () => {
     if (this.deadEvent) {
-      EventBus.emit(EventBusEvents.RestartGame)
+      gameRestartEmiter()
       this.run()
       this.resetState()
     }
@@ -143,7 +153,9 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   private runSlover = () => knightRunLeft(this)
   private runQuicker = () => knightRunReset(this)
   private jump = () => knightJump(this)
-  private immortalityAnimation = () => knightImmortality(this)
+  private immortalityAnimation() {
+    knightImmortality(this, this.scene)
+  }
   private knightDead = () => {
     this.removeListeners()
     this.deadEvent = true
@@ -155,19 +167,21 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.setY(desiredY - this.height / 2)
   }
   private canLeftRun() {
-    return this.keyLeft?.isDown && this.keyRight?.isUp && this.body?.velocity.x !== KNIGHT_LEFT_SPEED
+    return (
+      this.keyLeft?.isDown && this.keyRight?.isUp && this.body?.velocity.x !== this.scene.gameConfig.knightLeftSpeed
+    )
   }
   private handleAirLeftKey() {
-    return this.keyLeft?.isUp && this.inAir && this.body?.velocity.x === KNIGHT_LEFT_SPEED
+    return this.keyLeft?.isUp && this.inAir && this.body?.velocity.x === this.scene.gameConfig.knightLeftSpeed
   }
   private canRightRun() {
-    return this.keyRight?.isDown && this.body?.velocity.x !== KNIGHT_RIGHT_SPEED
+    return this.keyRight?.isDown && this.body?.velocity.x !== this.scene.gameConfig.knightRightSpeed
   }
   private handleAirRightKey() {
-    return this.keyRight?.isUp && this.inAir && this.body?.velocity.x === KNIGHT_RIGHT_SPEED
+    return this.keyRight?.isUp && this.inAir && this.body?.velocity.x === this.scene.gameConfig.knightRightSpeed
   }
   private canRun() {
-    return this.keyLeft?.isUp && this.keyRight?.isUp && !this.inAir && this.body?.velocity.x !== 0
+    return this.keyLeft?.isUp && this.keyRight?.isUp && !this.inAir
   }
 
   // UPDATE LOOP
@@ -183,7 +197,8 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
       }
       // Callback when on left side of world
       if (isKnightOnLeftSideOfWorld(this)) {
-        knightLeftSideCollisionEmiter(this)
+        const stateSingleton = getGameStateContext()
+        stateSingleton.leftSideCollisionAction(this)
       }
       if (isKnightOnLeftSideCorner(this)) {
         this.setX(10)
@@ -213,7 +228,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 export const initKnightFactory = () => {
   GameObjects.GameObjectFactory.register('knight', function (this: Phaser.GameObjects.GameObjectFactory) {
     const id = Date.now()
-    const knight = new Knight(this.scene, id)
+    const knight = new Knight(this.scene as IScene, id)
     this.displayList.add(knight)
     this.updateList.add(knight)
     return knight

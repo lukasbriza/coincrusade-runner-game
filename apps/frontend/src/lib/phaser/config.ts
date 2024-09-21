@@ -1,3 +1,5 @@
+'use client'
+
 import { Scale, WEBGL, type Types } from 'phaser'
 
 const TILE = { width: 90, height: 90 }

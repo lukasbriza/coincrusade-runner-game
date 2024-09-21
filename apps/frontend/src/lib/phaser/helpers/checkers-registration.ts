@@ -2,8 +2,9 @@ import { Physics, type GameObjects, type Scene } from 'phaser'
 
 import { KEYS } from '../assets'
 import { CHECKER_PROPS } from '../constants'
-import { chunkEndEmiter, coinGeneratedEmiter, logMapDifficultyEmiter } from '../events'
 import { Coin } from '../factories/coin-factory'
+import { getGameStateContext } from '../singletons'
+import type { IScene } from '../types'
 
 import { TimerHelper } from './timer-helper'
 
@@ -12,12 +13,14 @@ const coinCheckValidation = (element: GameObjects.GameObject, scene: Scene) =>
 const slopeTriggerValidation = (element: GameObjects.GameObject, scene: Scene) =>
   element instanceof Physics.Arcade.Sprite &&
   element.texture.key === (KEYS.GROUND as string) &&
-  element.getData(CHECKER_PROPS.SLOPER) === true &&
+  element.getData(CHECKER_PROPS.SLOPE) === true &&
   element.x < scene.renderer.width &&
   element.getData(CHECKER_PROPS.CHECKED) !== true
 
-export const checkersRegistration = (scene: Scene) => {
+export const checkersRegistration = (scene: IScene) => {
   const timerHelper = new TimerHelper(scene)
+  const stateSingleton = getGameStateContext()
+
   timerHelper.timer(
     () => {
       scene.sys.displayList.list?.map((element) => {
@@ -27,21 +30,21 @@ export const checkersRegistration = (scene: Scene) => {
         if (coinCheck) {
           const coin = element as Coin
           coin.onScene = true
-          coinGeneratedEmiter()
+          stateSingleton.coinGeneratedAction()
           return coin
         }
 
         if (slopeTriggerCheck && typeof element.getData(CHECKER_PROPS.MAP_DIFFICULTY) === 'number') {
           const mapLogtrigger = element
           mapLogtrigger.setData({ checked: true })
-          logMapDifficultyEmiter(mapLogtrigger.getData(CHECKER_PROPS.MAP_DIFFICULTY) as number)
+          stateSingleton.logMapDifficultyAction(mapLogtrigger.getData(CHECKER_PROPS.MAP_DIFFICULTY) as number)
           return mapLogtrigger
         }
 
-        if (element.getData(CHECKER_PROPS.CHUNK_END) !== undefined) {
+        if (slopeTriggerCheck && element.getData(CHECKER_PROPS.CHUNK_END) !== undefined) {
           const chunkEndTrigger = element
           chunkEndTrigger.setData({ checked: true })
-          chunkEndEmiter()
+          stateSingleton.chunkEndAction()
         }
 
         return element

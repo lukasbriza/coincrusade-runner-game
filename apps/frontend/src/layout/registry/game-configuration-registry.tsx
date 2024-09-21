@@ -1,3 +1,5 @@
+'use client'
+
 import type { FC, ReactNode } from 'react'
 
 import { GameConfigurationProvider } from '@/shared/components'

@@ -75,6 +75,9 @@ export type components = {
     GameLogDto: {
       logs: components['schemas']['Log'][]
     }
+    GameLogsResponse: {
+      id: string
+    }
     NeuralNetworkDto: {
       chunkLostLives: number
       chunkElapsedSeconds: number
@@ -90,6 +93,11 @@ export type components = {
       engineSuggestedAction?: string
       /** Format: date-time */
       chunkCreated: string
+    }
+    NeuralNetworkResponse: {
+      increase: number
+      stay: number
+      decrease: number
     }
   }
   responses: never
@@ -134,7 +142,9 @@ export type operations = {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['GameLogsResponse']
+        }
       }
     }
   }
@@ -155,7 +165,9 @@ export type operations = {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['NeuralNetworkResponse']
+        }
       }
     }
   }

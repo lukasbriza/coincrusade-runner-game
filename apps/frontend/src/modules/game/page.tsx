@@ -1,3 +1,5 @@
+'use client'
+
 import type { Metadata } from 'next'
 
 import type { WebPage } from '@/shared/types'
@@ -9,5 +11,6 @@ export const rootMetadata = {
 } satisfies Metadata
 
 export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export const GamePage: WebPage = () => <Game />

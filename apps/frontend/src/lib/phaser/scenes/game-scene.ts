@@ -1,45 +1,40 @@
+/* eslint-disable lines-between-class-members */
+/* eslint-disable no-new */
 import { Scene } from 'phaser'
+
+import type { GameConfiguration } from '@/shared/components'
 
 import { animationsRegistration } from '../animations'
 import { KEYS } from '../assets'
-import {
-  initCoinFactory,
-  initKnightFactory,
-  initLifeFactory,
-  initNoteFactory,
-  initPowerBarFactory,
-  initTextFactory,
-} from '../factories'
-import { checkersRegistration } from '../helpers'
-import { addBackgorund, loadFonts, loadImages, loadPlatformMaps, loadSprites } from '../utils'
+import { checkersRegistration, collidersRegistration } from '../helpers'
+import type { IPlatformManager, IPlayerStatus } from '../objects'
+import { PlatformManager, PlayerStatus } from '../objects'
+import type { IScene } from '../types'
+import { addBackgorund } from '../utils'
 
-export class GameScene extends Scene {
+export class GameScene extends Scene implements IScene {
   public knight: IKnight
+  public platformManager: IPlatformManager
+  public playerStatus: IPlayerStatus
+  public gameConfig: GameConfiguration
 
   constructor() {
-    super('game')
+    super({ key: 'game' })
   }
 
-  preload() {
-    this.physics.world.setFPS(50)
-    initKnightFactory()
-    initCoinFactory()
-    initLifeFactory()
-    initPowerBarFactory()
-    initTextFactory()
-    initNoteFactory()
-
-    loadImages(this)
-    loadPlatformMaps(this)
-    loadSprites(this)
-    loadFonts(this)
+  init(data: { gameConfig: GameConfiguration }) {
+    this.gameConfig = data.gameConfig
   }
 
   create() {
     animationsRegistration(this)
     checkersRegistration(this)
     addBackgorund(this, KEYS.BACKGROUND)
+
+    this.platformManager = new PlatformManager(this)
+    this.playerStatus = new PlayerStatus(this)
     this.knight = this.add.knight()
+    collidersRegistration(this)
   }
 
   update() {

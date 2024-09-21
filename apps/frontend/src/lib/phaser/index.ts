@@ -1,4 +1,5 @@
 export * from './config'
+export * from './constants'
 export * from './get-game-instance'
 export * from './events/event-bus'
 export * from './scenes'

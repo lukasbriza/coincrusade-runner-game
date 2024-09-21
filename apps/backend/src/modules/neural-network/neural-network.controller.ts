@@ -1,10 +1,11 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { NeuralNetworkDto } from '../../dto'
 
 import { NeuralNetworkService } from './neural-network.service'
+import { NeuralNetworkResponse } from './types'
 
 @ApiTags('Neural-network')
 @Controller('predict')
@@ -15,9 +16,10 @@ export class NeuralNetworkController {
     this.neuralNetworkService = neuralNetworkService
   }
 
+  @ApiResponse({ status: 201, type: NeuralNetworkResponse })
   @UseGuards(AuthGuard('api-key'))
   @Post()
-  predict(@Body() log: NeuralNetworkDto) {
+  async predict(@Body() log: NeuralNetworkDto): Promise<NeuralNetworkResponse> {
     return this.neuralNetworkService.predict(log)
   }
 }

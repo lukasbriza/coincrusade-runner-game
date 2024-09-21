@@ -9,7 +9,7 @@ declare interface IKnight extends Phaser.Physics.Arcade.Sprite {
   immortalAnimation: boolean
   immortalEvent: Phaser.Time.TimerEvent | undefined
   timerHelper: ITimerHelper
-  knightHit: (knight: ColliderObject, worldObject: ColliderObject, context: GameStateContextProps) => void
+  knightHit: (knight: ColliderObject, worldObject: ColliderObject) => void
   onCollideWithWorld: (worldObject: ColliderObject, worldObject: ColliderObject) => void
   removeListeners: () => void
 }
@@ -18,49 +18,23 @@ declare interface ICoin extends Phaser.Physics.Arcade.Sprite {
   isPicked: boolean
   onScene: boolean
   inCoinCounter: boolean
-  // pickCoin: (coinCounter: ICoinCounter, target: Coin) => void
+  pickCoin: (coinCounter: ICoinCounter, target: Coin) => void
+}
+
+declare type IWater = Phaser.Physics.Arcade.Sprite & {
+  playAnimation: () => void
 }
 
 declare interface IPowerbar extends Phaser.Physics.Arcade.Sprite {
   jumpPower: number
-  powerBar: Phaser.GameObjects.Image
   setPercents: (percents: number) => void
   startCollecting: () => void
   stopCollecting: () => void
   setBarPosition: (x: number, y: number, center?: boolean) => void
 }
 
-declare interface ICoinCounter {
-  count: number
-  textTexture: Phaser.GameObjects.BitmapText
-  nearTextcoin: ICoin
-  incrementCounter: () => void
-  resetCounter: () => void
-}
-
-declare interface ILifeCounter {
-  addLife: () => void
-  decreaseLife: () => void
-  reset: () => void
-}
-
-declare interface ITimeCounter {
-  time: Date
-  timeText: Phaser.GameObjects.BitmapText
-  addTimeText: Phaser.GameObjects.BitmapText
-  addTimeCounter: number
-  addTime: () => void
-  showAdditionTextAnnouncement: () => void
-}
-
-declare interface INote {
+declare interface INote extends Phaser.GameObjects.BitmapText {
   destroyAfter: (time: number) => void
-}
-
-declare interface IPlayerStatus {
-  coinCounter: ICoinCounter
-  timeCounter: ITimeCounter
-  lifeCounter: ILifeCounter
 }
 
 declare interface IText extends Phaser.GameObjects.BitmapText {
@@ -71,14 +45,11 @@ declare interface IText extends Phaser.GameObjects.BitmapText {
 declare namespace Phaser.GameObjects {
   interface GameObjectFactory {
     knight(): IKnight
-    coin(): ICoin
-    life(scene: Phaser.Scene, x?: number, y?: number, full: boolean): Phaser.Physics.Arcade.Sprite
-    water(): Phaser.Physics.Arcade.Sprite
+    coin(x: number, y: number, gravity?: boolean): ICoin
+    life(scene: Phaser.Scene, x?: number, y?: number): Physics.Arcade.Sprite
+    emptyLife(scene: Phaser.Scene, x?: number, y?: number): Physics.Arcade.Sprite
+    water(x: number, y: number): IWater
     powerbar(parent: Physics.Arcade.Sprite, id: number): IPowerbar
-    timeCounter(): ITimeCounter
-    lifeCounter(): ILifeCounter
-    coinCounter(): ICoinCounter
-    playerStatus(): IPlayerStatus
     text(x: number, y: number, text: string): IText
     note(text: string, x: number | 'center', y: number | 'center'): INote
   }

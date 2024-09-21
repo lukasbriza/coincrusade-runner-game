@@ -222,9 +222,21 @@ importers:
       gsap:
         specifier: 3.12.5
         version: 3.12.5
+      lodash.clonedeep:
+        specifier: 4.5.0
+        version: 4.5.0
+      lodash.sample:
+        specifier: 4.2.1
+        version: 4.2.1
+      lodash.shuffle:
+        specifier: 4.2.0
+        version: 4.2.0
       lodash.throttle:
         specifier: 4.1.1
         version: 4.1.1
+      lodash.uniqueid:
+        specifier: 4.0.1
+        version: 4.0.1
       next:
         specifier: 14.2.4
         version: 14.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -262,9 +274,21 @@ importers:
       '@types/csso':
         specifier: 5.0.4
         version: 5.0.4
+      '@types/lodash.clonedeep':
+        specifier: 4.5.9
+        version: 4.5.9
+      '@types/lodash.sample':
+        specifier: 4.2.9
+        version: 4.2.9
+      '@types/lodash.shuffle':
+        specifier: 4.2.9
+        version: 4.2.9
       '@types/lodash.throttle':
         specifier: 4.1.9
         version: 4.1.9
+      '@types/lodash.uniqueid':
+        specifier: 4.0.9
+        version: 4.0.9
       '@types/node':
         specifier: 20.14.9
         version: 20.14.9
@@ -2700,8 +2724,20 @@ packages:
   '@types/lodash.capitalize@4.2.9':
     resolution: {integrity: sha512-SV1dav/WbuI816SVig4trFz8ID/m5maVzC8I/E/DejPvmlXvIhw7Y0GWxJ03UhU6qaZOj6qQnR1xxC0mP7ZXoQ==}
 
+  '@types/lodash.clonedeep@4.5.9':
+    resolution: {integrity: sha512-19429mWC+FyaAhOLzsS8kZUsI+/GmBAQ0HFiCPsKGU+7pBXOQWhyrY6xNNDwUSX8SMZMJvuFVMF9O5dQOlQK9Q==}
+
+  '@types/lodash.sample@4.2.9':
+    resolution: {integrity: sha512-sKxUUQ/+257F0lM6zmozoD0KvsD8C8rvaSNOfL0gRhvgZIs3/Iwe0yJdqZN0wIfEiGw8eyO0Cgzg5NJbCzc78g==}
+
+  '@types/lodash.shuffle@4.2.9':
+    resolution: {integrity: sha512-4siLZ4/vQH4T7Bm4254sG4n6hh9k7vd/bqfDVoeIwSha4Itu3MuoTxPX2I2Tue2JN94y7Y2I27QzwHZLdMlrBg==}
+
   '@types/lodash.throttle@4.1.9':
     resolution: {integrity: sha512-PCPVfpfueguWZQB7pJQK890F2scYKoDUL3iM522AptHWn7d5NQmeS/LTEHIcLr5PaTzl3dK2Z0xSUHHTHwaL5g==}
+
+  '@types/lodash.uniqueid@4.0.9':
+    resolution: {integrity: sha512-SEzkJBS8t+tqAUnSmyqbuWqxKU+Z/Xu2cgPtD+Ik0l+M7L2q7So9VoN2rQ8H0mmL87lJ00ykxal8oB54QRet6g==}
 
   '@types/lodash@4.17.7':
     resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
@@ -5186,6 +5222,9 @@ packages:
   lodash.capitalize@4.2.1:
     resolution: {integrity: sha512-kZzYOKspf8XVX5AvmQF94gQW0lejFVgb80G85bU4ZWzoJ6C03PQg3coYAUpSTpQWelrZELd3XWgHzw4Ck5kaIw==}
 
+  lodash.clonedeep@4.5.0:
+    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
+
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
@@ -5222,6 +5261,12 @@ packages:
   lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
 
+  lodash.sample@4.2.1:
+    resolution: {integrity: sha512-odCZufa8jYDBZQ+JOSePWRs+iApPdvIp3qAiKc9F22RdSCMLuUu60Jvgs2M6qMisKAeBZoumAkqDiGr9HDym/Q==}
+
+  lodash.shuffle@4.2.0:
+    resolution: {integrity: sha512-V/rTAABKLFjoecTZjKSv+A1ZomG8hZg8hlgeG6wwQVD9AGv+10zqqSf6mFq2tVA703Zd5R0YhSuSlXA+E/Ei+Q==}
+
   lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
 
@@ -5233,6 +5278,9 @@ packages:
 
   lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}
+
+  lodash.uniqueid@4.0.1:
+    resolution: {integrity: sha512-GQQWaIeGlL6DIIr06kj1j6sSmBxyNMwI8kaX9aKpHR/XsMTiaXDVPNPAkiboOTK9OJpTJF/dXT3xYoFQnj386Q==}
 
   lodash.upperfirst@4.3.1:
     resolution: {integrity: sha512-sReKOYJIJf74dhJONhU4e0/shzi1trVbSWDOhKYE5XV2O+H7Sb2Dihwuc7xWxVl+DgFPyTqIN3zMfT9cq5iWDg==}
@@ -9829,7 +9877,23 @@ snapshots:
     dependencies:
       '@types/lodash': 4.17.7
 
+  '@types/lodash.clonedeep@4.5.9':
+    dependencies:
+      '@types/lodash': 4.17.7
+
+  '@types/lodash.sample@4.2.9':
+    dependencies:
+      '@types/lodash': 4.17.7
+
+  '@types/lodash.shuffle@4.2.9':
+    dependencies:
+      '@types/lodash': 4.17.7
+
   '@types/lodash.throttle@4.1.9':
+    dependencies:
+      '@types/lodash': 4.17.7
+
+  '@types/lodash.uniqueid@4.0.9':
     dependencies:
       '@types/lodash': 4.17.7
 
@@ -12759,6 +12823,8 @@ snapshots:
 
   lodash.capitalize@4.2.1: {}
 
+  lodash.clonedeep@4.5.0: {}
+
   lodash.debounce@4.0.8: {}
 
   lodash.includes@4.3.0: {}
@@ -12783,6 +12849,10 @@ snapshots:
 
   lodash.once@4.1.1: {}
 
+  lodash.sample@4.2.1: {}
+
+  lodash.shuffle@4.2.0: {}
+
   lodash.snakecase@4.1.1: {}
 
   lodash.startcase@4.4.0: {}
@@ -12790,6 +12860,8 @@ snapshots:
   lodash.throttle@4.1.1: {}
 
   lodash.uniq@4.5.0: {}
+
+  lodash.uniqueid@4.0.1: {}
 
   lodash.upperfirst@4.3.1: {}
 

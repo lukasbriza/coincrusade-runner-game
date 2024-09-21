@@ -1,7 +1,7 @@
 'use client'
 
 import { phaserConfig } from './config'
-import { GameScene } from './scenes'
+import { GameScene, LoadingScene } from './scenes'
 
 export const getGameInstance = async (parent: HTMLDivElement) => {
   const { Game } = await import('phaser')
@@ -9,7 +9,7 @@ export const getGameInstance = async (parent: HTMLDivElement) => {
   const phaserGame = new Game({
     ...phaserConfig,
     parent,
-    scene: [GameScene],
+    scene: [LoadingScene, GameScene],
   })
   return phaserGame
 }

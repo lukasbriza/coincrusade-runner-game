@@ -1,11 +1,11 @@
-import { IMMORTALITY_DURATION } from '../../constants'
 import type { Knight } from '../../factories'
+import type { IScene } from '../../types'
 
-export const knightImmortality = (knight: Knight) => {
+export const knightImmortality = (knight: Knight, scene: IScene) => {
   if (!knight.immortalEvent) {
     knight.immortalAnimation = true
     const delay = 250
-    const repeat = Math.floor(IMMORTALITY_DURATION / delay)
+    const repeat = Math.floor(scene.gameConfig.immortalityDuration / delay)
 
     const callback = () => {
       if (!knight.tinted) {

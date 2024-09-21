@@ -5,11 +5,11 @@ import { GameObjects, Physics } from 'phaser'
 
 import { KEYS } from '../assets'
 import { TimerHelper, type ITimerHelper } from '../helpers'
-import { addImage, emitError } from '../utils'
+import type { IScene } from '../types'
+import { emitError } from '../utils'
 
 export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
   public id: number
-  public powerBar: GameObjects.Image
   public jumpPower: number = 0
 
   private timerHelper: ITimerHelper
@@ -21,21 +21,20 @@ export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
   constructor(parent: Physics.Arcade.Sprite, id: number) {
     super(parent.scene, 0, 0, KEYS.KNIGHT_POWERBAR)
     this.id = id
-    this.timerHelper = new TimerHelper(parent.scene)
+    this.timerHelper = new TimerHelper(parent.scene as IScene)
 
     const bodyWidth = (parent.body?.width ?? parent.width) + 20
     this.barWidth = (bodyWidth / 100) * 60
     this.boundMargin = (bodyWidth - 20 - this.barWidth) / 2
 
-    this.powerBar = addImage(parent.scene, KEYS.KNIGHT_POWERBAR)
-    this.powerBar.setOrigin(0, 0)
-    this.powerBar.setCrop(0, 0, this.barWidth, 4)
+    this.setOrigin(0, 0)
+    this.setCrop(0, 0, this.barWidth, 4)
 
     const powerBarX = parent.body?.x ?? parent.x
     const powerBarY = parent.body?.y ?? parent.y
     this.setBarPosition(powerBarX, powerBarY, true)
     this.setPercents(0)
-    this.powerBar.setDepth(1)
+    this.setDepth(1)
   }
 
   public startCollecting() {
@@ -50,10 +49,10 @@ export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
   public setPercents(percent: number) {
     if (percent < 0 || percent > 100) {
       emitError('Wrong percent property')
-      const width = (this.barWidth / 100) * percent
-      this.powerBar.setOrigin(0, 0)
-      this.powerBar.setCrop(0, 0, width, 4)
     }
+    const width = (this.barWidth / 100) * percent
+    this.setOrigin(0, 0)
+    this.setCrop(0, 0, width, 4)
   }
 
   private increaseJumpPower = () => {
@@ -64,7 +63,7 @@ export class PowerBar extends Physics.Arcade.Sprite implements IPowerbar {
   }
 
   public setBarPosition(x: number, y: number, center: boolean = true): void {
-    this.powerBar.setPosition(x + (center ? this.boundMargin : 0), y)
+    this.setPosition(x + (center ? this.boundMargin : 0), y)
   }
 }
 

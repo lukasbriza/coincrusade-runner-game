@@ -10,4 +10,5 @@ export const initPlayerState = (): PlayerState => ({
   elapsedSeconds: 0,
   gainedSeconds: 0,
   playerIsDead: false,
+  platformSpeed: 180,
 })

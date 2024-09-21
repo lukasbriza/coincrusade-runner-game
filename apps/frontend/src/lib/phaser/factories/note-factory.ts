@@ -1,13 +1,13 @@
 /* eslint-disable func-names */
-import type { Scene } from 'phaser'
 import { GameObjects } from 'phaser'
 
-import { EventBus, EventBusEvents } from '../events/event-bus'
+import { noteDestroyedEmiter } from '../events'
+import type { IScene } from '../types'
 
 import { Text } from './text-factory'
 
 export class Note extends Text implements INote {
-  constructor(scene: Scene, text: string, x: number | 'center', y: number | 'center') {
+  constructor(scene: IScene, text: string, x: number | 'center', y: number | 'center') {
     super(scene, 0, 0, text)
 
     this.setScale(2, 2)
@@ -31,8 +31,8 @@ export class Note extends Text implements INote {
 
   public destroyAfter(time: number) {
     this.destroyAfterTime(time, () => {
-      this.destroy()
-      EventBus.emit(EventBusEvents.NoteDestroyed)
+      this.destroy(true)
+      noteDestroyedEmiter()
     })
   }
 }
@@ -41,7 +41,7 @@ export const initNoteFactory = () => {
   GameObjects.GameObjectFactory.register(
     'note',
     function (this: Phaser.GameObjects.GameObjectFactory, text: string, x: number | 'center', y: number | 'center') {
-      const note = new Note(this.scene, text, x, y)
+      const note = new Note(this.scene as IScene, text, x, y)
       this.scene.add.existing(note)
       return note
     },

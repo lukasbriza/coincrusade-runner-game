@@ -82,6 +82,7 @@ export class ConfigurationManager implements IConfigurationManager {
   }
 
   //COIN CHANCE
+  //
   public increaseCoinGenerationChance(by?: number): number {
     const maxChance = this.resolveGeneratorParameters().maxCoinGenerationChance
     const temp = this.coinGenerationChance + (by ?? 0.1)
@@ -93,6 +94,7 @@ export class ConfigurationManager implements IConfigurationManager {
     this.isMinCoinchance = false
     return this.coinGenerationChance
   }
+  //
   public decreaseCoinGenerationChance(by?: number): number {
     const minChance = this.resolveGeneratorParameters().minCoinGenerationChance
     const temp = this.coinGenerationChance - (by ?? 0.1)
@@ -120,10 +122,12 @@ export class ConfigurationManager implements IConfigurationManager {
   }
 
   //PLATFORM SPEED
+  //
   public increasePlatformSpeed(by?: number): number {
     this.platformStartSpeed = this.platformStartSpeed + (by ?? 5)
     return this.platformStartSpeed
   }
+  //
   public decreasePlatformSpeed(by?: number): number {
     const temp = this.platformStartSpeed - (by ?? 5)
     this.platformStartSpeed = temp < GAME_PARAMETERS.minimalPlatformSpeed ? GAME_PARAMETERS.minimalPlatformSpeed : temp
@@ -137,10 +141,12 @@ export class ConfigurationManager implements IConfigurationManager {
   }
 
   //PLATFORM SELECTION
+  //
   public increasePickedPlatformDifficulty(by?: number): number {
     this.skillFactor = this.skillFactor + (by ?? this.platformDifficultyPickStepFactor)
     return this.skillFactor
   }
+  //
   public decreasePickedPlatformDifficulty(by?: number): number {
     const base = this.resolveGeneratorParameters().skillFactorDefault
     const temp = this.skillFactor - (by ?? this.platformDifficultyPickStepFactor)

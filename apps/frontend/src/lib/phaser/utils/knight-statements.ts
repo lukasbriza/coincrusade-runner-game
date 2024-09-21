@@ -16,7 +16,7 @@ export const isKnightOnLeftSideOfWorld = (knight: IKnight) => {
 
 export const isKnightOnLeftSideCorner = (knight: IKnight) => {
   if (knight.body) {
-    return knight.body.x <= 0 && !knight.immortalAnimation
+    return knight.body.x <= 0
   }
   return false
 }

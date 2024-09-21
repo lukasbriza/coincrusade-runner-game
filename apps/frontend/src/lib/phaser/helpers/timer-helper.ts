@@ -1,11 +1,13 @@
 import type { Scene, Time } from 'phaser'
 
+import type { IScene } from '../types'
+
 import type { ITimerHelper } from './types'
 
 export class TimerHelper implements ITimerHelper {
   public scene: Scene
 
-  constructor(scene: Scene) {
+  constructor(scene: IScene) {
     this.scene = scene
   }
 

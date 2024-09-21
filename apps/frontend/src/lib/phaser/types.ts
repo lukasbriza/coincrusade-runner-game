@@ -1,4 +1,14 @@
-export type SuggesteAction = 'decrease' | 'increase' | 'neutral' | undefined
+import type { Physics, Scene, Types } from 'phaser'
+
+import type { GameConfiguration } from '@/shared/components'
+
+import type { IPlatformManager, IPlayerStatus } from './objects'
+
+export enum SuggestedAction {
+  decrease = 'decrease',
+  increase = 'increase',
+  neutral = 'neutral',
+}
 
 export enum ChangeTypes {
   IncreasePlatformSpeed = 'IncreasePlatformSpeed',
@@ -7,8 +17,13 @@ export enum ChangeTypes {
   DecreaseCoinChance = 'DecreaseCoinChance',
   IncreaseMapDifficulty = 'IncreaseMapDifficulty',
   DecreaseMapDifficulty = 'DecreaseMapDifficulty',
-  IncreaseChestChance = 'IncreaseChestChance',
-  DecreaseChestChance = 'DecreaseChestChance',
+}
+
+export enum Generators {
+  HamletSystem = 'HamletSystem',
+  LinearGenerator = 'LinearGenerator',
+  NeuralNetworkGenerator = 'NeuralNetworkGenerator',
+  ReinforcementLearningGenerator = 'ReinforcementLearningGenerator',
 }
 
 export type ChunkLog = {
@@ -22,7 +37,7 @@ export type ChunkLog = {
   chunkDifficultySkore: number
   gameTotalElapsedSeconds: number
   gameTotalGainedSeconds: number
-  engineSuggestedAction: SuggesteAction
+  engineSuggestedAction: SuggestedAction | undefined
   chunkCreated: Date
 }
 
@@ -33,7 +48,7 @@ export type LastChunk = {
   lastChunkPickedCoins: number
   lastChunkGeneratedCoins: number
   lastChunkMapDifficulties: number[]
-  lastChunkSuggestedAction: SuggesteAction
+  lastChunkSuggestedAction: SuggestedAction | undefined
   lastChunkChange?: ChangeTypes | undefined
   lastChunkPlatformSpeed: number
 }
@@ -48,4 +63,43 @@ export type PlayerState = {
   elapsedSeconds: number
   gainedSeconds: number
   playerIsDead: boolean
+  platformSpeed: number
+}
+
+export type Chances = {
+  maxPlatauCount: number
+  minPlatauCount: number
+  coinGenerationChance: number
+  platauTentChance: number
+  platauGrassChance: number
+  platauTreeOrStumpChance: number
+  maxStumpsAndTreesOnPlatau: number
+  skillFactor: number
+}
+
+export type MapTypeMember = number | string
+export type MapTypeExtended = MapType & { coins: (string | null)[] }
+
+export type MapType = {
+  width: number
+  difficulty: number
+  map: MapTypeMember[][]
+}
+
+export type IScene = Scene & {
+  gameConfig: GameConfiguration
+  platformManager: IPlatformManager
+  playerStatus: IPlayerStatus
+  knight: IKnight
+}
+
+export type SpriteWithDynamicBody = Physics.Arcade.Sprite | Types.Physics.Arcade.SpriteWithDynamicBody
+export type ImageWithDynamicBody = Types.Physics.Arcade.ImageWithDynamicBody
+
+export type TilesResult = {
+  coins: ICoin[]
+  platforms: SpriteWithDynamicBody[]
+  obstacles: SpriteWithDynamicBody[]
+  slopeTriggers: SpriteWithDynamicBody[]
+  decorations: ImageWithDynamicBody[]
 }

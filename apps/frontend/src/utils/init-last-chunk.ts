@@ -1,6 +1,7 @@
 import type { LastChunk } from '@/lib/phaser'
 
 export const initLastChunk = (): LastChunk => ({
+  lastChunkPlatformSpeed: 0,
   lastChunkLostLives: 0,
   lastChunkElapsedSeconds: 0,
   lastChunkGainedSeconds: 0,
