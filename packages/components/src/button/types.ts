@@ -6,4 +6,5 @@ export type ButtonProps = ComponentBaseProps & {
   type?: ButtonMuiProps['type']
   text: string
   borderWidth?: number | undefined
+  onClick?: (() => void) | undefined
 }

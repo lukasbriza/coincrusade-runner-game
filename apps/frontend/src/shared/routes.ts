@@ -5,3 +5,8 @@ export const anchors: Anchor[] = [
   { path: '/#controls', title: 'controls' },
   { path: '/#contact', title: 'contact' },
 ]
+
+export const routes = {
+  home: '/',
+  game: '/game',
+}

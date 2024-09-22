@@ -1,9 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Scene } from 'phaser'
 
-import type { GameConfiguration } from '@/shared/components'
-
-import { EventBus, EventBusEvents } from '../events'
+import { loadConfigurationCallbackListener, loadConfigurationEmiter } from '../events'
 import {
   initCoinFactory,
   initEmptyLifeFactory,
@@ -19,8 +17,7 @@ import { loadFonts, loadImages, loadPlatformMaps, loadSprites } from '../utils'
 export class LoadingScene extends Scene {
   constructor() {
     super({ key: 'loading' })
-
-    EventBus.on(EventBusEvents.LoadConfigurationCallback, (config: GameConfiguration) => {
+    loadConfigurationCallbackListener((config) => {
       this.scene.stop('loading')
       this.scene.start('game', { gameConfig: config })
     })
@@ -44,6 +41,6 @@ export class LoadingScene extends Scene {
   }
 
   create() {
-    EventBus.emit(EventBusEvents.LoadConfiguration)
+    loadConfigurationEmiter()
   }
 }

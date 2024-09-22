@@ -1,12 +1,13 @@
 'use client'
 
 import { Button, Text } from '@lukasbriza/components'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type { FC, MouseEventHandler } from 'react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { engines } from '@/shared'
-import { Arrow } from '@/shared/components'
+import { engines, routes } from '@/shared'
+import { Arrow, useGameConfiguration } from '@/shared/components'
 
 import { useApertureContext } from '../context'
 import { Pergamen } from '../pergamen'
@@ -18,11 +19,19 @@ import { PergamenContentRoot, Root } from './styles'
 export const EngineSelector: FC = () => {
   const pergamen = useRef<HTMLDivElement>(null)
   const root = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+
   const { loaded } = useApertureContext()
+  const { changeGenerator } = useGameConfiguration()
+
   const [rolled, setRolled] = useState(false)
   const [minimized, setMinimized] = useState(false)
   const [selectedEngine, setSelectedEngine] = useState<number>(0)
   const t = useTranslations('home')
+
+  const startGame = () => {
+    router.push(routes.game)
+  }
 
   const handleLeftclick = () =>
     fadeOffText(() => {
@@ -70,6 +79,11 @@ export const EngineSelector: FC = () => {
     }
   }
 
+  useEffect(() => {
+    changeGenerator(engines[selectedEngine])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEngine])
+
   return (
     <Root ref={root} className={engineSelectorClasses.root} ownerState={{ render: loaded, minimized }}>
       <Arrow
@@ -98,7 +112,7 @@ export const EngineSelector: FC = () => {
           <Text className={engineSelectorClasses.text} variant="h4">
             {t(`engines.${engines[selectedEngine]}.content`)}
           </Text>
-          <Button className={engineSelectorClasses.playButton} text={t('engines.button')} />
+          <Button className={engineSelectorClasses.playButton} text={t('engines.button')} onClick={startGame} />
         </PergamenContentRoot>
       </Pergamen>
       <Arrow

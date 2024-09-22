@@ -11,19 +11,19 @@
     "heroMain": "COIN CRUSADE",
     "heroSubtitle":"KNIGHT´S QUEST",
     "engines": {
-      "linear": {
+      "LinearGenerator": {
         "header": "Linear generator",
         "content": "Lorem ipsum"
       },
-      "hamlet-system": {
+      "HamletSystem": {
         "header": "Hamlet system",
         "content": "Lorem ipsum2"
       },
-      "neural-network": {
+      "NeuralNetworkGenerator": {
         "header": "Neural network",
         "content": "Lorem ipsum3"
       },
-      "reinforcement-learning": {
+      "ReinforcementLearningGenerator": {
         "header": "Reinforcement learning",
         "content": "Lorem ipsum 4"
       },

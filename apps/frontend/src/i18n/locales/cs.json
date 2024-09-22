@@ -6,24 +6,24 @@
     "game": "Hra",
     "controls": "Ovládání",
     "contact": "Kontakt"
-  },
+  }, 
   "home": {
     "heroMain": "COIN CRUSADE",
     "heroSubtitle": "KNIGHT´S QUEST",
     "engines": {
-      "linear": {
+      "LinearGenerator": {
         "header": "Lineární generátor",
         "content": "Lorem ipsum"
       },
-      "hamlet-system": {
+      "HamletSystem": {
         "header": "Hamlet systém",
         "content": "Lorem ipsum2"
       },
-      "neural-network": {
+      "NeuralNetworkGenerator": {
         "header": "Neuronová síť",
         "content": "Lorem ipsum3"
       },
-      "reinforcement-learning": {
+      "ReinforcementLearningGenerator": {
         "header": "Posilované učení",
         "content": "Lorem ipsum 4"
       },

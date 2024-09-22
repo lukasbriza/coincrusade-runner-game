@@ -2,14 +2,6 @@
 
 import dynamic from 'next/dynamic'
 
-const GameProvider = dynamic(() => import('../context/game-context'), { ssr: false })
-const GameStateProvider = dynamic(() => import('../context/game-state-context'), { ssr: false })
-const GameElement = dynamic(() => import('./game-element'), { ssr: false })
+const GameElementWithNoSSR = dynamic(() => import('./game-element'), { ssr: false })
 
-export const Game = () => (
-  <GameProvider>
-    <GameStateProvider>
-      <GameElement />
-    </GameStateProvider>
-  </GameProvider>
-)
+export const Game = () => <GameElementWithNoSSR />

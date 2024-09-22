@@ -1,7 +1,7 @@
 'use server'
 
 import type { components } from '@/lib/openapi-fetch'
-import client from '@/lib/openapi-fetch'
+import client from '@/lib/openapi-fetch/client'
 
 type Body = components['schemas']['GameLogDto']
 

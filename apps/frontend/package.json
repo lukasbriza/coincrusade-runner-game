@@ -31,7 +31,7 @@
     "lodash.throttle": "4.1.1",
     "lodash.uniqueid": "4.0.1",
     "next": "14.2.4",
-    "next-intl": "3.17.2",
+    "next-intl": "3.19.4",
     "next-runtime-env": "3.2.2",
     "openapi-fetch": "^0.10.2",
     "phaser": "3.80.1",

@@ -1,5 +1,5 @@
 import { EventBus, EventBusEvents } from '../event-bus'
 
-export const loadConfigurationemiter = () => {
+export const loadConfigurationEmiter = () => {
   EventBus.emit(EventBusEvents.LoadConfiguration)
 }

@@ -5,7 +5,7 @@ import type { ButtonProps } from './types'
 import { useButton } from './use-button'
 
 export const Button: FC<ButtonProps> = (props) => {
-  const { type = 'submit', text, borderWidth = 3, className } = props
+  const { type = 'submit', text, borderWidth = 3, className, onClick } = props
   const { ref } = useButton()
   return (
     <Root className={className}>
@@ -15,6 +15,7 @@ export const Button: FC<ButtonProps> = (props) => {
           borderWidth,
         }}
         type={type}
+        onClick={onClick}
       >
         {text}
       </ButtonStyled>
