@@ -3,14 +3,16 @@ import { getMessages } from 'next-intl/server'
 
 import type { AsyncWebLayout } from '@/shared/types'
 
-import { EmotionRegistry, GameConfigurationRegistry } from './registry'
+import { EmotionRegistry, GameConfigurationRegistry, MenuRegistry } from './registry'
 
 export const WebLayout: AsyncWebLayout = async ({ children }) => {
   const messages = await getMessages()
   return (
     <EmotionRegistry>
       <NextIntlClientProvider messages={messages}>
-        <GameConfigurationRegistry>{children}</GameConfigurationRegistry>
+        <GameConfigurationRegistry>
+          <MenuRegistry>{children}</MenuRegistry>
+        </GameConfigurationRegistry>
       </NextIntlClientProvider>
     </EmotionRegistry>
   )

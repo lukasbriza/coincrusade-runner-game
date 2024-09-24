@@ -1,16 +1,15 @@
-import type { AsyncWebLayout } from '@/shared'
-import { MenuWrapper } from '@/shared/components'
-import { Page } from '@/shared/styles'
-import { getMenuItems } from '@/utils/get-menu-items'
+import { getTranslations } from 'next-intl/server'
 
-import { pagesClasses } from './classes'
+import { anchors, type AsyncWebLayout } from '@/shared'
+import { PageWrapper } from '@/shared/components'
 
 export const PagesLayout: AsyncWebLayout = async ({ children }) => {
-  const items = await getMenuItems()
-  return (
-    <Page>
-      <MenuWrapper itemClassName={pagesClasses.menuItems} items={items} />
-      {children}
-    </Page>
-  )
+  const t = await getTranslations('anchors')
+  const items = anchors.map((anchor) => ({
+    name: t(`${anchor.title}`, { ns: 'routes' }),
+    path: anchor.path,
+    active: false,
+  }))
+
+  return <PageWrapper items={items}>{children}</PageWrapper>
 }
