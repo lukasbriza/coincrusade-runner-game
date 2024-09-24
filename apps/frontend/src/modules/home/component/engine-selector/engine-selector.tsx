@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
 
 import { Button, Text } from '@lukasbriza/components'
-import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type { FC, MouseEventHandler } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
+import { useRouter } from '@/i18n/routing'
 import { engines, routes } from '@/shared'
-import { Arrow, useGameConfiguration } from '@/shared/components'
+import { Arrow } from '@/shared/components'
+import { useGameConfiguration } from '@/shared/components/context'
 
 import { useApertureContext } from '../context'
 import { Pergamen } from '../pergamen'
@@ -107,10 +110,10 @@ export const EngineSelector: FC = () => {
       >
         <PergamenContentRoot className={engineSelectorClasses.content}>
           <Text className={engineSelectorClasses.header} paddingBottom={2} variant="h3">
-            {t(`engines.${engines[selectedEngine]}.header`)}
+            {t(`engines.${engines[selectedEngine]}.header` as any)}
           </Text>
           <Text className={engineSelectorClasses.text} variant="h4">
-            {t(`engines.${engines[selectedEngine]}.content`)}
+            {t(`engines.${engines[selectedEngine]}.content` as any)}
           </Text>
           <Button className={engineSelectorClasses.playButton} text={t('engines.button')} onClick={startGame} />
         </PergamenContentRoot>

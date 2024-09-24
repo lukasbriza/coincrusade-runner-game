@@ -26,9 +26,11 @@ export const RootLayout: AsyncWebLayout = async ({ children, params }) => {
         <meta key="robots" content={process.env.NEXT_PUBLIC_META_ROBOTS} name="robots" />
         {fontStyles}
       </Head>
-      <WebLayout params={params}>
-        <PagesLayout params={params}>{children}</PagesLayout>
-      </WebLayout>
+      <body>
+        <WebLayout params={params}>
+          <PagesLayout params={params}>{children}</PagesLayout>
+        </WebLayout>
+      </body>
     </html>
   )
 }

@@ -2,22 +2,25 @@
 
 'use client'
 
-import { Game, Scale, Types, WEBGL } from 'phaser'
+import type { Types } from 'phaser'
+import { Game, Scale, WEBGL } from 'phaser'
 import { useEffect, useRef, useState } from 'react'
 
+import { GameScene, LoadingScene, TILE_HEIGHT, TILE_WIDTH } from '@/lib/phaser'
 
 import { GameStateProvider } from '../context'
 
-const TILE = { width: 90, height: 90 }
+import { ParentElement } from './styles'
+
 const screenSizes = {
-  width: 15 * TILE.width,
-  height: 7 * TILE.height,
+  width: 15 * TILE_WIDTH,
+  height: 7 * TILE_HEIGHT,
 }
 
 const phaserConfig: Types.Core.GameConfig = {
   type: WEBGL,
   scale: {
-    mode: Scale.ScaleModes.NONE,
+    mode: Scale.ScaleModes.FIT,
     width: screenSizes.width,
     height: screenSizes.height,
   },
@@ -32,6 +35,7 @@ const phaserConfig: Types.Core.GameConfig = {
     pixelArt: true,
   },
   autoFocus: true,
+  scene: [LoadingScene, GameScene],
 }
 
 export default function GameElement() {
@@ -47,7 +51,6 @@ export default function GameElement() {
       ...phaserConfig,
       parent: parentElement.current,
       width: parentElement.current.offsetWidth,
-      height: parentElement.current.offsetHeight,
     })
 
     setGame(newGame)
@@ -60,7 +63,7 @@ export default function GameElement() {
 
   return (
     <GameStateProvider>
-      <div ref={parentElement} id="game-container" />
+      <ParentElement ref={parentElement} />
     </GameStateProvider>
   )
 }

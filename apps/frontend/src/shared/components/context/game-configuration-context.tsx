@@ -5,7 +5,7 @@ import type { FC, ReactNode } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import type { Locale } from '@/i18n/config'
-import { Generators } from '@/lib/phaser'
+import { engines } from '@/shared'
 
 export type GameConfiguration = {
   healRate: number
@@ -17,14 +17,14 @@ export type GameConfiguration = {
   knightLeftSpeed: number
   knightRightSpeed: number
   playerGravity: number
-  currentGenerator: Generators
+  currentGenerator: string
   lng: keyof typeof Locale | undefined
 }
 
 export type GameConfigurationContextProps = {
   config: GameConfiguration
   changeConfiguration: (config: GameConfiguration) => void
-  changeGenerator: (generator: Generators) => void
+  changeGenerator: (generator: string) => void
 }
 
 const defaultConfig: GameConfiguration = {
@@ -37,7 +37,7 @@ const defaultConfig: GameConfiguration = {
   knightLeftSpeed: -480,
   knightRightSpeed: 300,
   playerGravity: 1000,
-  currentGenerator: Generators.LinearGenerator,
+  currentGenerator: engines[0],
   lng: undefined,
 }
 const defaultValue: GameConfigurationContextProps = {
@@ -52,7 +52,7 @@ const defaultValue: GameConfigurationContextProps = {
 
 const GameConfigurationContext = createContext<GameConfigurationContextProps>(defaultValue)
 
-export const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
+const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const locale = useLocale()
   const [gameConfig, setGameConfig] = useState<GameConfiguration>(defaultConfig)
 
@@ -76,3 +76,5 @@ export const useGameConfiguration = () => {
   const context = useContext(GameConfigurationContext)
   return context
 }
+
+export default GameConfigurationProvider

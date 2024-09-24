@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import gsap from 'gsap'
 
-import { pagesClasses } from '@/layout/classes'
+import { pageWrapperClasses } from '@/shared/components'
 
 import type { StageValue } from '../context/aperture-context'
 import { engineSelectorClasses } from '../engine-selector'
@@ -19,7 +19,7 @@ export const animation = (setStage: (value: StageValue) => void) => {
       zIndex: -1,
       opacity: 0,
     })
-    .set(`.${pagesClasses.menuItems}`, { opacity: 0 })
+    .set(`.${pageWrapperClasses.menuItems}`, { opacity: 0 })
     .addLabel('start')
     .call(() => setStage(2), undefined, 'start')
     .to(
@@ -46,7 +46,7 @@ export const animation = (setStage: (value: StageValue) => void) => {
     )
     .addLabel('afterAnimation')
     .to(
-      `.${pagesClasses.menuItems}`,
+      `.${pageWrapperClasses.menuItems}`,
       {
         opacity: 1,
         ease: 'power2.in',
@@ -68,7 +68,7 @@ export const animation = (setStage: (value: StageValue) => void) => {
     )
     .then(() => {
       gsap.set(`.${engineSelectorClasses.root}`, { clearProps: 'opacity' })
-      gsap.set(`.${pagesClasses.menuItems}`, { clearProps: 'opacity' })
+      gsap.set(`.${pageWrapperClasses.menuItems}`, { clearProps: 'opacity' })
       gsap.set('html', { clearProps: 'overflow' })
     })
 }
