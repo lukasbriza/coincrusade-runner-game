@@ -1,0 +1,59 @@
+{
+  "video":{
+    "cantLoad": "Your browser does not support the video tag."
+  },
+  "anchors": {
+    "game": "Game",
+    "controls": "Controls",
+    "contact": "Contact"
+  },
+  "home":{
+    "heroMain": "COIN CRUSADE",
+    "heroSubtitle":"KNIGHT´S QUEST",
+    "engines": {
+      "LinearGenerator": {
+        "header": "Linear generator",
+        "content": "Lorem ipsum"
+      },
+      "HamletSystem": {
+        "header": "Hamlet system",
+        "content": "Lorem ipsum2"
+      },
+      "NeuralNetworkGenerator": {
+        "header": "Neural network",
+        "content": "Lorem ipsum3"
+      },
+      "ReinforcementLearningGenerator": {
+        "header": "Reinforcement learning",
+        "content": "Lorem ipsum 4"
+      },
+      "button": "Play"
+    },
+    "controls": {
+      "header": "Controls",
+      "movement": {
+        "headerRight": "Movement right",
+        "headerLeft": "Movement left",
+        "headerJump": "Power jump",
+        "right": {
+          "text": "Press the right arrow to accelerate the character in the direction of automatic movement."
+        },
+        "left": {
+          "text": "Press the left arrow to accelerate the character in the direction opposite to the automatic movement."
+        },
+        "jump": {
+          "text": "Hold down the up arrow or space bar to jump. The longer the key is pressed, the larger the jump. A new jump cannot be started while a jump is in progress."
+        }
+      }
+    },
+    "contact": {
+      "header": "Contact",
+      "text": "Did you find any bugs or have an idea how to improve the game? We will be glad to hear from you.",
+      "form": {
+        "email": "E-mail",
+        "message": "Message",
+        "send": "Send"
+      }
+    }
+  }
+}

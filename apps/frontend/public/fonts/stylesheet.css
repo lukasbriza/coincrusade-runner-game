@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "Joystix Mono";
+  src: local("Joystix Mono") url("JoystixMono.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

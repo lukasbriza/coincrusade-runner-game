@@ -1,0 +1,15 @@
+import type { Meta, StoryObj } from '@storybook/react'
+
+import { Example } from '../../src/index'
+
+const meta = {
+  component: Example,
+  title: 'Example',
+} satisfies Meta<typeof Example>
+
+type Story = StoryObj<typeof Example>
+
+export const Primary: Story = {}
+
+export default meta
+

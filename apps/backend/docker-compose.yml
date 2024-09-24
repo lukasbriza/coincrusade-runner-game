@@ -1,0 +1,16 @@
+services:
+  mongo:
+    container_name: mongo-prisma-rs0
+    image: prismagraphql/mongo-single-replica:5.0.3
+    ports:
+      - ${DATABASE_PORT}:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - "mongo_data:/data/db"
+      - "mongo_config:/data/configdb"
+
+volumes:
+  mongo_data:
+  mongo_config:

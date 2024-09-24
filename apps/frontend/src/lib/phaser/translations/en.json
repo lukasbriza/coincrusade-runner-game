@@ -1,0 +1,15 @@
+{
+  "gameEnd": {
+    "statement": "GAME OVER",
+    "restartStatement": "Press \"R\" for retart",
+    "gameLeaveStatement": "For game leave press \"Q\""
+  },
+  "notes": {
+    "increaseCoinGenerationChance": "Increase coin generation",
+    "decreaseCoinGenerationChance": "Decrease coin drop",
+    "increasePlatformSpeed": "Increase speed",
+    "decreasePlatformSpeed": "Decrease speed",
+    "increasePickedPlatformDifficulty": "Increase map pick difficulty",
+    "decreasePickedPlatformDifficulty": "Decrease map pick difficulty"
+  }
+}

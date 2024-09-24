@@ -1,0 +1,15 @@
+{
+  "gameEnd": {
+    "statement": "KONEC HRY",
+    "restartStatement": "Stiskni \"R\" pro restart hry",
+    "gameLeaveStatement": "Pro odchod ze hry stiskněte \"Q\""
+  },
+  "notes": {
+    "increaseCoinGenerationChance": "Zvýšení šance na vygenerování mince",
+    "decreaseCoinGenerationChance": "Snížení šance na vygenerování mince",
+    "increasePlatformSpeed": "Zvýšení rychlosti",
+    "decreasePlatformSpeed": "Snížení rychlosti",
+    "increasePickedPlatformDifficulty": "Zvýšení obtížnosti map",
+    "decreasePickedPlatformDifficulty": "Snížení obtížnosti map"
+  }
+}
