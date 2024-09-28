@@ -9,10 +9,11 @@ import {
   initLifeFactory,
   initNoteFactory,
   initPowerBarFactory,
+  initSettingsButtonFactory,
   initTextFactory,
   initWaterFactory,
 } from '../factories'
-import { loadFonts, loadImages, loadPlatformMaps, loadSprites } from '../utils'
+import { loadFonts, loadImages, loadPlatformMaps, loadSprites, loadUiElements } from '../utils'
 
 export class LoadingScene extends Scene {
   constructor() {
@@ -26,6 +27,7 @@ export class LoadingScene extends Scene {
   preload() {
     this.physics.world.setFPS(50)
     loadImages(this)
+    loadUiElements(this)
     loadPlatformMaps(this)
     loadSprites(this)
     loadFonts(this)
@@ -38,6 +40,7 @@ export class LoadingScene extends Scene {
     initTextFactory()
     initWaterFactory()
     initNoteFactory()
+    initSettingsButtonFactory()
   }
 
   create() {

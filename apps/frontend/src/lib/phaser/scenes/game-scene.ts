@@ -7,8 +7,8 @@ import type { GameConfiguration } from '@/shared/components'
 import { animationsRegistration } from '../animations'
 import { KEYS } from '../assets'
 import { checkersRegistration, collidersRegistration } from '../helpers'
-import type { IPlatformManager, IPlayerStatus } from '../objects'
-import { PlatformManager, PlayerStatus } from '../objects'
+import type { IKeyboardManager, IPlatformManager, IPlayerStatus } from '../objects'
+import { KeyboardManager, PlatformManager, PlayerStatus } from '../objects'
 import type { IScene } from '../types'
 import { addBackgorund } from '../utils'
 
@@ -17,6 +17,7 @@ export class GameScene extends Scene implements IScene {
   public platformManager: IPlatformManager
   public playerStatus: IPlayerStatus
   public gameConfig: GameConfiguration
+  public keyboardManager: IKeyboardManager
 
   constructor() {
     super({ key: 'game' })
@@ -32,6 +33,7 @@ export class GameScene extends Scene implements IScene {
     addBackgorund(this, KEYS.BACKGROUND)
 
     this.platformManager = new PlatformManager(this)
+    this.keyboardManager = new KeyboardManager(this)
     this.playerStatus = new PlayerStatus(this)
     this.knight = this.add.knight()
     collidersRegistration(this)

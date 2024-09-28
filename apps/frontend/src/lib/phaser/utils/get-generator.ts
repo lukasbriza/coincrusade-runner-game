@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import type { IPlatformGenerator } from '../generators'
 import { LinearGenerator } from '../generators'
 import { HamletSystemGenerator } from '../generators/hamlet-system-generator'
@@ -8,9 +9,6 @@ import { Generators } from '../types'
 
 export const getGenerator = (scene: IScene): IPlatformGenerator => {
   switch (scene.gameConfig.currentGenerator) {
-    case Generators.LinearGenerator: {
-      return new LinearGenerator(scene)
-    }
     case Generators.HamletSystem: {
       return new HamletSystemGenerator(scene)
     }
@@ -19,6 +17,9 @@ export const getGenerator = (scene: IScene): IPlatformGenerator => {
     }
     case Generators.ReinforcementLearningGenerator: {
       return new ReinforcementLearningGenerator(scene)
+    }
+    default: {
+      return new LinearGenerator(scene)
     }
   }
 }

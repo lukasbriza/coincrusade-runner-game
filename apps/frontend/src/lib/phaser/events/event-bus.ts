@@ -3,11 +3,7 @@ import { Events } from 'phaser'
 export const EventBus = new Events.EventEmitter()
 
 export enum EventBusEvents {
-  GameStateInitialization = 'game-state-initialization',
-  GameElementInitialization = 'game-element-initialization',
-
   GenerateInitialChunk = 'generate-initial-chunk',
-  GenerateInitialChunkCallback = 'generate-initial-chunk-callback',
 
   KnightHit = 'knight-hit',
   KnightHitCallback = 'knight-hit-callback',
@@ -29,20 +25,14 @@ export enum EventBusEvents {
 
   SuggestedAction = 'suggested-action',
 
-  AppliedChange = 'applied-change',
-
   GenerateMethod = 'generate-method',
 
-  ResolveDifficulty = 'resolve-difficulty',
-
-  SlopeOvercome = 'slope-overcome',
-
-  ReasignPlatformSpeed = 'reasign-platform-speed',
   ReasignPlatformSpeedCallback = 'reasign-platform-speed-callback',
 
   PlayerRelocate = 'player-relocate',
   RestartGame = 'restart-game',
   EndGame = 'end-game',
+  PauseGame = 'pause-game',
   ChunkEnd = 'chunk-end',
   ThrowError = 'throw-error',
 

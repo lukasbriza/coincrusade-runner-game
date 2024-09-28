@@ -2,7 +2,7 @@ import type { Physics, Scene, Types } from 'phaser'
 
 import type { GameConfiguration } from '@/shared/components'
 
-import type { IPlatformManager, IPlayerStatus } from './objects'
+import type { IKeyboardManager, IPlatformManager, IPlayerStatus } from './objects'
 
 export enum SuggestedAction {
   decrease = 'decrease',
@@ -89,6 +89,7 @@ export type MapType = {
 export type IScene = Scene & {
   gameConfig: GameConfiguration
   platformManager: IPlatformManager
+  keyboardManager: IKeyboardManager
   playerStatus: IPlayerStatus
   knight: IKnight
 }

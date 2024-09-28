@@ -42,6 +42,15 @@ declare interface IText extends Phaser.GameObjects.BitmapText {
   destroyAfterTime: (time: number, callback: () => void) => void
 }
 
+declare type ISettingsButton = Phaser.Physics.Arcade.Sprite
+
+declare interface IButton extends Phaser.Physics.Arcade.Sprite {
+  mouseEnter: (key: string, callback?: () => void) => void
+  mouseLeave: (key: string, callback?: () => void) => void
+  mousePointerUp: (key: string, callback?: () => void) => void
+  mousePointerDown: (key: string, callback?: () => void) => void
+}
+
 declare namespace Phaser.GameObjects {
   interface GameObjectFactory {
     knight(): IKnight
@@ -52,5 +61,7 @@ declare namespace Phaser.GameObjects {
     powerbar(parent: Physics.Arcade.Sprite, id: number): IPowerbar
     text(x: number, y: number, text: string): IText
     note(text: string, x: number | 'center', y: number | 'center'): INote
+    settingsButton(x: number, y: number): ISettingsButton
+    button(x: number, y: number, key: string): IButton
   }
 }

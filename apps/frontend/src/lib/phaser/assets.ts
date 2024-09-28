@@ -14,6 +14,10 @@ type ImagesType = {
   [key in KEYS]: { path: string }
 }
 
+type UiImagesType = {
+  [key in UI_KEYS]: { path: string }
+}
+
 export enum SPRITE_KEYS {
   SPRITE_KNIGHT_RUN = 'sprite-knight-run',
   SPRITE_KNIGHT_ATTACK = 'sprite-knight-attack',
@@ -66,6 +70,13 @@ export enum ANIMATION_KEYS {
   ANIMATION_KNIGHT_ATTACK = 'knight-attack',
   ANIMATION_SPRITE_COIN = 'coin-rotate',
   ANIMATION_SPRITE_WATER = 'water-waves',
+}
+
+export enum UI_KEYS {
+  GREY_BUTTON_LIGHT = 'grey-button-light',
+  GREY_BUTTON_LIGHT_PRESSED = 'grey-button-light-pressed',
+  GREY_BUTTON = 'grey-button',
+  GREY_BUTTON_PRESSED = 'grey-button-pressed',
 }
 
 export enum KEYS {
@@ -204,6 +215,13 @@ export const IMAGES: ImagesType = {
   ...TENTS_IMAGES,
   ...GRASS_IMAGES,
   ...STUMP_AND_TREES_IMAGES,
+}
+
+export const UI_IMAGES: UiImagesType = {
+  [UI_KEYS.GREY_BUTTON]: { path: '/assets/buttons/settings/grey_btn.png' },
+  [UI_KEYS.GREY_BUTTON_PRESSED]: { path: '/assets/buttons/settings/grey_btn_pressed.png' },
+  [UI_KEYS.GREY_BUTTON_LIGHT]: { path: '/assets/buttons/settings/grey_btn_light.png' },
+  [UI_KEYS.GREY_BUTTON_LIGHT_PRESSED]: { path: '/assets/buttons/settings/grey_btn_light_pressed.png' },
 }
 
 export const FONTS: FontTypes = {
