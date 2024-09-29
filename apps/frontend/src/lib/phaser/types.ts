@@ -1,4 +1,4 @@
-import type { Physics, Scene, Types } from 'phaser'
+import type { GameObjects, Physics, Scene, Types } from 'phaser'
 
 import type { GameConfiguration } from '@/shared/components'
 
@@ -92,6 +92,10 @@ export type IScene = Scene & {
   keyboardManager: IKeyboardManager
   playerStatus: IPlayerStatus
   knight: IKnight
+
+  background: GameObjects.TileSprite
+  hills: GameObjects.TileSprite
+  clouds: GameObjects.TileSprite
 }
 
 export type SpriteWithDynamicBody = Physics.Arcade.Sprite | Types.Physics.Arcade.SpriteWithDynamicBody

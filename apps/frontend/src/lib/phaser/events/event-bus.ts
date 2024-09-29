@@ -33,6 +33,7 @@ export enum EventBusEvents {
   RestartGame = 'restart-game',
   EndGame = 'end-game',
   PauseGame = 'pause-game',
+  ResumeGame = 'resume-game',
   ChunkEnd = 'chunk-end',
   ThrowError = 'throw-error',
 

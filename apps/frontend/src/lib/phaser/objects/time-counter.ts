@@ -54,6 +54,7 @@ export class TimeCounter implements ITimeCounter {
   }
 
   private reset = () => {
+    this.stopCounter()
     this.setupTime()
   }
 

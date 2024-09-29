@@ -1,5 +1,5 @@
 import { EventBus, EventBusEvents } from '../event-bus'
 
-export const pauseGameEmiter = () => {
+export const gamePauseEmiter = () => {
   EventBus.emit(EventBusEvents.PauseGame)
 }

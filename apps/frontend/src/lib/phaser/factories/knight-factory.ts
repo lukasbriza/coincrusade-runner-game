@@ -13,8 +13,7 @@ import {
 } from '../animations'
 import { SPRITE_KEYS } from '../assets'
 import { TILE_HEIGHT, TILE_WIDTH } from '../constants'
-import { gameRestartEmiter, knightDeadListener, knightHitCallbackListener } from '../events'
-import { EventBus, EventBusEvents } from '../events/event-bus'
+import { gameRestartListener, knightDeadListener, knightHitCallbackListener } from '../events'
 import { TimerHelper, type ITimerHelper } from '../helpers'
 import { getGameStateContext } from '../singletons'
 import type { IScene } from '../types'
@@ -29,14 +28,10 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   public isAttacking: boolean = false
   public powerBar: IPowerbar
 
-  private keyR: Input.Keyboard.Key | undefined
-  private keyQ: Input.Keyboard.Key | undefined
   private keyLeft: Input.Keyboard.Key | undefined
   private keyRight: Input.Keyboard.Key | undefined
   private keyUp: Input.Keyboard.Key | undefined
   private keySpace: Input.Keyboard.Key | undefined
-
-  private deadEvent: boolean = false
 
   public tinted: boolean = false
   public immortalAnimation: boolean = false
@@ -77,10 +72,9 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   private initListeners() {
     knightHitCallbackListener((knight, worldObject) => this.knightHit(knight, worldObject))
     knightDeadListener(this.knightDead)
+    gameRestartListener(this.knightReset)
 
     this.initMovementListeners()
-    this.keyR?.on('down', this.knightReset, this)
-    this.keyQ?.on('down', this.gameQuit, this)
   }
   public removeListeners() {
     this.keyUp?.removeListener('down', this.startCollectingPower, this)
@@ -93,11 +87,8 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.keySpace = scene.input.keyboard?.addKey('space', false, false)
     this.keyLeft = scene.input.keyboard?.addKey('left', false, false)
     this.keyRight = scene.input.keyboard?.addKey('right', false, false)
-    this.keyR = scene.input.keyboard?.addKey('R', false, false)
-    this.keyQ = scene.input.keyboard?.addKey('Q', false, false)
   }
   private resetState() {
-    this.deadEvent = false
     this.inAir = false
     this.powerBar.setPercents(0)
     this.initMovementListeners()
@@ -136,16 +127,8 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     this.onCollideWithWorld(knight, worldObject)
   }
   private knightReset = () => {
-    if (this.deadEvent) {
-      gameRestartEmiter()
-      this.run()
-      this.resetState()
-    }
-  }
-  private gameQuit = () => {
-    if (this.deadEvent) {
-      EventBus.emit(EventBusEvents.EndGame)
-    }
+    this.run()
+    this.resetState()
   }
 
   // ANIMATIONS
@@ -158,7 +141,6 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   }
   private knightDead = () => {
     this.removeListeners()
-    this.deadEvent = true
     knightDeadAnimation(this)
   }
 
@@ -189,8 +171,9 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     const x = this.body?.x ?? this.x
     const y = this.body?.y ?? this.y
     this.powerBar.setBarPosition(x, y - 25, true)
+    const gameStateSingleton = getGameStateContext()
 
-    if (!this.deadEvent) {
+    if (!gameStateSingleton.state.playerIsDead) {
       // Callback when on right side of world
       if (isKnightOnRightSideOfWorld(this) && !this.keyLeft?.isDown) {
         this.onRightWorldCollision()

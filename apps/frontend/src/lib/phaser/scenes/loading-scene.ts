@@ -7,13 +7,14 @@ import {
   initEmptyLifeFactory,
   initKnightFactory,
   initLifeFactory,
+  initMusicButtonFactory,
   initNoteFactory,
   initPowerBarFactory,
   initSettingsButtonFactory,
   initTextFactory,
   initWaterFactory,
 } from '../factories'
-import { loadFonts, loadImages, loadPlatformMaps, loadSprites, loadUiElements } from '../utils'
+import { loadFonts, loadImages, loadPlatformMaps, loadSounds, loadSprites, loadUiElements } from '../loaders'
 
 export class LoadingScene extends Scene {
   constructor() {
@@ -31,6 +32,7 @@ export class LoadingScene extends Scene {
     loadPlatformMaps(this)
     loadSprites(this)
     loadFonts(this)
+    loadSounds(this)
 
     initKnightFactory()
     initCoinFactory()
@@ -41,6 +43,7 @@ export class LoadingScene extends Scene {
     initWaterFactory()
     initNoteFactory()
     initSettingsButtonFactory()
+    initMusicButtonFactory()
   }
 
   create() {

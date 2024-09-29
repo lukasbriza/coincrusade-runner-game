@@ -9,8 +9,10 @@ import { useEffect, useRef, useState } from 'react'
 import { GameScene, LoadingScene, TILE_HEIGHT, TILE_WIDTH } from '@/lib/phaser'
 
 import { GameStateProvider } from '../context'
+import { SettingsPergamen } from '../settings-pergamen'
 
-import { ParentElement } from './styles'
+import { gameClasses } from './classes'
+import { GameUiOverlay, ParentElement } from './styles'
 
 const screenSizes = {
   width: 15 * TILE_WIDTH,
@@ -63,6 +65,9 @@ export default function GameElement() {
 
   return (
     <GameStateProvider>
+      <GameUiOverlay className={gameClasses.gameUiOverlay}>
+        <SettingsPergamen />
+      </GameUiOverlay>
       <ParentElement ref={parentElement} />
     </GameStateProvider>
   )
