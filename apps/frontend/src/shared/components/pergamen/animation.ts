@@ -1,3 +1,5 @@
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import gsap from 'gsap'
 
@@ -69,9 +71,9 @@ export const rollScroll = (input: RollAnimationInput, callback: () => void) => {
 export const unRollScroll = (input: RollAnimationInput, callback: () => void) => {
   const { pergamen, top, bottom, ribbon } = input
   const tl = gsap.timeline()
-  const containerHeight = pergamen.parentElement?.clientHeight || 0
-  const pergamenHeight = containerHeight * 0.6
 
+  const containerHeight = pergamen.parentElement?.clientHeight || 0
+  const pergamenHeight = containerHeight * 0.6 < 400 ? 400 : containerHeight * 0.6
   const topTop = (containerHeight - pergamenHeight) / 2 - top.height / 2
   const bottomtop = (containerHeight - pergamenHeight) / 2 + pergamenHeight - bottom.height / 2
   const ribbonTop = (containerHeight - pergamenHeight) / 2 - top.height / 2 + 10
@@ -159,13 +161,9 @@ export const setClosedPosition = (input: RollAnimationInput) => {
   const bottomPosition = getOpenedPergamenBottomPosition(pergamen, bottom)
 
   const tl = gsap.timeline()
-  tl.set(pergamen, {
-    height: 0,
-    minHeight: 0,
+  tl.set(top, {
+    top: topPosition - top.height / 4 + pergamenHeight / 2,
   })
-    .set(top, {
-      top: topPosition - top.height / 4 + pergamenHeight / 2,
-    })
     .set(bottom, {
       top: bottomPosition + bottom.height / 4 - pergamenHeight / 2,
     })
@@ -173,6 +171,10 @@ export const setClosedPosition = (input: RollAnimationInput) => {
       top: topPosition - top.height / 4 + 10 + pergamenHeight / 2,
     })
     .set(`.${pergamenClasses.content}`, { height: 0 })
+    .set(pergamen, {
+      height: 0,
+      minHeight: 20,
+    })
 }
 
 export const setOpenPosition = (input: RollAnimationInput) => {

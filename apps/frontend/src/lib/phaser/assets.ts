@@ -14,6 +14,14 @@ type ImagesType = {
   [key in KEYS]: { path: string }
 }
 
+type UiImagesType = {
+  [key in UI_KEYS]: { path: string }
+}
+
+type SoundType = {
+  [key in SOUND_KEYS]: { path: string }
+}
+
 export enum SPRITE_KEYS {
   SPRITE_KNIGHT_RUN = 'sprite-knight-run',
   SPRITE_KNIGHT_ATTACK = 'sprite-knight-attack',
@@ -68,6 +76,18 @@ export enum ANIMATION_KEYS {
   ANIMATION_SPRITE_WATER = 'water-waves',
 }
 
+export enum UI_KEYS {
+  GREY_BUTTON_LIGHT = 'grey-button-light',
+  GREY_BUTTON_LIGHT_PRESSED = 'grey-button-light-pressed',
+  GREY_BUTTON = 'grey-button',
+  MUSIC_GREY_OFF_LIGHT_PRESSED = 'music-grey-off-light-pressed',
+  MUSIC_GREY_OFF_LIGHT = 'music-grey-off-light',
+  MUSIC_GREY_OFF = 'music-grey-off',
+  MUSIC_GREY_ON_LIGHT_PRESSED = 'music-grey-on-light-pressed',
+  MUSIC_GREY_ON_LIGHT = 'music-grey-on-light',
+  MUSIC_GREY_ON = 'music-grey-on',
+}
+
 export enum KEYS {
   KNIGHT_POWERBAR = 'knight-powerbar',
   KNIGHT_SLIDE = 'knight-slide',
@@ -76,8 +96,12 @@ export enum KEYS {
   HEART_EMPTY = 'heart-empty',
 
   GROUND = 'ground',
-  BACKGROUND = 'background',
   SLIM_GROUND = 'slim',
+
+  BACKGROUND_MAIN = 'background-main',
+  CLOUDS = 'clouds',
+  HILLS = 'hills',
+  SKY = 'sky',
 
   ROCK1 = 'rock1',
   ROCK2 = 'rock2',
@@ -103,6 +127,10 @@ export enum KEYS {
 
 export enum FONT_KEYS {
   MAIN = 'main',
+}
+
+export enum SOUND_KEYS {
+  BACKGORUND_MUSIC = 'background-music',
 }
 
 export const PLATFORMS_MAPS: PlatformMapType = {
@@ -188,7 +216,11 @@ export const STUMP_AND_TREES_IMAGES = {
 }
 
 export const IMAGES: ImagesType = {
-  [KEYS.BACKGROUND]: { path: '/assets/background.png' },
+  [KEYS.BACKGROUND_MAIN]: { path: '/assets/background/background_main.png' },
+  [KEYS.CLOUDS]: { path: '/assets/background/clouds.png' },
+  [KEYS.HILLS]: { path: '/assets/background/hills.png' },
+  [KEYS.SKY]: { path: '/assets/background/sky.png' },
+
   [KEYS.KNIGHT_POWERBAR]: { path: '/assets/powerbar.png' },
   [KEYS.KNIGHT_SLIDE]: { path: '/assets/slide.png' },
   [KEYS.GROUND]: { path: '/assets/platforms/basePlatform.png' },
@@ -206,8 +238,24 @@ export const IMAGES: ImagesType = {
   ...STUMP_AND_TREES_IMAGES,
 }
 
+export const UI_IMAGES: UiImagesType = {
+  [UI_KEYS.GREY_BUTTON]: { path: '/assets/buttons/settings/grey_btn.png' },
+  [UI_KEYS.GREY_BUTTON_LIGHT]: { path: '/assets/buttons/settings/grey_btn_light.png' },
+  [UI_KEYS.GREY_BUTTON_LIGHT_PRESSED]: { path: '/assets/buttons/settings/grey_btn_light_pressed.png' },
+  [UI_KEYS.MUSIC_GREY_OFF]: { path: '/assets/buttons/music/music_off_grey.png' },
+  [UI_KEYS.MUSIC_GREY_OFF_LIGHT]: { path: '/assets/buttons/music/music_off_grey_light.png' },
+  [UI_KEYS.MUSIC_GREY_OFF_LIGHT_PRESSED]: { path: '/assets/buttons/music/music_off_grey_light_pressed.png' },
+  [UI_KEYS.MUSIC_GREY_ON]: { path: '/assets/buttons/music/music_on_grey.png' },
+  [UI_KEYS.MUSIC_GREY_ON_LIGHT]: { path: '/assets/buttons/music/music_on_grey_light.png' },
+  [UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED]: { path: '/assets/buttons/music/music_on_grey_light_pressed.png' },
+}
+
 export const FONTS: FontTypes = {
   [FONT_KEYS.MAIN]: { sheet: '/assets/fonts/main.png', bitmap: '/assets/fonts/main.xml' },
+}
+
+export const SOUNDS: SoundType = {
+  [SOUND_KEYS.BACKGORUND_MUSIC]: { path: '/assets/music/background.mp3' },
 }
 
 export const tents = [KEYS.TENT1, KEYS.TENT2, KEYS.TENT3, KEYS.TENT4]

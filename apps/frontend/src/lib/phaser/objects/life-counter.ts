@@ -35,11 +35,14 @@ export class LifeCounter implements ILifeCounter {
     gameRestartListener(this.reset)
   }
 
-  private knightDead = () => {
+  private destoryHealTimer = () => {
     if (this.healTimer) {
       this.timerHelper.removeTimer(this.healTimer)
       this.healTimer = undefined
     }
+  }
+  private knightDead = () => {
+    this.destoryHealTimer()
     this.drawLifes()
   }
 
@@ -105,6 +108,7 @@ export class LifeCounter implements ILifeCounter {
   }
 
   public reset = () => {
+    this.destoryHealTimer()
     this.lifeValue = this.scene.gameConfig.maxPlayerLifes
     this.drawLifes()
   }

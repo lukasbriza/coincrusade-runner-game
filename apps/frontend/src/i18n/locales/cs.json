@@ -55,5 +55,12 @@
         "send": "Odeslat"
       }
     }
+  },
+  "game": {
+    "settinngsPergamen": {
+      "quit": "Odejít",
+      "restart": "Restartovat",
+      "resume": "Pokračovat"
+    }
   }
 }

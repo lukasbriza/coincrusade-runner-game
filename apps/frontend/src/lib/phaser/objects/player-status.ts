@@ -30,33 +30,27 @@ export class PlayerStatus implements IPlayerStatus {
     this.scene = scene
 
     this.lifeCounter = new LifeCounter(scene)
-    this.coinCounter = new CoinCounter(scene, 20)
-    this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height + 20)
+    this.coinCounter = new CoinCounter(scene, 57)
+    this.timeCounter = new TimeCounter(this.scene, this.coinCounter.nearTextCoin.height + 60)
 
-    for (const note of this.notes) {
-      note.destroy(true)
-    }
-    this.notes = []
-
+    this.destoryNotes()
     this.init()
   }
 
   private init() {
     knightDeadListener(() => {
-      for (const note of this.notes) {
-        note.destroy(true)
-      }
-      this.notes = []
+      this.destoryNotes()
       this.playerDeadNotes()
     })
-    gameRestartListener(this.reset)
+    gameRestartListener(this.destoryNotes)
     noteAddedListener((text, warning, duration) => this.handleAddNote(text, warning, duration))
   }
 
-  private reset = () => {
+  private destoryNotes = () => {
     for (const note of this.notes) {
       note.destroy(true)
     }
+    this.notes = []
   }
 
   private handleAddNote(text: string, warning: boolean = false, duration: number = 10_000) {

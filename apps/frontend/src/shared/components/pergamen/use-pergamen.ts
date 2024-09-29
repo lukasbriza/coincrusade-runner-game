@@ -106,6 +106,7 @@ export const usePergamen = (
       const input = { pergamen: pergamen.current, top: top.current, bottom: bottom.current, ribbon: ribbon.current }
       if (defaultPosition === 'rolled') {
         setClosedPosition(input)
+        adjustPergamen()
       }
       if (defaultPosition === 'unrolled') {
         setOpenPosition(input)
@@ -113,6 +114,7 @@ export const usePergamen = (
       setInitialized(true)
       onInitialization?.()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultPosition, pergamen, top, bottom, ribbon, onInitialization])
 
   // HANDLERS

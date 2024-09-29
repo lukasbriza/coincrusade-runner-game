@@ -26,7 +26,7 @@ export const Root = styled('div')<
     objectFit: 'fill',
     top: '50% !important',
     transform: 'translateY(-50%)',
-    height: '60vh',
+    height: '60%',
     minHeight: 400,
     zIndex: 1,
   },

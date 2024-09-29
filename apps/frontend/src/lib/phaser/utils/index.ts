@@ -1,7 +1,3 @@
-export * from './load-images'
-export * from './load-platform-maps'
-export * from './load-sprites'
-export * from './load-fonts'
 export * from './get-platform-map'
 export * from './emit-error'
 export * from './add-image'

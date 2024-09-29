@@ -9,11 +9,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from '@/i18n/routing'
 import { engines, routes } from '@/shared'
-import { Arrow } from '@/shared/components'
+import { Arrow, Pergamen } from '@/shared/components'
 import { useGameConfiguration } from '@/shared/components/context'
 
 import { useApertureContext } from '../context'
-import { Pergamen } from '../pergamen'
 
 import { fadeInText, fadeOffText, hideArrows, minimizeScroll, showArrows, unminimizeScroll } from './animation'
 import { engineSelectorClasses } from './classes'

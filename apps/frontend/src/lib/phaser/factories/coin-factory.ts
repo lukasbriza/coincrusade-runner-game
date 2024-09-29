@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable lines-between-class-members */
 import { GameObjects, Physics } from 'phaser'
 

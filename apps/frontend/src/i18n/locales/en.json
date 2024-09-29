@@ -55,5 +55,12 @@
         "send": "Send"
       }
     }
+  },
+  "game": {
+    "settinngsPergamen": {
+      "quit": "Quit",
+      "restart": "Restart",
+      "resume": "Resume"
+    }
   }
 }

@@ -1,6 +1,6 @@
 import type { GameObjects, Scene } from 'phaser'
 
-export const spreadImageOnScene = (scene: Scene, img: GameObjects.Image) => {
+export const spreadImageOnScene = (scene: Scene, img: GameObjects.Image | GameObjects.TileSprite) => {
   img.setPosition(scene.renderer.width / 2, scene.renderer.height / 2)
   const scaleX = scene.renderer.width / img.width
   const scaleY = scene.renderer.height / img.height

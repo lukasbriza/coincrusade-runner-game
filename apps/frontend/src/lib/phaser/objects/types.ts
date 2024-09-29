@@ -44,3 +44,8 @@ export type IPlatformManager = {
   obstacleGroupHelper: IGroupHelper
   slopeGroupHelper: IGroupHelper
 }
+
+export type IKeyboardManager = {
+  settingsButton: ISettingsButton
+  musicButton: IMusicButton
+}
