@@ -11,13 +11,15 @@ import type { IKeyboardManager } from './types'
 export class KeyboardManager implements IKeyboardManager {
   public settingsButton: ISettingsButton
   public musicButton: IMusicButton
+  public fullscreenButton: IFullscreenButton
 
   private keyR: Input.Keyboard.Key | undefined
   private keyQ: Input.Keyboard.Key | undefined
 
   constructor(scene: IScene) {
-    this.settingsButton = scene.add.settingsButton(scene.renderer.width - 25, 20)
-    this.musicButton = scene.add.musicButton(scene.renderer.width - 25 - this.settingsButton.width - 25, 20)
+    this.fullscreenButton = scene.add.fulscreenButton(scene.renderer.width - 25, 20)
+    this.settingsButton = scene.add.settingsButton(scene.renderer.width - 25 - 40, 20)
+    this.musicButton = scene.add.musicButton(scene.renderer.width - 25 - this.settingsButton.width - 40 - 25, 20)
 
     this.keyR = scene.input.keyboard?.addKey('R', false, false)
     this.keyQ = scene.input.keyboard?.addKey('Q', false, false)

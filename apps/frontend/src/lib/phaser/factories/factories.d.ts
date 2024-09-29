@@ -51,6 +51,8 @@ declare interface IMusicButton extends Phaser.Physics.Arcade.Sprite {
   music: SoundObject
 }
 
+declare type IFullscreenButton = Phaser.Physics.Arcade.Sprite
+
 declare interface IButton extends Phaser.Physics.Arcade.Sprite {
   mouseEnter: (key: string, callback?: () => void) => void
   mouseLeave: (key: string, callback?: () => void) => void
@@ -71,5 +73,6 @@ declare namespace Phaser.GameObjects {
     settingsButton(x: number, y: number): ISettingsButton
     musicButton(x: number, y: number): IMusicButton
     button(x: number, y: number, key: string): IButton
+    fulscreenButton(x: number, y: number): IFullscreenButton
   }
 }

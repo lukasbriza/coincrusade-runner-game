@@ -5,6 +5,7 @@ import { loadConfigurationCallbackListener, loadConfigurationEmiter } from '../e
 import {
   initCoinFactory,
   initEmptyLifeFactory,
+  initFullscreenButtonFactory,
   initKnightFactory,
   initLifeFactory,
   initMusicButtonFactory,
@@ -44,6 +45,7 @@ export class LoadingScene extends Scene {
     initNoteFactory()
     initSettingsButtonFactory()
     initMusicButtonFactory()
+    initFullscreenButtonFactory()
   }
 
   create() {
