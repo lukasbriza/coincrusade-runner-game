@@ -17,7 +17,6 @@ export enum POLICY {
 
 export enum KEYS {
   KNIGHT_POWERBAR = "knight-powerbar",
-  KNIGHT_SLIDE = "knight-slide",
   HEART_FULL = "heart-full",
   HEART_HALF = "heart-half",
   HEART_EMPTY = "heart-empty",
@@ -176,7 +175,6 @@ export const SPRITES: SpriteTypes = {
 export const IMAGES: ImagesType = {
   [KEYS.BACKGROUND]: { path: "assets/background.png" },
   [KEYS.KNIGHT_POWERBAR]: { path: "assets/powerbar.png" },
-  [KEYS.KNIGHT_SLIDE]: { path: "assets/slide.png" },
   [KEYS.GROUND]: { path: "assets/platforms/basePlatform.png" },
   [KEYS.HEART_FULL]: { path: "assets/heart_full.png" },
   [KEYS.HEART_HALF]: { path: "assets/heart_half.png" },

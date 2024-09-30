@@ -86,11 +86,11 @@ export enum UI_KEYS {
   MUSIC_GREY_ON_LIGHT_PRESSED = 'music-grey-on-light-pressed',
   MUSIC_GREY_ON_LIGHT = 'music-grey-on-light',
   MUSIC_GREY_ON = 'music-grey-on',
+  FULLSCREEN = 'fullscreen',
 }
 
 export enum KEYS {
   KNIGHT_POWERBAR = 'knight-powerbar',
-  KNIGHT_SLIDE = 'knight-slide',
   HEART_FULL = 'heart-full',
   HEART_HALF = 'heart-half',
   HEART_EMPTY = 'heart-empty',
@@ -222,7 +222,6 @@ export const IMAGES: ImagesType = {
   [KEYS.SKY]: { path: '/assets/background/sky.png' },
 
   [KEYS.KNIGHT_POWERBAR]: { path: '/assets/powerbar.png' },
-  [KEYS.KNIGHT_SLIDE]: { path: '/assets/slide.png' },
   [KEYS.GROUND]: { path: '/assets/platforms/basePlatform.png' },
   [KEYS.HEART_FULL]: { path: '/assets/heart_full.png' },
   [KEYS.HEART_HALF]: { path: '/assets/heart_half.png' },
@@ -248,6 +247,7 @@ export const UI_IMAGES: UiImagesType = {
   [UI_KEYS.MUSIC_GREY_ON]: { path: '/assets/buttons/music/music_on_grey.png' },
   [UI_KEYS.MUSIC_GREY_ON_LIGHT]: { path: '/assets/buttons/music/music_on_grey_light.png' },
   [UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED]: { path: '/assets/buttons/music/music_on_grey_light_pressed.png' },
+  [UI_KEYS.FULLSCREEN]: { path: '/assets/buttons/fullscreen/scale.svg' },
 }
 
 export const FONTS: FontTypes = {

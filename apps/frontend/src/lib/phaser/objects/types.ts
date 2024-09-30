@@ -48,4 +48,5 @@ export type IPlatformManager = {
 export type IKeyboardManager = {
   settingsButton: ISettingsButton
   musicButton: IMusicButton
+  fullscreenButton: IFullscreenButton
 }
