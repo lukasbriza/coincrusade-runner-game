@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable func-names */
 import { GameObjects } from 'phaser'
 
@@ -22,6 +23,33 @@ export class FullscreenButton extends Button implements IFullscreenButton {
         scene.scale.startFullscreen()
       }
     })
+
+    this.scene.scale.on('enterfullscreen', () => {
+      this.styleGameCanvasOnFullscreen()
+    })
+    this.scene.scale.on('leavefullscreen', () => {
+      this.resetStyleOnGameCanvas()
+    })
+  }
+
+  private styleGameCanvasOnFullscreen = () => {
+    const element = document.querySelectorAll('canvas')[0]
+    if (element) {
+      element.style.position = 'relative'
+      element.style.left = '50%'
+      element.style.top = '50%'
+      element.style.transform = 'translate(-50%,-50%)'
+    }
+  }
+
+  private resetStyleOnGameCanvas = () => {
+    const element = document.querySelectorAll('canvas')[0]
+    if (element) {
+      element.style.position = ''
+      element.style.left = ''
+      element.style.top = ''
+      element.style.transform = ''
+    }
   }
 }
 

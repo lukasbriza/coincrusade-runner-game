@@ -11,8 +11,6 @@ export const ParentElement = styled('div')(({ theme: { spacing } }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-
-  [`& > canvas`]: {},
 }))
 
 export const GameUiOverlay = styled('div')(
