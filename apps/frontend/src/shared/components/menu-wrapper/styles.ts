@@ -11,7 +11,7 @@ export const Root = styled('div')<OwnerState<{ blur: boolean }>>(
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 100,
+    zIndex: 9,
     width: '100%',
     background: blur ? palette.surface.tertiary : 'transparent',
     backdropFilter: blur ? 'blur(5px)' : 'blur(0px)',

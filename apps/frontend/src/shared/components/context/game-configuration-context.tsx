@@ -1,7 +1,7 @@
 'use client'
 
 import { useLocale } from 'next-intl'
-import type { FC, ReactNode } from 'react'
+import type { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import type { Locale } from '@/i18n/config'
@@ -23,11 +23,12 @@ export type GameConfiguration = {
 
 export type GameConfigurationContextProps = {
   config: GameConfiguration
-  changeConfiguration: (config: GameConfiguration) => void
+  changeConfiguration: Dispatch<SetStateAction<GameConfiguration>>
   changeGenerator: (generator: string) => void
+  resetConfiguration: () => void
 }
 
-const defaultConfig: GameConfiguration = {
+export const defaultConfig: GameConfiguration = {
   healRate: 20_000,
   immortalityDuration: 4000,
   maxPlayerLifes: 3,
@@ -48,6 +49,9 @@ const defaultValue: GameConfigurationContextProps = {
   changeGenerator: () => {
     throw new Error('changeGenerator is not defined')
   },
+  resetConfiguration: () => {
+    throw new Error('resetConfiguration is not defined')
+  },
 }
 
 const GameConfigurationContext = createContext<GameConfigurationContextProps>(defaultValue)
@@ -59,8 +63,13 @@ const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) =>
   const context: GameConfigurationContextProps = useMemo(
     () => ({
       config: gameConfig,
-      changeConfiguration: (configuration) => setGameConfig(configuration),
+      changeConfiguration: setGameConfig,
       changeGenerator: (generator) => setGameConfig({ ...gameConfig, currentGenerator: generator }),
+      resetConfiguration: () =>
+        setGameConfig((state) => ({
+          ...defaultConfig,
+          currentGenerator: state.currentGenerator,
+        })),
     }),
     [gameConfig],
   )

@@ -9,7 +9,7 @@ import { Button } from './button-factory'
 
 export class FullscreenButton extends Button implements IFullscreenButton {
   constructor(scene: IScene, x: number, y: number) {
-    super(scene, x, y, UI_KEYS.FULLSCREEN)
+    super(scene, x, y, UI_KEYS.FULLSCREEN_ON)
     this.setOrigin(1, 0)
     this.setScale(0.2)
     this.setInteractive({
@@ -18,8 +18,10 @@ export class FullscreenButton extends Button implements IFullscreenButton {
 
     this.on('pointerup', () => {
       if (scene.scale.isFullscreen) {
+        this.setTexture(UI_KEYS.FULLSCREEN_ON)
         scene.scale.stopFullscreen()
       } else {
+        this.setTexture(UI_KEYS.FULLSCREEN_OFF)
         scene.scale.startFullscreen()
       }
     })
