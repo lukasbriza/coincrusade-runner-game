@@ -1,7 +1,7 @@
 'use client'
 
 import type { ThemeOptions } from '@mui/material'
-import { createTheme, CssBaseline, ThemeProvider as MuiThemeProvider, GlobalStyles } from '@mui/material'
+import { createTheme, CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material'
 import type { ThemeProviderProps } from '@mui/material/styles/ThemeProvider'
 
 import { breakpoints } from './breakpoints'
@@ -25,20 +25,6 @@ export const webTheme = createTheme(options)
 
 export const ThemeProvider = ({ children, theme = webTheme }: Partial<ThemeProviderProps>) => (
   <MuiThemeProvider theme={theme}>
-    <GlobalStyles
-      styles={{
-        '::-webkit-scrollbar-track': {
-          backgroundColor: '#f5f5f5',
-        },
-        '::-webkit-scrollbar-thumb': {
-          backgroundColor: '#888',
-          borderRadius: 4,
-        },
-        '::-webkit-scrollbar-thumb:hover': {
-          backgroundColor: '#333',
-        },
-      }}
-    />
     <CssBaseline />
     {children}
   </MuiThemeProvider>

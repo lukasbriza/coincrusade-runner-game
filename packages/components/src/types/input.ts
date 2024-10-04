@@ -1,6 +1,6 @@
 export type InputBaseProps = {
-  defaultValue?: string
-  value?: string | undefined
+  defaultValue?: string | undefined
+  value: string | undefined
   disabled?: boolean
   error: boolean
   name: string

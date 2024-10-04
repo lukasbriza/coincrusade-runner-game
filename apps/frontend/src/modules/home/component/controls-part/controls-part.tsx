@@ -1,14 +1,18 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { Text } from '@lukasbriza/components'
+import dynamic from 'next/dynamic'
 import { type FC } from 'react'
 
 import { Keyboard } from '../keyboard'
 
 import { controlsPartClasses } from './classes'
-import { PergamenBackground } from './pergamen-background'
 import { ContentRoot, Root } from './styles'
 import type { ControlsPartsProps } from './types'
 import { VideoPart } from './video-part'
+
+const PergamenBackground = dynamic(() => import('./pergamen-background').then((module) => module.PergamenBackground), {
+  ssr: false,
+})
 
 export const ControlsPart: FC<ControlsPartsProps> = ({ className, animate, sections, header }) => (
   <Root className={className}>

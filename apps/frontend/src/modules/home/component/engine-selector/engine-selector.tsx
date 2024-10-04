@@ -13,6 +13,7 @@ import { Arrow, Pergamen } from '@/shared/components'
 import { useGameConfiguration } from '@/shared/components/context'
 
 import { useApertureContext } from '../context'
+import { EngineSettingsModal } from '../engine-settings-modal'
 
 import { fadeInText, fadeOffText, hideArrows, minimizeScroll, showArrows, unminimizeScroll } from './animation'
 import { engineSelectorClasses } from './classes'
@@ -26,10 +27,13 @@ export const EngineSelector: FC = () => {
   const { loaded } = useApertureContext()
   const { changeGenerator } = useGameConfiguration()
 
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [rolled, setRolled] = useState(false)
   const [minimized, setMinimized] = useState(false)
   const [selectedEngine, setSelectedEngine] = useState<number>(0)
   const t = useTranslations('home')
+
+  const handleSettingsModal = () => setSettingsOpen((state) => !state)
 
   const startGame = () => {
     router.push(routes.game)
@@ -115,6 +119,11 @@ export const EngineSelector: FC = () => {
             {t(`engines.${engines[selectedEngine]}.content` as any)}
           </Text>
           <Button className={engineSelectorClasses.playButton} text={t('engines.button')} onClick={startGame} />
+          <Button
+            className={engineSelectorClasses.configButton}
+            text={t('engines.config')}
+            onClick={handleSettingsModal}
+          />
         </PergamenContentRoot>
       </Pergamen>
       <Arrow
@@ -125,6 +134,7 @@ export const EngineSelector: FC = () => {
         width={70}
         onClick={handleRightClick}
       />
+      <EngineSettingsModal open={settingsOpen} onClose={handleSettingsModal} />
     </Root>
   )
 }

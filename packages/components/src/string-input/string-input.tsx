@@ -22,6 +22,7 @@ export const StringInput = forwardRef<HTMLInputElement, StringInputProps>(
       label,
       required,
       helper,
+      type = 'string',
       ...props
     },
     ref,
@@ -72,6 +73,7 @@ export const StringInput = forwardRef<HTMLInputElement, StringInputProps>(
           name={name}
           ownerState={{ borderWidth }}
           slotProps={{ input: { value } }}
+          type={type}
           value={value}
           onBlur={handleBlur}
           onChange={handleChange}

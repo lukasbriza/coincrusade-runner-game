@@ -27,7 +27,8 @@
         "header": "Reinforcement learning",
         "content": "Lorem ipsum 4"
       },
-      "button": "Play"
+      "button": "Play",
+      "config": "Config"
     },
     "controls": {
       "header": "Controls",
@@ -53,6 +54,34 @@
         "email": "E-mail",
         "message": "Message",
         "send": "Send"
+      }
+    },
+    "settings": {
+      "header": "Game settings",
+      "warning": "Using values other than the default ones may result in a negative gaming experience. Adjust game settings thoughtfully.",
+      "healRate": {
+        "label": "Heal rate",
+        "text": "The number of seconds after which a player's life will be restored."
+      },
+      "baseTimeInSeconds": {
+        "label": "Base time",
+        "text": "The number of seconds the player will be credited at the start of the game."
+      },
+      "maxPlayerLifes": {
+        "label": "Lifes",
+        "text": "The maximum number of lifes a player can have."
+      },
+      "immortalityDuration": {
+        "label": "Duration in ms",
+        "text": "The time in milliseconds that immortality lasts."
+      },
+      "addTimeEveryNumberOfCoins": {
+        "label": "Count",
+        "text": "The number of coins that need to be collected to increase the timer."
+      },
+      "timeAdditionInSeconds": {
+        "label": "Count",
+        "text": "The number of seconds added after collecting the required number of coins."
       }
     }
   },

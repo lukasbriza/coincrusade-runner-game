@@ -86,7 +86,8 @@ export enum UI_KEYS {
   MUSIC_GREY_ON_LIGHT_PRESSED = 'music-grey-on-light-pressed',
   MUSIC_GREY_ON_LIGHT = 'music-grey-on-light',
   MUSIC_GREY_ON = 'music-grey-on',
-  FULLSCREEN = 'fullscreen',
+  FULLSCREEN_ON = 'fullscreen-on',
+  FULLSCREEN_OFF = 'fullscreen-off',
 }
 
 export enum KEYS {
@@ -247,7 +248,8 @@ export const UI_IMAGES: UiImagesType = {
   [UI_KEYS.MUSIC_GREY_ON]: { path: '/assets/buttons/music/music_on_grey.png' },
   [UI_KEYS.MUSIC_GREY_ON_LIGHT]: { path: '/assets/buttons/music/music_on_grey_light.png' },
   [UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED]: { path: '/assets/buttons/music/music_on_grey_light_pressed.png' },
-  [UI_KEYS.FULLSCREEN]: { path: '/assets/buttons/fullscreen/scale.svg' },
+  [UI_KEYS.FULLSCREEN_ON]: { path: '/assets/buttons/fullscreen/scale.svg' },
+  [UI_KEYS.FULLSCREEN_OFF]: { path: '/assets/buttons/fullscreen/close.svg' },
 }
 
 export const FONTS: FontTypes = {

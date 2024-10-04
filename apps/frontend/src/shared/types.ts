@@ -37,4 +37,9 @@ export type WebPage<T extends WebPageProps = WebPageProps, I = T> = NextPage<T, 
 
 type routes = typeof en.anchors
 export type Anchor = { path: string; title: MessageKeys<routes, keyof routes> }
+export type Generators =
+  | 'HamletSystem'
+  | 'LinearGenerator'
+  | 'NeuralNetworkGenerator'
+  | 'ReinforcementLearningGenerator'
 export type MenuItem = { path: string; name: string; active: boolean }

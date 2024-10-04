@@ -27,7 +27,8 @@
         "header": "Posilované učení",
         "content": "Lorem ipsum 4"
       },
-      "button": "Hrát"
+      "button": "Hrát",
+      "config": "Konfigurace"
     },
     "controls": {
       "header": "Ovládání",
@@ -53,6 +54,34 @@
         "email": "E-mail",
         "message": "Zpráva",
         "send": "Odeslat"
+      }
+    },
+    "settings": {
+      "header": "Nastavení hry",
+      "warning": "Použití hodnot, které nejsou výchozí, může vést k nepříjemnému hernímu zážitku. Pečlivě zvažte úpravy herních parametrů.",
+      "healRate": {
+        "label": "Rychlost hojení",
+        "text": "Počet sekund, po jejichž uplynutí bude obnoven jeden život hráče."
+      },
+      "baseTimeInSeconds": {
+        "label": "Základní čas",
+        "text": "Počet sekund které budou hráči připsány na začátku hry."
+      },
+      "maxPlayerLifes": {
+        "label": "Životy",
+        "text": "Maximální počet herních životů, které může hráč mít."
+      },
+      "immortalityDuration": {
+        "label": "Trvání v ms",
+        "text": "Doba v milisekundách, po kterou trvá nesmrtelnost."
+      },
+      "addTimeEveryNumberOfCoins": {
+        "label": "Počet",
+        "text": "Počet minci, který je potřeba sebrat pro navýšení časomíry."
+      },
+      "timeAdditionInSeconds": {
+        "label": "Počet",
+        "text": "Počet sekund přidaných po sebrání požadovaného počtu mincí."
       }
     }
   },
