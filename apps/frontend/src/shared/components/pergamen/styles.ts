@@ -28,7 +28,6 @@ export const Root = styled('div')<
     transform: 'translateY(-50%)',
     height: '60%',
     minHeight: 400,
-    zIndex: 1,
   },
   [`& .${pergamenClasses.top}`]: {
     height: 'unset !important',
@@ -37,7 +36,6 @@ export const Root = styled('div')<
     width: width ? `${width}px !important` : 'unset',
     left: '50% !important',
     transform: 'translateX(-50%)',
-    zIndex: 2,
   },
   [`& .${pergamenClasses.bottom}`]: {
     height: 'unset !important',
@@ -45,7 +43,6 @@ export const Root = styled('div')<
     width: width ? `${width}px !important` : 'unset',
     left: '50% !important',
     transform: 'translateX(-50%)',
-    zIndex: 3,
     top: `${bottomTop}px`,
   },
   [`& .${pergamenClasses.ribbon}`]: {
@@ -55,7 +52,6 @@ export const Root = styled('div')<
     width: '20%',
     left: '50%',
     transform: 'translateX(-50%)',
-    zIndex: 4,
     top: `${ribbonTop}px`,
   },
 }))
@@ -74,5 +70,4 @@ export const Content = styled('div')<
   top: '50% ',
   transform: 'translateY(-50%)',
   height,
-  zIndex: 2,
 }))

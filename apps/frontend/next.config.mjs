@@ -14,6 +14,9 @@ const nextConfig = withNextIntl({
           "@lukasbriza/styles",
           "@lukasbriza/components",
         ],
+  experimental: {
+    serverComponentsExternalPackages: ['next-runtime-env'],
+  }
 })
 
 export default nextConfig

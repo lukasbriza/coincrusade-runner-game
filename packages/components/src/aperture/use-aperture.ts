@@ -25,7 +25,7 @@ export const useAperture = (stage?: 1 | 2 | 3 | undefined, initialStage?: 1 | 2 
 
   const stageTwo = useMemo(
     () => ({
-      height: '35vh',
+      height: '30vh',
       ...common,
     }),
     [common],

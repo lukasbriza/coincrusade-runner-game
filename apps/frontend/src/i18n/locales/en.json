@@ -1,5 +1,5 @@
 {
-  "video":{
+  "video": {
     "cantLoad": "Your browser does not support the video tag."
   },
   "anchors": {
@@ -7,9 +7,9 @@
     "controls": "Controls",
     "contact": "Contact"
   },
-  "home":{
+  "home": {
     "heroMain": "COIN CRUSADE",
-    "heroSubtitle":"KNIGHT´S QUEST",
+    "heroSubtitle": "KNIGHT´S QUEST",
     "engines": {
       "LinearGenerator": {
         "header": "Linear generator",
@@ -54,6 +54,9 @@
         "email": "E-mail",
         "message": "Message",
         "send": "Send"
+      },
+      "info": {
+        "github": "Source code"
       }
     },
     "settings": {

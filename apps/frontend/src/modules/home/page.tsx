@@ -4,7 +4,8 @@ import type { Metadata } from 'next'
 import { IntersectionBlur } from '@/shared/components'
 import type { WebPage } from '@/shared/types'
 
-import { ApertureProvider, ContactSection, ControlsSection, GameSection } from './component'
+import { ApertureProvider } from './component'
+import { ContactSection, ControlsSection, GameSection } from './sections'
 import { Main } from './styles'
 
 export const rootMetadata = {
@@ -19,7 +20,7 @@ export const HomePage: WebPage = () => (
     <BreakpointProvider>
       <Main>
         <GameSection />
-        <IntersectionBlur height={60} top zIndex={1} />
+        <IntersectionBlur height={60} top zIndex={0} />
         <ControlsSection />
         <ContactSection />
       </Main>

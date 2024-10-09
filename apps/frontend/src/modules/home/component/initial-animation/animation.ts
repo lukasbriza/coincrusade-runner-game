@@ -26,7 +26,7 @@ export const animation = (setStage: (value: StageValue) => void) => {
       `.${animationClasses.hero}`,
       {
         opacity: 1,
-        delay: 1,
+        delay: 1.5,
         duration: 0.5,
         ease: 'power2.in',
       },

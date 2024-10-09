@@ -15,6 +15,7 @@
     "postcleanup": "rimraf .eslintcache tsconfig.tsbuildinfo node_modules",
     "cli": "turbo build --filter @lukasbriza/cli & node ./packages/cli/dist/cli.js",
     "dev": "turbo dev",
+    "dev:frontend": "turbo dev --filter=!./apps/backend",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint --no-daemon",
     "lint:fix": "turbo run lint:fix --no-daemon",

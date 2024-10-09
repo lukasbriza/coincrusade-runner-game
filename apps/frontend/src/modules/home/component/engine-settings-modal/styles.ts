@@ -99,7 +99,7 @@ export const FormInput = styled(NumberInputControlled)(({ theme: { breakpoints }
 }))
 
 export const ModalButton = styled(Button)(({ theme: { breakpoints } }) => ({
-  width: 150,
+  minWidth: 150,
 
   [breakpoints.down('md')]: {
     width: '100%',
@@ -113,7 +113,7 @@ export const ButtonWrapper = styled('div')(({ theme: { spacing, breakpoints } })
   paddingTop: spacing(4),
   paddingBottom: spacing(6),
 
-  [breakpoints.down('md')]: {
+  [breakpoints.down('sm')]: {
     flexDirection: 'column',
     rowGap: spacing(4),
     width: '60%',

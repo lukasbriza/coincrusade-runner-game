@@ -14,6 +14,7 @@ export const Root = styled('div')(({ theme: { spacing, palette } }) => ({
   paddingTop: spacing(6),
   paddingBottom: spacing(6),
   overflow: 'hidden',
+  zIndex: -1,
 }))
 
 export const ControlPartsSection = styled('div')(() => ({

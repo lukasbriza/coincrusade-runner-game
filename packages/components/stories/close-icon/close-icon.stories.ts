@@ -10,7 +10,9 @@ const meta = {
 type Story = StoryObj<typeof CloseIcon>
 
 export const Primary: Story = {
-  args: {},
+  args: {
+    size: 24,
+  },
 }
 
 export default meta

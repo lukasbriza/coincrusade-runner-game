@@ -22,8 +22,8 @@ export const RootLayout: AsyncWebLayout = async ({ children, params }) => {
   return (
     <html lang={params.locale || routing.defaultLocale}>
       <Head>
-        <PublicEnvScript key="env" />
         <meta key="robots" content={process.env.NEXT_PUBLIC_META_ROBOTS} name="robots" />
+        <PublicEnvScript />
         {fontStyles}
       </Head>
       <body>

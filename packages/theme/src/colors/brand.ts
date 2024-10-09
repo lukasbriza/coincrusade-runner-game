@@ -20,7 +20,7 @@ export const brandColors = {
     primary: '#F9EBB4',
     secondary: 'rgba(255, 255, 255, 0.5)',
     tertiary: 'rgba(92, 92, 92, 0.74)',
-    contrast: 'transparent',
+    contrast: 'rgb(255, 255, 255)',
     background: '#4fa760',
   },
 

@@ -4,6 +4,7 @@ export type OnItemClickHandler = ((item: { name: string; path: string }) => void
 
 export type MenuProps = ComponentBaseProps & {
   color?: string | undefined
+  iconSection?: JSX.Element[] | undefined
   items: { name: string; path: string; active: boolean }[]
   onItemClick?: OnItemClickHandler
   onModalStateChange?: ((open: boolean) => void) | undefined
@@ -15,6 +16,7 @@ export type MenuProps = ComponentBaseProps & {
 
 export type MobileMenuProps = {
   color?: string | undefined
+  iconSection?: JSX.Element[] | undefined
   items: { name: string; path: string; active: boolean }[]
   onItemClick?: OnItemClickHandler
   onModalStateChange?: ((open: boolean) => void) | undefined

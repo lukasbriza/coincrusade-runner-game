@@ -1,6 +1,6 @@
 import type { CSSObject } from '@mui/system'
 
-import type { ComponentBaseProps } from '../types'
+import type { ComponentBaseProps } from '../../types'
 
 export type MenuIconProps = ComponentBaseProps & {
   active?: boolean | undefined

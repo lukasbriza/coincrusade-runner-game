@@ -8,8 +8,16 @@ import type { OwnerState } from '../types'
 import { menuClasses } from './classes'
 
 export const Root = styled('div')(({ theme: { spacing, breakpoints } }) => ({
-  display: 'flex',
-  justifyContent: 'center',
+  position: 'fixed',
+  display: 'grid',
+  gridTemplateAreas: `
+    "icons"
+    "items"
+  `,
+  gridTemplateRows: `min-content min-content`,
+  justifyItems: 'center',
+  alignItems: 'center',
+
   width: '100%',
 
   [`& .${menuClasses.icon}`]: {
@@ -22,6 +30,7 @@ export const Root = styled('div')(({ theme: { spacing, breakpoints } }) => ({
   [`& .${menuClasses.isDesktop}`]: {
     marginLeft: 'min(3vw, 60px)',
     marginRight: 'min(3vw, 60px)',
+
     [breakpoints.down('sm')]: {
       display: 'none',
     },
@@ -34,7 +43,23 @@ export const Root = styled('div')(({ theme: { spacing, breakpoints } }) => ({
   },
 }))
 
-export const MobileMenuWrapper = styled('div')(({ theme: { spacing } }) => ({
+export const MenuItemsWrapper = styled('div')(({ theme: { palette } }) => ({
+  gridArea: 'items',
+  display: 'flex',
+
+  [`&>.${menuClasses.isDesktop}:hover`]: {
+    '& *': {
+      color: palette.bodyText.contrast,
+    },
+  },
+}))
+
+export const IconsMenuSection = styled('div')(() => ({
+  gridArea: 'icons',
+  display: 'flex',
+}))
+
+export const MobileMenuWrapper = styled('div')(({ theme: { spacing, palette } }) => ({
   display: 'flex',
   flexDirection: 'column',
   rowGap: spacing(2),
@@ -42,6 +67,22 @@ export const MobileMenuWrapper = styled('div')(({ theme: { spacing } }) => ({
   alignItems: 'center',
   width: '100%',
   height: '100%',
+
+  [`& > .${menuClasses.menuItem}`]: {
+    width: '100%',
+    textAlign: 'center',
+    paddingTop: spacing(1),
+    transition: 'background 0.25s ease-in',
+
+    '&:hover': {
+      background: palette.surface.secondary,
+    },
+  },
+}))
+
+export const MobileMenuIconWrapper = styled('div')(() => ({
+  display: 'flex',
+  justifyContent: 'center',
 }))
 
 export const MenuModal = styled(Modal)<OwnerState<{ background?: string | undefined }>>(

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Menu } from '../../src/index'
+import { GithubIcon, Menu } from '../../src/index'
 
 const meta = {
   component: Menu,
@@ -9,8 +9,11 @@ const meta = {
 
 type Story = StoryObj<typeof Menu>
 
+const iconElements = [<GithubIcon key="github-icon" />]
+
 export const Primary: Story = {
   args: {
+    iconSection: iconElements,
     items: [
       { path: '/', name: 'Item1', active: true },
       { path: '/', name: 'Item2', active: false },
