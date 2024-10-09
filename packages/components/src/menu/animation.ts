@@ -23,6 +23,13 @@ export const openAnimation = () => {
       },
       'items',
     )
+    .set(
+      `.${menuClasses.menuItemIcons}`,
+      {
+        display: 'flex',
+      },
+      'items',
+    )
     .to(
       `.${menuClasses.menuItem}`,
       {

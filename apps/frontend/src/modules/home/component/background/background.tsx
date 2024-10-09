@@ -19,8 +19,8 @@ export const Background: FC = () => {
       <BackgroundFull
         alt="background and utilities front"
         className={backgroundClasses.background}
-        ownerState={{ zIndex: 1 }}
-        src="bg_main.png"
+        ownerState={{ zIndex: 0 }}
+        src="bg_main.gif"
       />
     </Root>
   )

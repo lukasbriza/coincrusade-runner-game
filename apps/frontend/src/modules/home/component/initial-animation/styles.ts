@@ -17,12 +17,11 @@ export const Root = styled('div')<OwnerState<{ apertureLoaded: boolean }>>(({ th
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  zIndex: 1,
 
   overflow: 'hidden',
 
   [`& .${animationClasses.hero}`]: {
-    opacity: 1,
+    opacity: 0,
   },
 
   [`&  .${animationClasses.subtitle}`]: {

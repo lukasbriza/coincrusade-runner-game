@@ -45,6 +45,9 @@ export const Pergamen = forwardRef<HTMLDivElement, PergamenProps>(
         ownerState={{ width, topTop: topPosition, ribbonTop: ribbonPosition, bottomTop: bottomPosition }}
         onClick={onClick}
       >
+        <Image ref={pergamen} alt="pergamen" className={pergamenClasses.body} fill src="/paper.png" />
+        <Image ref={top} alt="pergamen top" className={pergamenClasses.top} fill src="/upper.png" />
+        <Image ref={bottom} alt="pergamen bottom" className={pergamenClasses.bottom} fill src="/lower.png" />
         <Content
           ref={content}
           className={pergamenClasses.content}
@@ -66,9 +69,6 @@ export const Pergamen = forwardRef<HTMLDivElement, PergamenProps>(
           onMouseEnter={mouseEnterHandler}
           onMouseLeave={mouseLeaveHandler}
         />
-        <Image ref={top} alt="pergamen top" className={pergamenClasses.top} fill src="/upper.png" />
-        <Image ref={pergamen} alt="pergamen" className={pergamenClasses.body} fill src="/paper.png" />
-        <Image ref={bottom} alt="pergamen bottom" className={pergamenClasses.bottom} fill src="/lower.png" />
       </Root>
     )
   },

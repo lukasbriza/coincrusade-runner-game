@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Button, Text } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'

@@ -10,7 +10,9 @@ export const CloseIcon = forwardRef<SVGSVGElement, CloseIconProps>(({ className,
     ref={ref}
     className={className}
     fill="none"
-    viewBox={`0 0 ${size} ${size}`}
+    height={size}
+    viewBox="0 0 24 24"
+    width={size}
     xmlns="http://www.w3.org/2000/svg"
     onClick={onClick}
   >

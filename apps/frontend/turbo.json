@@ -1,11 +1,22 @@
 {
-  "extends": ["//"],
+  "extends": [
+    "//"
+  ],
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "lint:fix": {
-        "env": ["NEXT_PUBLIC_META_ROBOTS","API_URL"],
-        "dependsOn": ["^build"],
-        "outputs": [".eslintchache"]
+      "env": [
+        "NEXT_PUBLIC_META_ROBOTS",
+        "API_URL",
+        "NEXT_PUBLIC_GITHUB",
+        "NEXT_PUBLIC_MAIL"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".eslintchache"
+      ]
     }
   }
 }

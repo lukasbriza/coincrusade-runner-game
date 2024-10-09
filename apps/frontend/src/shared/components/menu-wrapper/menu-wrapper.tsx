@@ -1,6 +1,6 @@
 'use client'
 
-import type { MenuProps } from '@lukasbriza/components'
+import { type MenuProps } from '@lukasbriza/components'
 import { useTheme } from '@lukasbriza/theme'
 import { type FC } from 'react'
 

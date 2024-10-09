@@ -11,7 +11,7 @@ export type MenuContext = {
 }
 
 const defaultValue: MenuContext = {
-  hidden: false,
+  hidden: true,
 }
 
 const MenuContext = createContext<MenuContext>(defaultValue)

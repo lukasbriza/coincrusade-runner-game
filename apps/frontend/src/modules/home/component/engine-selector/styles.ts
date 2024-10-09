@@ -18,7 +18,6 @@ export const Root = styled('div')<OwnerState<{ render: boolean; minimized: boole
     height: '100vh',
     minHeight: PAGE_MIN_HEIGHT,
     display: 'flex',
-    zIndex: 1,
     justifyContent: 'center',
     alignItems: 'center',
 

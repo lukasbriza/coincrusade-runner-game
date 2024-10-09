@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-import { StringInputControlled, TextAreaControlled } from '../controlled-inputs'
+import { StringInputControlled, TextAreaControlled } from '../../component/controlled-inputs'
 
 import { FormInputsRoot } from './styles'
 

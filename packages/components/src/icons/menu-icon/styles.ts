@@ -2,7 +2,7 @@
 
 import { styled } from '@lukasbriza/styles'
 
-import type { OwnerState } from '../types'
+import type { OwnerState } from '../../types'
 
 import { menuIconClasses } from './classes'
 import type { MenuIconProps } from './types'

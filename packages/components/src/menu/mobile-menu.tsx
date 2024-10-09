@@ -2,16 +2,17 @@ import { FocusTrap } from '@mui/base'
 import clsx from 'clsx'
 import type { FC } from 'react'
 
-import { MenuIcon } from '../menu-icon'
+import { MenuIcon } from '../icons'
 import { MenuItem } from '../menu-item'
 
 import { menuClasses } from './classes'
 import { useMobileMenu } from './hooks'
-import { MenuModal, MobileMenuWrapper } from './styles'
+import { MenuModal, MobileMenuIconWrapper, MobileMenuWrapper } from './styles'
 import type { MobileMenuProps } from './types'
 
 export const MobileMenu: FC<MobileMenuProps> = ({
   color,
+  iconSection,
   items,
   onItemClick,
   onModalStateChange,
@@ -24,13 +25,8 @@ export const MobileMenu: FC<MobileMenuProps> = ({
 
   return (
     <>
-      <MenuIcon
-        active={open}
-        className={clsx(mobileMenuIconClassName, menuClasses.icon, menuClasses.isMobile)}
-        color={color}
-        onClick={trigger}
-      />
       <MenuModal
+        disablePortal
         hideBackdrop
         keepMounted
         open={open}
@@ -49,9 +45,20 @@ export const MobileMenu: FC<MobileMenuProps> = ({
                 onClick={onItemClickHandler({ name, path })}
               />
             ))}
+            {iconSection ? (
+              <MobileMenuIconWrapper className={clsx(menuClasses.menuItem, menuClasses.menuItemIcons)}>
+                {iconSection.map((icon) => icon)}
+              </MobileMenuIconWrapper>
+            ) : null}
           </MobileMenuWrapper>
         </FocusTrap>
       </MenuModal>
+      <MenuIcon
+        active={open}
+        className={clsx(mobileMenuIconClassName, menuClasses.icon, menuClasses.isMobile)}
+        color={color}
+        onClick={trigger}
+      />
     </>
   )
 }

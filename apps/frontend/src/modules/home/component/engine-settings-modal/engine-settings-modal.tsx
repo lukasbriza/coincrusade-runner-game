@@ -1,8 +1,8 @@
+'use client'
+
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable react/jsx-props-no-spreading */
-
-'use client'
 
 import { Modal } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
@@ -14,7 +14,7 @@ import type { Generators } from '@/shared'
 import type { GameConfiguration } from '@/shared/components'
 import { defaultConfig, useGameConfiguration } from '@/shared/components'
 
-import { fadeInModal, fadeOffModal } from './animation'
+import { mountModal, unmountModal } from './animation'
 import { EngineSettingsModalForm } from './engine-settings-modal-form'
 import { ButtonWrapper, Cross, FormRoot, GeneratorText, Header, ModalButton, WarningText } from './styles'
 import type { EngineSettingsFormValues, EngineSettingsProps } from './types'
@@ -29,7 +29,7 @@ const getConfigValues = (fullConfig: GameConfiguration) => ({
 })
 
 export const EngineSettingsModal: FC<EngineSettingsProps> = ({ open, onClose }) => {
-  const t = useTranslations('home')
+  const t = useTranslations()
   const modal = useRef<HTMLDivElement>(null)
   const { config, resetConfiguration, changeConfiguration } = useGameConfiguration()
   const methods = useForm<EngineSettingsFormValues>({
@@ -40,7 +40,7 @@ export const EngineSettingsModal: FC<EngineSettingsProps> = ({ open, onClose }) 
   const { reset } = methods
 
   const closeModal = async () => {
-    await fadeOffModal(modal.current)
+    await unmountModal(modal.current)
     onClose()
   }
 
@@ -56,7 +56,7 @@ export const EngineSettingsModal: FC<EngineSettingsProps> = ({ open, onClose }) 
 
   useEffect(() => {
     const showModal = async () => {
-      await fadeInModal(modal.current)
+      await mountModal(modal.current)
       reset(getConfigValues(config))
     }
     if (open) {
@@ -69,10 +69,12 @@ export const EngineSettingsModal: FC<EngineSettingsProps> = ({ open, onClose }) 
     <Modal ref={modal} open={open} onClose={closeModal}>
       <FormProvider {...methods}>
         <FormRoot onSubmit={methods.handleSubmit(onSubmit)}>
-          <Cross onClick={closeModal} />
-          <Header variant="h2">{t('settings.header')}</Header>
-          <GeneratorText variant="h4">{t(`engines.${config.currentGenerator as Generators}.header`)}</GeneratorText>
-          <WarningText variant="M">{t('settings.warning')}</WarningText>
+          <Cross size={51} onClick={closeModal} />
+          <Header variant="h2">{t('home.settings.header')}</Header>
+          <GeneratorText variant="h4">
+            {t(`home.engines.${config.currentGenerator as Generators}.header`)}
+          </GeneratorText>
+          <WarningText variant="M">{t('home.settings.warning')}</WarningText>
           <EngineSettingsModalForm control={methods.control as unknown as Control<FieldValues>} />
           <ButtonWrapper>
             <ModalButton text="Confirm" type="submit" />

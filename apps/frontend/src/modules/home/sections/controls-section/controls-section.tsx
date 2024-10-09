@@ -1,11 +1,10 @@
 import { getTranslations } from 'next-intl/server'
 import type { FC } from 'react'
 
+import { anchors } from '@/shared'
 import { MainHeader } from '@/shared/components'
 
-import { ControlsPart } from '../controls-part'
-import type { ControlSectionDefinition } from '../controls-part/types'
-import { KeyboardKeys } from '../keyboard'
+import { ControlsPart, KeyboardKeys, type ControlSectionDefinition } from '../../component'
 
 import { ControlsDivider } from './constrols-divider'
 import { ControlPartsSection, Root } from './styles'
@@ -38,7 +37,7 @@ export const ControlsSection: FC = async () => {
   ]
   return (
     <Root>
-      <MainHeader>{t('header')}</MainHeader>
+      <MainHeader id={anchors[1].path}>{t('header')}</MainHeader>
       <ControlPartsSection>
         <ControlsPart header={t('movement.headerRight')} sections={movementRightSections} />
         <ControlsDivider />

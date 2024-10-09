@@ -60,3 +60,16 @@ export const FormInputsRoot = styled('div')(({ theme: { spacing } }) => ({
     position: 'relative',
   },
 }))
+
+export const InfoSection = styled('div')(({ theme: { spacing } }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  columnGap: spacing(4),
+}))
+
+export const InfoIcon = styled('a')(({ theme: { spacing } }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  columnGap: spacing(2),
+  textDecoration: 'none',
+}))

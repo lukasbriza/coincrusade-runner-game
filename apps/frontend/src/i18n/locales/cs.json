@@ -1,12 +1,12 @@
 {
-  "video":{
+  "video": {
     "cantLoad": "Váš prohlížeč nepodporuje video tag."
   },
   "anchors": {
     "game": "Hra",
     "controls": "Ovládání",
     "contact": "Kontakt"
-  }, 
+  },
   "home": {
     "heroMain": "COIN CRUSADE",
     "heroSubtitle": "KNIGHT´S QUEST",
@@ -54,6 +54,9 @@
         "email": "E-mail",
         "message": "Zpráva",
         "send": "Odeslat"
+      },
+      "info": {
+        "github": "Zdrojový kód"
       }
     },
     "settings": {

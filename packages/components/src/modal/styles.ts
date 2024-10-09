@@ -1,9 +1,8 @@
 'use client'
 
 import { styled } from '@lukasbriza/styles'
-import { Modal } from '@mui/base'
 
-export const Root = styled(Modal)(({ theme: { zIndex, palette } }) => ({
+export const Root = styled('div')(({ theme: { zIndex, palette } }) => ({
   position: 'fixed',
   left: '50%',
   top: '50%',
