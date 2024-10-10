@@ -9,11 +9,9 @@ const meta = {
 
 type Story = StoryObj<typeof Menu>
 
-const iconElements = [<GithubIcon key="github-icon" />]
-
 export const Primary: Story = {
   args: {
-    iconSection: iconElements,
+    iconSection: [<GithubIcon key="github-icon" />],
     items: [
       { path: '/', name: 'Item1', active: true },
       { path: '/', name: 'Item2', active: false },

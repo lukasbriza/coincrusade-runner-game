@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Scene } from 'phaser'
 
-import { loadConfigurationCallbackListener, loadConfigurationEmiter } from '../events'
+import { loadConfigurationCallbackListener, loadProgressEmiter } from '../events'
 import {
   initCoinFactory,
   initEmptyLifeFactory,
@@ -21,6 +21,7 @@ export class LoadingScene extends Scene {
   constructor() {
     super({ key: 'loading' })
     loadConfigurationCallbackListener((config) => {
+      console.log('here')
       this.scene.stop('loading')
       this.scene.start('game', { gameConfig: config })
     })
@@ -28,6 +29,7 @@ export class LoadingScene extends Scene {
 
   preload() {
     this.physics.world.setFPS(50)
+    this.load.on('progress', loadProgressEmiter)
     loadImages(this)
     loadUiElements(this)
     loadPlatformMaps(this)
@@ -46,9 +48,5 @@ export class LoadingScene extends Scene {
     initSettingsButtonFactory()
     initMusicButtonFactory()
     initFullscreenButtonFactory()
-  }
-
-  create() {
-    loadConfigurationEmiter()
   }
 }
