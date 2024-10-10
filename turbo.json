@@ -60,6 +60,14 @@
       ],
       "persistent": true
     },
+    "dev:frontend": {
+      "cache": false,
+      "dependsOn": [
+        "^build",
+        "copy-fonts"
+      ],
+      "persistent": true
+    },
     "ts": {
       "dependsOn": [
         "^build"

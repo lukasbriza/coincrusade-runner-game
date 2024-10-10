@@ -39,4 +39,6 @@ export enum EventBusEvents {
 
   LoadConfiguration = 'load-configuration',
   LoadConfigurationCallback = 'load-configuration-callback',
+
+  LoadProgress = 'load-progress',
 }
