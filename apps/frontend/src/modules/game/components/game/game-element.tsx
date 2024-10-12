@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { GameScene, LoadingScene, TILE_HEIGHT, TILE_WIDTH } from '@/lib/phaser'
 
-import { GameStateProvider } from '../context'
+import { GameStateProvider } from '../../context'
 import { LoadingScreen } from '../loading-screen'
 import { SettingsPergamen } from '../settings-pergamen'
 

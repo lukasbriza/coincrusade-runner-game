@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { IntersectionBlur } from '@/shared/components'
 import type { WebPage } from '@/shared/types'
 
-import { ApertureProvider } from './component'
+import { ApertureProvider } from './context'
 import { ContactSection, ControlsSection, GameSection } from './sections'
 import { Main } from './styles'
 

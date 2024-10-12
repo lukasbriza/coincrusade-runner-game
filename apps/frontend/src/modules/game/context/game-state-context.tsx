@@ -17,9 +17,8 @@ import {
   loadProgressListener,
 } from '@/lib/phaser/events'
 import { getGameStateContext, initGameStateContext } from '@/lib/phaser/singletons'
-import { useGameConfiguration } from '@/shared/components'
+import { useGameConfiguration } from '@/shared/context'
 
-import { hideGameUIOverlay, showGameUiOverlay } from './animation'
 import {
   GAME_PAUSE_EVENT,
   GAME_RESTART_EVENT,
@@ -28,7 +27,9 @@ import {
   LOAD_END_EVENT,
   LOAD_PROGRESS_EVENT,
   LOAD_START_EVENT,
-} from './constants'
+} from '../constants'
+
+import { hideGameUIOverlay, showGameUiOverlay } from './animation'
 
 const pauseGameHandler = () => {
   showGameUiOverlay()

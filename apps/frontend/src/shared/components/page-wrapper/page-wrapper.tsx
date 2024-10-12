@@ -5,7 +5,7 @@ import type { FC, ReactNode } from 'react'
 
 import { Page } from '@/layout/styles'
 
-import { useMenuContext } from '../context'
+import { useMenuContext } from '../../context'
 import { MenuWrapper } from '../menu-wrapper'
 
 import { pageWrapperClasses } from './classes'

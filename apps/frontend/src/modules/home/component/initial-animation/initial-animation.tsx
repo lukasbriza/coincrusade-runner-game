@@ -4,7 +4,7 @@ import { HeroText } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useEffect, type FC } from 'react'
 
-import { useApertureContext } from '../context/aperture-context'
+import { useApertureContext } from '../../context/aperture-context'
 
 import { animation } from './animation'
 import { animationClasses } from './classes'

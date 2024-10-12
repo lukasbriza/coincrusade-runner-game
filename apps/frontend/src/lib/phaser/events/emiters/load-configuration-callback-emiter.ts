@@ -1,4 +1,4 @@
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 import { EventBus, EventBusEvents } from '../event-bus'
 

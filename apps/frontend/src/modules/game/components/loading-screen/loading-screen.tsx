@@ -3,7 +3,7 @@
 import { LoadingBar } from '@lukasbriza/components'
 import { useCallback, useEffect, useState, type FC } from 'react'
 
-import { LOAD_ANIMATION_END_EVENT, LOAD_END_EVENT, LOAD_PROGRESS_EVENT, LOAD_START_EVENT } from '../context'
+import { LOAD_ANIMATION_END_EVENT, LOAD_END_EVENT, LOAD_PROGRESS_EVENT, LOAD_START_EVENT } from '../../constants'
 
 import { loadingScreenClasses } from './classes'
 import { LoadingAnimationWrapper, Root, RunAnimation } from './styles'

@@ -1,4 +1,4 @@
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 import { POLICY, DEFAULT_PLATFORM_SPEED_CHANGE } from '../constants'
 import { noteAddedEmiter } from '../events'

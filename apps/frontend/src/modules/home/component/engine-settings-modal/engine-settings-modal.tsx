@@ -11,8 +11,7 @@ import type { Control, FieldValues } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import type { Generators } from '@/shared'
-import type { GameConfiguration } from '@/shared/components'
-import { defaultConfig, useGameConfiguration } from '@/shared/components'
+import { defaultConfig, useGameConfiguration, type GameConfiguration } from '@/shared/context'
 
 import { mountModal, unmountModal } from './animation'
 import { EngineSettingsModalForm } from './engine-settings-modal-form'

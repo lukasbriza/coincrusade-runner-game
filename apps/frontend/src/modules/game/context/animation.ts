@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 
-import { gameClasses } from '../game/classes'
+import { gameClasses } from '../components'
 
 export const showGameUiOverlay = () => gsap.set(`.${gameClasses.gameUiOverlay}`, { display: 'initial' })
 

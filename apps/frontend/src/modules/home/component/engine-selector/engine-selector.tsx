@@ -10,9 +10,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from '@/i18n/routing'
 import { engines, routes } from '@/shared'
 import { Arrow, Pergamen } from '@/shared/components'
-import { useGameConfiguration } from '@/shared/components/context'
+import { useGameConfiguration } from '@/shared/context'
 
-import { useApertureContext } from '../context'
+import { useApertureContext } from '../../context'
 import { EngineSettingsModal } from '../engine-settings-modal'
 
 import { fadeInText, fadeOffText, hideArrows, minimizeScroll, showArrows, unminimizeScroll } from './animation'

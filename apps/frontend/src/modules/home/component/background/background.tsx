@@ -2,7 +2,7 @@
 
 import { type FC } from 'react'
 
-import { useApertureContext } from '../context'
+import { useApertureContext } from '../../context'
 
 import { backgroundClasses } from './classes'
 import { BackgroundFull, Clouds, Root } from './styles'

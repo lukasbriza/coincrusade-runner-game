@@ -10,7 +10,7 @@ import { useRouter } from '@/i18n/routing'
 import { routes } from '@/shared'
 import { Pergamen } from '@/shared/components'
 
-import { GAME_PAUSE_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../context'
+import { GAME_PAUSE_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../../constants'
 
 import { fadeIn, fadeOff } from './animation'
 import { settingsPergamen } from './classes'

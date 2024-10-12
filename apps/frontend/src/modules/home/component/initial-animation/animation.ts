@@ -3,7 +3,7 @@ import gsap from 'gsap'
 
 import { pageWrapperClasses } from '@/shared/components'
 
-import type { StageValue } from '../context/aperture-context'
+import type { StageValue } from '../../context/aperture-context'
 import { engineSelectorClasses } from '../engine-selector'
 
 import { animationClasses } from './classes'
