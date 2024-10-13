@@ -7,6 +7,9 @@
     "controls": "Controls",
     "contact": "Contact"
   },
+  "snackbars": {
+    "mobileVerification": "The game is not supported on mobile devices. To play the game, open the page on a desktop computer."
+  },
   "home": {
     "heroMain": "COIN CRUSADE",
     "heroSubtitle": "KNIGHT´S QUEST",

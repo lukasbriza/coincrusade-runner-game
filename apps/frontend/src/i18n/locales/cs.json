@@ -7,6 +7,9 @@
     "controls": "Ovládání",
     "contact": "Kontakt"
   },
+  "snackbars": {
+    "mobileVerification": "Hra není podporována na mobilních zařízeních. Pro její spuštění otevřete stránku na stolním počítači."
+  },
   "home": {
     "heroMain": "COIN CRUSADE",
     "heroSubtitle": "KNIGHT´S QUEST",

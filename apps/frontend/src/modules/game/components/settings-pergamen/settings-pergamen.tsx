@@ -6,11 +6,9 @@ import { Button } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState, type FC } from 'react'
 
-import { useRouter } from '@/i18n/routing'
-import { routes } from '@/shared'
 import { Pergamen } from '@/shared/components'
 
-import { GAME_PAUSE_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../../constants'
+import { GAME_PAUSE_EVENT, GAME_QUIT_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../../constants'
 
 import { fadeIn, fadeOff } from './animation'
 import { settingsPergamen } from './classes'
@@ -19,6 +17,7 @@ import { Root, SettingsPergamenContent } from './styles'
 enum ACTION {
   RESTART = 'restart',
   RESUME = 'resume',
+  QUIT = 'quit',
 }
 
 export const SettingsPergamen: FC = () => {
@@ -28,7 +27,6 @@ export const SettingsPergamen: FC = () => {
   const content = useRef<HTMLDivElement>(null)
   const pergamen = useRef<HTMLDivElement>(null)
   const t = useTranslations('game.settinngsPergamen')
-  const router = useRouter()
 
   const showElement = () => setShow(true)
   const showPergamenContent = () => fadeIn(content.current)
@@ -50,8 +48,10 @@ export const SettingsPergamen: FC = () => {
   }
 
   const handleQuit = () => {
-    setShow(false)
-    router.push(routes.home)
+    if (content.current) {
+      closePergamen()
+      setAction(ACTION.QUIT)
+    }
   }
 
   const resolveAction = useCallback(
@@ -66,13 +66,16 @@ export const SettingsPergamen: FC = () => {
       if (rolled && pergamen.current) {
         fadeOff(pergamen.current).then(() => {
           setShow(false)
-          setAction(null)
           if (action === ACTION.RESTART) {
             window.dispatchEvent(new Event(GAME_RESTART_EVENT))
           }
           if (action === ACTION.RESUME) {
             window.dispatchEvent(new Event(GAME_RESUME_EVENT))
           }
+          if (action === ACTION.QUIT) {
+            window.dispatchEvent(new Event(GAME_QUIT_EVENT))
+          }
+          setAction(null)
         })
       }
     },

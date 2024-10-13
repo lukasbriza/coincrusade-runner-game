@@ -56,7 +56,7 @@ const defaultValue: GameConfigurationContextProps = {
 
 const GameConfigurationContext = createContext<GameConfigurationContextProps>(defaultValue)
 
-const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const locale = useLocale()
   const [gameConfig, setGameConfig] = useState<GameConfiguration>(defaultConfig)
 

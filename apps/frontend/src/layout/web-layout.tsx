@@ -1,9 +1,16 @@
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
+import { MobileVerificator } from '@/shared/components'
 import type { AsyncWebLayout } from '@/shared/types'
 
-import { EmotionRegistry, GameConfigurationRegistry, MenuRegistry, SnackbarRegistry } from './registry'
+import {
+  EmotionRegistry,
+  GameConfigurationRegistry,
+  InitialAnimationRegistry,
+  MenuRegistry,
+  SnackbarRegistry,
+} from './registry'
 
 export const WebLayout: AsyncWebLayout = async ({ children }) => {
   const messages = await getMessages()
@@ -12,7 +19,12 @@ export const WebLayout: AsyncWebLayout = async ({ children }) => {
       <NextIntlClientProvider messages={messages}>
         <SnackbarRegistry>
           <GameConfigurationRegistry>
-            <MenuRegistry>{children}</MenuRegistry>
+            <InitialAnimationRegistry>
+              <MenuRegistry>
+                <MobileVerificator />
+                {children}
+              </MenuRegistry>
+            </InitialAnimationRegistry>
           </GameConfigurationRegistry>
         </SnackbarRegistry>
       </NextIntlClientProvider>

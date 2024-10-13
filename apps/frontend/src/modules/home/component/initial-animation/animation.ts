@@ -71,4 +71,6 @@ export const animation = (setStage: (value: StageValue) => void) => {
       gsap.set(`.${pageWrapperClasses.menuItems}`, { clearProps: 'opacity' })
       gsap.set('html', { clearProps: 'overflow' })
     })
+
+  return tl
 }

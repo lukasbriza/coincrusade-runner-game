@@ -4,6 +4,8 @@ import { HeroText } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useEffect, type FC } from 'react'
 
+import { useInitialAnimationContext } from '@/shared/context'
+
 import { useApertureContext } from '../../context/aperture-context'
 
 import { animation } from './animation'
@@ -11,15 +13,20 @@ import { animationClasses } from './classes'
 import { Root } from './styles'
 
 export const InitialAnimation: FC = () => {
-  const { setStage, loaded } = useApertureContext()
+  const { setStage, disableAperture, loaded } = useApertureContext()
+  const { setInitialised, initialised } = useInitialAnimationContext()
   const t = useTranslations('home')
 
   useEffect(() => {
-    if (loaded) {
-      animation(setStage)
+    if (loaded && !initialised) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      animation(setStage).then(() => {
+        setInitialised(true)
+        disableAperture()
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded])
+  }, [loaded, initialised])
 
   return (
     <Root ownerState={{ apertureLoaded: loaded }}>

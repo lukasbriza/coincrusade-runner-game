@@ -21,6 +21,7 @@ import { useGameConfiguration } from '@/shared/context'
 
 import {
   GAME_PAUSE_EVENT,
+  GAME_QUIT_EVENT,
   GAME_RESTART_EVENT,
   GAME_RESUME_EVENT,
   LOAD_ANIMATION_END_EVENT,
@@ -46,6 +47,11 @@ const restartGameHandler = () => {
   gameRestartEmiter()
 }
 
+const endGameHandler = () => {
+  const stateSingleton = getGameStateContext()
+  stateSingleton.reset()
+}
+
 const handleLoadProgress = (progress: number) => {
   window.dispatchEvent(new CustomEvent(LOAD_PROGRESS_EVENT, { detail: { progress } }))
   if (progress === 0) {
@@ -68,7 +74,7 @@ export const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => 
     const stateSingleton = getGameStateContext()
 
     // GAME ACTIONS
-    EventBus.on(EventBusEvents.EndGame, () => console.log('endgame'))
+    EventBus.on(EventBusEvents.EndGame, endGameHandler)
     gameRestartListener(stateSingleton.reset)
     loadConfigurationListener(() => {
       loadConfigurationCallbackEmiter(config)
@@ -76,6 +82,7 @@ export const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => 
     gamePauseListener(pauseGameHandler)
     window.addEventListener(GAME_RESTART_EVENT, restartGameHandler)
     window.addEventListener(GAME_RESUME_EVENT, resumeGameHandler)
+    window.addEventListener(GAME_QUIT_EVENT, endGameHandler)
     return () => {
       EventBus.removeAllListeners()
       window.removeEventListener(GAME_RESTART_EVENT, restartGameHandler)
