@@ -1,6 +1,6 @@
 'use client'
 
-import type { OwnerState } from '@lukasbriza/components'
+import { Text, type OwnerState } from '@lukasbriza/components'
 import { styled } from '@lukasbriza/styles'
 
 import { PAGE_MIN_HEIGHT } from '@/shared/constants'
@@ -90,6 +90,8 @@ export const PergamenContentRoot = styled('div')(({ theme: { breakpoints, spacin
       `,
   gridTemplateRows: 'min-content 1fr min-content',
   gridTemplateColumns: '1fr 1fr',
+  overflowY: 'auto',
+  padding: spacing(1),
 
   [breakpoints.down('md')]: {
     gridTemplateAreas: `
@@ -128,4 +130,12 @@ export const PergamenContentRoot = styled('div')(({ theme: { breakpoints, spacin
     left: '50%',
     transform: 'translateX(-50%)',
   },
+}))
+
+export const ContentText = styled(Text)(({ theme: { spacing } }) => ({
+  position: 'relative',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  maxWidth: 300,
+  paddingBottom: spacing(3),
 }))

@@ -3,6 +3,7 @@
 import { GameObjects } from 'phaser'
 
 import { SOUND_KEYS, UI_KEYS } from '../assets'
+import { gameEndListener, gameRestartListener } from '../events'
 import type { IScene } from '../types'
 
 import { Button } from './button-factory'
@@ -60,6 +61,18 @@ export class MusicButton extends Button implements IMusicButton {
       }
       if (!this.isEnabled) {
         this.mouseLeave(UI_KEYS.MUSIC_GREY_OFF)
+      }
+    })
+
+    gameEndListener(() => {
+      if (this.music) {
+        this.music.pause()
+      }
+    })
+
+    gameRestartListener(() => {
+      if (this.music) {
+        this.music.play({ loop: true, volume: 0.8 })
       }
     })
   }

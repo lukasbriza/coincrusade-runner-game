@@ -180,8 +180,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
       }
       // Callback when on left side of world
       if (isKnightOnLeftSideOfWorld(this)) {
-        const stateSingleton = getGameStateContext()
-        stateSingleton.leftSideCollisionAction(this)
+        gameStateSingleton.leftSideCollisionAction(this)
       }
       if (isKnightOnLeftSideCorner(this)) {
         this.setX(10)

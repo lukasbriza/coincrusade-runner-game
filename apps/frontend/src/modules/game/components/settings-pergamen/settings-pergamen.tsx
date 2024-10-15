@@ -2,7 +2,7 @@
 
 'use client'
 
-import { Button } from '@lukasbriza/components'
+import { Button, Text } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState, type FC } from 'react'
 
@@ -26,7 +26,7 @@ export const SettingsPergamen: FC = () => {
   const [rolled, setRolled] = useState<boolean>(true)
   const content = useRef<HTMLDivElement>(null)
   const pergamen = useRef<HTMLDivElement>(null)
-  const t = useTranslations('game.settinngsPergamen')
+  const t = useTranslations('game.settingsPergamen')
 
   const showElement = () => setShow(true)
   const showPergamenContent = () => fadeIn(content.current)
@@ -49,8 +49,7 @@ export const SettingsPergamen: FC = () => {
 
   const handleQuit = () => {
     if (content.current) {
-      closePergamen()
-      setAction(ACTION.QUIT)
+      window.dispatchEvent(new Event(GAME_QUIT_EVENT))
     }
   }
 
@@ -110,6 +109,7 @@ export const SettingsPergamen: FC = () => {
         onAnimationStateChange={resolveAction}
       >
         <SettingsPergamenContent ref={content}>
+          <Text variant="h4">{t('header')}</Text>
           <Button text={t('resume')} onClick={handleResume} />
           <Button text={t('restart')} onClick={handleRestart} />
           <Button text={t('quit')} onClick={handleQuit} />

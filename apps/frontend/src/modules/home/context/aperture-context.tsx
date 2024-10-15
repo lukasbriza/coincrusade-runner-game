@@ -5,6 +5,7 @@ import type { FC, ReactNode } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { APERTURE_PLAYED_STORAGE_KEY } from '@/shared'
+import { setItem } from '@/utils'
 
 import { apertureClasses } from './classes'
 
@@ -36,7 +37,7 @@ const defaultValue: ApertureContextValue = {
 }
 
 const disableAperture = () => {
-  window.localStorage.setItem(APERTURE_PLAYED_STORAGE_KEY, 'true')
+  setItem(APERTURE_PLAYED_STORAGE_KEY, 'true')
 }
 
 const ApertureContext = createContext<ApertureContextValue>(defaultValue)

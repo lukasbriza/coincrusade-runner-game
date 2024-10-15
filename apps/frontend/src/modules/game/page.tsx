@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 import type { WebPage } from '@/shared/types'
 
-import { Game } from './components/game/game'
+import { GameElement } from './components'
 
 export const rootMetadata = {
   title: 'Knight´s quest',
@@ -13,4 +13,4 @@ export const rootMetadata = {
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
-export const GamePage: WebPage = () => <Game />
+export const GamePage: WebPage = () => <GameElement />

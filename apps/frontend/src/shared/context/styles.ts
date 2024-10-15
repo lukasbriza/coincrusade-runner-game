@@ -10,4 +10,6 @@ export const SnacbarsWrapper = styled('div')(({ theme: { zIndex, spacing } }) =>
   flexDirection: 'column',
   alignItems: 'center',
   marginTop: spacing(3),
+  top: 0,
+  left: 0,
 }))

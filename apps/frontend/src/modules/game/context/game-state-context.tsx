@@ -5,8 +5,11 @@
 import type { FC, ReactNode } from 'react'
 import { useEffect } from 'react'
 
-import { EventBus, EventBusEvents } from '@/lib/phaser'
+import { useRouter } from '@/i18n/routing'
+import { EventBus } from '@/lib/phaser'
 import {
+  gameEndEmiter,
+  gameEndListener,
   gamePauseListener,
   gameRestartEmiter,
   gameRestartListener,
@@ -17,7 +20,9 @@ import {
   loadProgressListener,
 } from '@/lib/phaser/events'
 import { getGameStateContext, initGameStateContext } from '@/lib/phaser/singletons'
+import { GAME_INITIATED_STORAGE_KEY, routes } from '@/shared'
 import { useGameConfiguration } from '@/shared/context'
+import { setItem } from '@/utils'
 
 import {
   GAME_PAUSE_EVENT,
@@ -47,11 +52,6 @@ const restartGameHandler = () => {
   gameRestartEmiter()
 }
 
-const endGameHandler = () => {
-  const stateSingleton = getGameStateContext()
-  stateSingleton.reset()
-}
-
 const handleLoadProgress = (progress: number) => {
   window.dispatchEvent(new CustomEvent(LOAD_PROGRESS_EVENT, { detail: { progress } }))
   if (progress === 0) {
@@ -64,6 +64,12 @@ const handleLoadProgress = (progress: number) => {
 
 export const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { config } = useGameConfiguration()
+  const router = useRouter()
+
+  const endGameHandler = () => {
+    setItem(GAME_INITIATED_STORAGE_KEY, 'true')
+    router.push(routes.home)
+  }
 
   useEffect(() => {
     // GAME LOADING
@@ -71,24 +77,31 @@ export const GameStateProvider: FC<{ children: ReactNode }> = ({ children }) => 
     window.addEventListener(LOAD_ANIMATION_END_EVENT, loadConfigurationEmiter)
     // INIT SINGLETON
     initGameStateContext(config)
-    const stateSingleton = getGameStateContext()
 
     // GAME ACTIONS
-    EventBus.on(EventBusEvents.EndGame, endGameHandler)
-    gameRestartListener(stateSingleton.reset)
+    gameEndListener(endGameHandler)
+    gameRestartListener(() => {
+      const stateSingleton = getGameStateContext()
+      stateSingleton.reset()
+    })
     loadConfigurationListener(() => {
       loadConfigurationCallbackEmiter(config)
     })
     gamePauseListener(pauseGameHandler)
     window.addEventListener(GAME_RESTART_EVENT, restartGameHandler)
     window.addEventListener(GAME_RESUME_EVENT, resumeGameHandler)
-    window.addEventListener(GAME_QUIT_EVENT, endGameHandler)
+    window.addEventListener(GAME_QUIT_EVENT, gameEndEmiter)
     return () => {
       EventBus.removeAllListeners()
       window.removeEventListener(GAME_RESTART_EVENT, restartGameHandler)
       window.removeEventListener(GAME_RESUME_EVENT, resumeGameHandler)
       window.removeEventListener(LOAD_ANIMATION_END_EVENT, loadConfigurationEmiter)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    initGameStateContext(config)
   }, [config])
 
   return <>{children}</>

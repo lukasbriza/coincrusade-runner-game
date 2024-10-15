@@ -1,1 +1,1 @@
-export { GamePage as default, dynamic, rootMetadata } from '@/modules/game/page'
+export { GamePage as default, dynamic, fetchCache, rootMetadata } from '@/modules/game/page'

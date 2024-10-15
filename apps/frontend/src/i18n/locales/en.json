@@ -16,19 +16,19 @@
     "engines": {
       "LinearGenerator": {
         "header": "Linear generator",
-        "content": "Lorem ipsum"
+        "content": "The difficulty of the game is raised independently of how the player performs in the game."
       },
       "HamletSystem": {
         "header": "Hamlet system",
-        "content": "Lorem ipsum2"
+        "content": "Adjusts the difficulty depending on how the player performs in each section of the game. The algorithm for adjusting difficulty is inspired by Stock Theory."
       },
       "NeuralNetworkGenerator": {
         "header": "Neural network",
-        "content": "Lorem ipsum3"
+        "content": "The difficulty of the game is adjusted based on data collected during gameplay, which is then evaluated using a neural network. The difficulty is then adjusted according to the neural network results."
       },
       "ReinforcementLearningGenerator": {
         "header": "Reinforcement learning",
-        "content": "Lorem ipsum 4"
+        "content": "The game adjusts its difficulty based on a reinforcement learning model. The longer the player plays the game, the more the algorithm is able to correctly estimate how to adjust the game's difficulty."
       },
       "button": "Play",
       "config": "Config"
@@ -92,7 +92,8 @@
     }
   },
   "game": {
-    "settinngsPergamen": {
+    "settingsPergamen": {
+      "header": "Game menu",
       "quit": "Quit",
       "restart": "Restart",
       "resume": "Resume"
