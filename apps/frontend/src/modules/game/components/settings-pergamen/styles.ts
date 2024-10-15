@@ -11,6 +11,7 @@ export const SettingsPergamenContent = styled('div')(({ theme: { spacing } }) =>
   display: 'flex',
   rowGap: spacing(5),
   flexDirection: 'column',
+  maxWidth: 200,
 }))
 
 export const Root = styled('div')(() => ({

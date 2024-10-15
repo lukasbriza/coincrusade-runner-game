@@ -21,7 +21,6 @@ export class LoadingScene extends Scene {
   constructor() {
     super({ key: 'loading' })
     loadConfigurationCallbackListener((config) => {
-      console.log('here')
       this.scene.stop('loading')
       this.scene.start('game', { gameConfig: config })
     })

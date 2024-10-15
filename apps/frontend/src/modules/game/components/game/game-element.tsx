@@ -1,76 +1,46 @@
-/* eslint-disable react/function-component-definition */
-
 'use client'
 
-import type { Types } from 'phaser'
-import { Game, Scale, WEBGL } from 'phaser'
-import { useEffect, useRef, useState } from 'react'
+import type { FC } from 'react'
+import { useEffect } from 'react'
 
-import { GameScene, LoadingScene, TILE_HEIGHT, TILE_WIDTH } from '@/lib/phaser'
+import { useRouter } from '@/i18n/routing'
+import { gameRestartEmiter } from '@/lib/phaser/events'
+import { GAME_INITIATED_STORAGE_KEY, routes } from '@/shared'
+import { MobileVerificationSnackbar } from '@/shared/components'
+import { useSnackbarContext } from '@/shared/context'
+import { getItem, isMobile } from '@/utils'
 
-import { GameStateProvider } from '../context'
 import { LoadingScreen } from '../loading-screen'
 import { SettingsPergamen } from '../settings-pergamen'
 
 import { gameClasses } from './classes'
-import { GameUiOverlay, ParentElement } from './styles'
+import { GameUiOverlay } from './styles'
 
-const screenSizes = {
-  width: 15 * TILE_WIDTH,
-  height: 7 * TILE_HEIGHT,
-}
-
-const phaserConfig: Types.Core.GameConfig = {
-  type: WEBGL,
-  scale: {
-    mode: Scale.ScaleModes.FIT,
-    width: screenSizes.width,
-    height: screenSizes.height,
-  },
-  physics: {
-    default: 'arcade',
-    arcade: {
-      debug: true,
-    },
-  },
-  render: {
-    antialiasGL: false,
-    pixelArt: true,
-  },
-  autoFocus: true,
-  scene: [LoadingScene, GameScene],
-}
-
-export default function GameElement() {
-  const parentElement = useRef<HTMLDivElement>(null)
-  const [, setGame] = useState<Game | null>(null)
+export const GameElement: FC = () => {
+  const router = useRouter()
+  const { addSnackbar } = useSnackbarContext()
 
   useEffect(() => {
-    if (!parentElement.current) {
-      return
-    }
+    const initiated = getItem(GAME_INITIATED_STORAGE_KEY)
 
-    const newGame = new Game({
-      ...phaserConfig,
-      parent: parentElement.current,
-      width: parentElement.current.offsetWidth,
-    })
-
-    setGame(newGame)
-
-    return () => {
-      newGame?.destroy(true, true)
-      console.log('🐲 DESTROY 🐲')
+    if (initiated === 'true' && !isMobile()) {
+      gameRestartEmiter()
     }
   }, [])
 
+  useEffect(() => {
+    if (isMobile()) {
+      addSnackbar(<MobileVerificationSnackbar />)
+      router.push(routes.home)
+    }
+  }, [addSnackbar, router])
+
   return (
-    <GameStateProvider>
+    <>
       <GameUiOverlay className={gameClasses.gameUiOverlay}>
         <SettingsPergamen />
       </GameUiOverlay>
-      <ParentElement ref={parentElement} />
       <LoadingScreen />
-    </GameStateProvider>
+    </>
   )
 }

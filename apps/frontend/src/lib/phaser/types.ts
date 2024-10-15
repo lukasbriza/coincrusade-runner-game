@@ -1,6 +1,6 @@
 import type { GameObjects, Physics, Scene, Types } from 'phaser'
 
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 import type { IKeyboardManager, IPlatformManager, IPlayerStatus } from './objects'
 

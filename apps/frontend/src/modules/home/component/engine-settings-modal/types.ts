@@ -1,6 +1,6 @@
 import type { ModalProps } from '@lukasbriza/components'
 
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 export type EngineSettingsProps = Pick<ModalProps, 'open'> & {
   onClose: () => void

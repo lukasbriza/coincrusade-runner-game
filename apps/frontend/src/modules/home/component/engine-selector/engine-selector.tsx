@@ -9,15 +9,15 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from '@/i18n/routing'
 import { engines, routes } from '@/shared'
-import { Arrow, Pergamen } from '@/shared/components'
-import { useGameConfiguration } from '@/shared/components/context'
+import { Arrow, MobileVerificationSnackbar, Pergamen } from '@/shared/components'
+import { useGameConfiguration, useSnackbarContext } from '@/shared/context'
 
-import { useApertureContext } from '../context'
+import { useApertureContext } from '../../context'
 import { EngineSettingsModal } from '../engine-settings-modal'
 
 import { fadeInText, fadeOffText, hideArrows, minimizeScroll, showArrows, unminimizeScroll } from './animation'
 import { engineSelectorClasses } from './classes'
-import { PergamenContentRoot, Root } from './styles'
+import { ContentText, PergamenContentRoot, Root } from './styles'
 
 export const EngineSelector: FC = () => {
   const pergamen = useRef<HTMLDivElement>(null)
@@ -26,6 +26,7 @@ export const EngineSelector: FC = () => {
 
   const { loaded } = useApertureContext()
   const { changeGenerator } = useGameConfiguration()
+  const { addSnackbar } = useSnackbarContext()
 
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [rolled, setRolled] = useState(false)
@@ -36,6 +37,10 @@ export const EngineSelector: FC = () => {
   const handleSettingsModal = () => setSettingsOpen((state) => !state)
 
   const startGame = () => {
+    if (true) {
+      addSnackbar(<MobileVerificationSnackbar />)
+      return
+    }
     router.push(routes.game)
   }
 
@@ -115,9 +120,9 @@ export const EngineSelector: FC = () => {
           <Text className={engineSelectorClasses.header} paddingBottom={2} variant="h3">
             {t(`engines.${engines[selectedEngine]}.header` as any)}
           </Text>
-          <Text className={engineSelectorClasses.text} variant="h4">
+          <ContentText className={engineSelectorClasses.text} variant="M">
             {t(`engines.${engines[selectedEngine]}.content` as any)}
-          </Text>
+          </ContentText>
           <Button className={engineSelectorClasses.playButton} text={t('engines.button')} onClick={startGame} />
           <Button
             className={engineSelectorClasses.configButton}

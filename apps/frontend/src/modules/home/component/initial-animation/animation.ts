@@ -3,7 +3,7 @@ import gsap from 'gsap'
 
 import { pageWrapperClasses } from '@/shared/components'
 
-import type { StageValue } from '../context/aperture-context'
+import type { StageValue } from '../../context/aperture-context'
 import { engineSelectorClasses } from '../engine-selector'
 
 import { animationClasses } from './classes'
@@ -71,4 +71,6 @@ export const animation = (setStage: (value: StageValue) => void) => {
       gsap.set(`.${pageWrapperClasses.menuItems}`, { clearProps: 'opacity' })
       gsap.set('html', { clearProps: 'overflow' })
     })
+
+  return tl
 }

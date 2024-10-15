@@ -10,10 +10,10 @@ export const collidersRegistration = (scene: IScene) => {
   const { platformManager, playerStatus, knight } = scene
   const { activeGroup, coinGroup, obstacleGroup } = platformManager
   const { coinCounter } = playerStatus
-  const stateSingleton = getGameStateContext()
 
   scene.physics.add.collider(knight, activeGroup, knight.onCollideWithWorld, undefined, knight)
   scene.physics.add.collider(knight, obstacleGroup, (_: ColliderObject, obstacle: ColliderObject) => {
+    const stateSingleton = getGameStateContext()
     stateSingleton.onKnightHit(knight, obstacle)
 
     if (obstacle instanceof Water) {
@@ -32,6 +32,7 @@ export const collidersRegistration = (scene: IScene) => {
     undefined,
     (_: ColliderObject, coin: ColliderObject) => {
       coinPickedEmiter(coin as GameObjects.GameObject)
+      const stateSingleton = getGameStateContext()
       stateSingleton.coinPickedAction()
       coin.destroy()
       return false

@@ -3,7 +3,7 @@
 import type { GameObjects } from 'phaser'
 import { Scene } from 'phaser'
 
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 import { animationsRegistration } from '../animations'
 import { gamePauseListener, gameRestartListener, gameResumeListener } from '../events'

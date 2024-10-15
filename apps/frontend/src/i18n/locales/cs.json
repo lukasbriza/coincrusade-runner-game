@@ -7,25 +7,28 @@
     "controls": "Ovládání",
     "contact": "Kontakt"
   },
+  "snackbars": {
+    "mobileVerification": "Hra není podporována na mobilních zařízeních. Pro její spuštění otevřete stránku na stolním počítači."
+  },
   "home": {
     "heroMain": "COIN CRUSADE",
     "heroSubtitle": "KNIGHT´S QUEST",
     "engines": {
       "LinearGenerator": {
         "header": "Lineární generátor",
-        "content": "Lorem ipsum"
+        "content": "Obtížnost hry je zvedána lieárně nezávisle na tom, jak se hráči ve hře daří."
       },
       "HamletSystem": {
         "header": "Hamlet systém",
-        "content": "Lorem ipsum2"
+        "content": "Upravuje obtížnost v závislosti na tom jak se hráči v jednotlivých úsecích hry daří. Algoritmus pro úpravu obtížnosti se inspiruje Teorií zásob."
       },
       "NeuralNetworkGenerator": {
         "header": "Neuronová síť",
-        "content": "Lorem ipsum3"
+        "content": "Obtížnost hry je upravována na základě dat sesbíraných v průběhu hraní, která jsou následně vyhodnocena za pomoci neuronové sítě. Dle výsledků neuronové sítě je následně upravena obtížnost."
       },
       "ReinforcementLearningGenerator": {
         "header": "Posilované učení",
-        "content": "Lorem ipsum 4"
+        "content": "Hra upravuje svou obtížnost na základě modelu posilovaného učení. Čím déle hráč hru hraje, tím více je algoritmus schopný správně odhadnout, jak upravit obtížnost hry."
       },
       "button": "Hrát",
       "config": "Konfigurace"
@@ -89,7 +92,7 @@
     }
   },
   "game": {
-    "settinngsPergamen": {
+    "settingsPergamen": {
       "quit": "Odejít",
       "restart": "Restartovat",
       "resume": "Pokračovat"

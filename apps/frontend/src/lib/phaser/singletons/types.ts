@@ -1,4 +1,4 @@
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 
 import type { ColliderObject } from '../factories'
 import type { Chances, ChangeTypes, ChunkLog, LastChunk, PlayerState, SuggestedAction } from '../types'

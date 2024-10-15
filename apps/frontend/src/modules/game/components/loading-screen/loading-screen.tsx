@@ -3,7 +3,10 @@
 import { LoadingBar } from '@lukasbriza/components'
 import { useCallback, useEffect, useState, type FC } from 'react'
 
-import { LOAD_ANIMATION_END_EVENT, LOAD_END_EVENT, LOAD_PROGRESS_EVENT, LOAD_START_EVENT } from '../context'
+import { GAME_INITIATED_STORAGE_KEY } from '@/shared'
+import { getItem } from '@/utils'
+
+import { LOAD_ANIMATION_END_EVENT, LOAD_END_EVENT, LOAD_PROGRESS_EVENT, LOAD_START_EVENT } from '../../constants'
 
 import { loadingScreenClasses } from './classes'
 import { LoadingAnimationWrapper, Root, RunAnimation } from './styles'
@@ -55,9 +58,13 @@ export const LoadingScreen: FC = () => {
         dispatchEvent(new Event(LOAD_ANIMATION_END_EVENT))
       }, DEFAULT_LOADING_TIME)
     }
+
+    return () => {
+      clearTimeout(timeout)
+    }
   }, [])
 
-  if (!show && minimalTimeElapsed) {
+  if ((!show && minimalTimeElapsed) || getItem(GAME_INITIATED_STORAGE_KEY) === 'true') {
     return null
   }
 

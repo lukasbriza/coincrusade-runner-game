@@ -2,15 +2,13 @@
 
 'use client'
 
-import { Button } from '@lukasbriza/components'
+import { Button, Text } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState, type FC } from 'react'
 
-import { useRouter } from '@/i18n/routing'
-import { routes } from '@/shared'
 import { Pergamen } from '@/shared/components'
 
-import { GAME_PAUSE_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../context'
+import { GAME_PAUSE_EVENT, GAME_QUIT_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../../constants'
 
 import { fadeIn, fadeOff } from './animation'
 import { settingsPergamen } from './classes'
@@ -19,6 +17,7 @@ import { Root, SettingsPergamenContent } from './styles'
 enum ACTION {
   RESTART = 'restart',
   RESUME = 'resume',
+  QUIT = 'quit',
 }
 
 export const SettingsPergamen: FC = () => {
@@ -27,8 +26,7 @@ export const SettingsPergamen: FC = () => {
   const [rolled, setRolled] = useState<boolean>(true)
   const content = useRef<HTMLDivElement>(null)
   const pergamen = useRef<HTMLDivElement>(null)
-  const t = useTranslations('game.settinngsPergamen')
-  const router = useRouter()
+  const t = useTranslations('game.settingsPergamen')
 
   const showElement = () => setShow(true)
   const showPergamenContent = () => fadeIn(content.current)
@@ -50,8 +48,9 @@ export const SettingsPergamen: FC = () => {
   }
 
   const handleQuit = () => {
-    setShow(false)
-    router.push(routes.home)
+    if (content.current) {
+      window.dispatchEvent(new Event(GAME_QUIT_EVENT))
+    }
   }
 
   const resolveAction = useCallback(
@@ -66,13 +65,16 @@ export const SettingsPergamen: FC = () => {
       if (rolled && pergamen.current) {
         fadeOff(pergamen.current).then(() => {
           setShow(false)
-          setAction(null)
           if (action === ACTION.RESTART) {
             window.dispatchEvent(new Event(GAME_RESTART_EVENT))
           }
           if (action === ACTION.RESUME) {
             window.dispatchEvent(new Event(GAME_RESUME_EVENT))
           }
+          if (action === ACTION.QUIT) {
+            window.dispatchEvent(new Event(GAME_QUIT_EVENT))
+          }
+          setAction(null)
         })
       }
     },
@@ -107,6 +109,7 @@ export const SettingsPergamen: FC = () => {
         onAnimationStateChange={resolveAction}
       >
         <SettingsPergamenContent ref={content}>
+          <Text variant="h4">{t('header')}</Text>
           <Button text={t('resume')} onClick={handleResume} />
           <Button text={t('restart')} onClick={handleRestart} />
           <Button text={t('quit')} onClick={handleQuit} />

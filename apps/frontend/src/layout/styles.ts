@@ -3,7 +3,7 @@
 import type { OwnerState } from '@lukasbriza/components'
 import { styled } from '@lukasbriza/styles'
 
-import { apertureClasses } from '@/modules/home/component/context'
+import { apertureClasses } from '@/modules/home/context'
 import { PAGE_MAX_WIDTH } from '@/shared'
 import { menuWrapperClasses } from '@/shared/components/menu-wrapper'
 

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 import { saveGameLogs } from '@/actions'
-import type { GameConfiguration } from '@/shared/components'
+import type { GameConfiguration } from '@/shared/context'
 import { initChances, initLastChunk, initPlayerState } from '@/utils'
 
 import {

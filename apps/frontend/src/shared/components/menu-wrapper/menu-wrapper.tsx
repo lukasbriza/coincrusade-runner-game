@@ -4,7 +4,7 @@ import { type MenuProps } from '@lukasbriza/components'
 import { useTheme } from '@lukasbriza/theme'
 import { type FC } from 'react'
 
-import { useMenuContext } from '../context'
+import { useMenuContext } from '../../context'
 
 import { menuWrapperClasses } from './classes'
 import { PageMenu, Root } from './styles'
