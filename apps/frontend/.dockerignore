@@ -1,0 +1,7 @@
+node_modules
+_avast_
+.git
+.next
+dist
+.gitignore
+*.md

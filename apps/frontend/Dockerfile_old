@@ -1,0 +1,77 @@
+FROM node:22.9.0-alpine3.20 as base
+
+ENV CI=true
+ENV DOCKER=true
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV PNPM_HOME=/app/.pnpm
+ENV PATH="$PNPM_HOME:$PATH"
+ENV TURBO_TELEMETRY_DISABLED=1
+
+
+COPY package.json ./
+RUN apk add --no-cache --upgrade bash cmake curl dumb-init jq libc6-compat python3 vips
+RUN corepack enable
+RUN pnpm config set store-dir /app/.pnpm-store
+RUN rm package.json
+RUN curl -sf https://gobinaries.com/tj/node-prune | sh
+
+RUN ls
+
+
+
+FROM base AS builder
+
+WORKDIR /app
+
+COPY --link . .
+
+RUN ls
+
+RUN pnpm install
+RUN pnpm turbo run build --filter=@lukasbriza/frontend --no-daemon
+RUN pnpm turbo prune @lukasbriza/frontend --docker
+
+FROM base AS installer
+
+WORKDIR /app
+
+COPY --from=builder --link /app/.pnpm-store ./.pnpm-store
+COPY --from=builder --link /app/out/json/ .
+COPY --from=builder --link /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder --link /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+RUN sh -c "rm -rf node_modules"
+RUN pnpm install --prod
+RUN node-prune
+RUN sh -c "rm -rf $(pnpm store path)"
+
+COPY --from=builder /app/out/full/ .
+
+FROM base AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV PORT 8080
+ENV HOSTNAME "0.0.0.0"
+ENV TZ=Europe/Prague
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+COPY --from=installer --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=installer --chown=nextjs:nodejs /app/apps/frontend/next.config.js ./apps/frontend/next.config.js
+COPY --from=installer --chown=nextjs:nodejs /app/apps/frontend/package.json ./apps/frontend/package.json
+COPY --from=installer --chown=nextjs:nodejs /app/apps/frontend/.next ./apps/frontend/.next
+COPY --from=installer --chown=nextjs:nodejs /app/apps/frontend/public ./apps/frontend/public
+COPY --from=installer --chown=nextjs:nodejs /app/packages ./packages
+COPY --from=installer --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=installer --chown=nextjs:nodejs /app/apps/frontend/node_modules ./apps/frontend/node_modules
+
+RUN corepack prepare "$(jq -r '.packageManager' /app/package.json)" --activate
+
+EXPOSE $PORT
+WORKDIR /app/apps/frontend
+CMD dumb-init pnpm next start -p $PORT
