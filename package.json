@@ -1,5 +1,5 @@
 {
-  "name": "@lukasbriza/monorepo-template",
+  "name": "@lukasbriza/coin-crusade-game",
   "version": "0.0.0",
   "private": true,
   "description": "Universal monorepo template for application from @lukasbriza",
@@ -11,6 +11,9 @@
   ],
   "scripts": {
     "build": "turbo build",
+    "build-image:frontend": "docker build -f docker/nextjs/Dockerfile -t coin-crusade-game-fe --build-arg APP=frontend .",
+    "build-image:backend": "docker build -f docker/nestjs/Dockerfile -t coin-crusade-game-be --build-arg APP=backend .",
+    "compose-project": "docker-compose --env-file ./apps/backend/.env up --build",
     "cleanup": "turbo run cleanup --no-daemon",
     "postcleanup": "rimraf .eslintcache tsconfig.tsbuildinfo node_modules",
     "cli": "turbo build --filter @lukasbriza/cli & node ./packages/cli/dist/cli.js",

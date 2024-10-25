@@ -35,7 +35,7 @@ ARG APP
 
 WORKDIR /application
 COPY . .
-RUN turbo prune --scope=@lukasbriza/${APP} --docker
+RUN turbo prune @lukasbriza/${APP} --docker
 
 ################################
 # Build the project
@@ -76,7 +76,7 @@ RUN sh -c "rm -rf $(pnpm store path)"
 # Final image
 FROM alpine AS runner
 ARG APP
-ARG PORT=8080
+ARG PORT=3000
 
 ENV PORT=${PORT}
 ENV HOSTNAME="0.0.0.0"
@@ -88,11 +88,10 @@ RUN addgroup --system --gid 1001 nodejs && \
 USER nextjs
 
 WORKDIR /application
-COPY --from=builder --chown=nextjs:nextjs /application .
-RUN 
+COPY --from=builder --chown=nextjs:nextjs /application . 
 
 WORKDIR /application/apps/${APP}
 EXPOSE ${PORT}
-CMD pnpm next start -p $PORT
+CMD pnpm next start -p ${PORT}
 
 

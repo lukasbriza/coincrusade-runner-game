@@ -7,3 +7,5 @@ _avast_
 .next
 dist
 *.md
+out
+modules/prisma/generate/*
