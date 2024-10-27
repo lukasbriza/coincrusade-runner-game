@@ -1,3 +1,5 @@
+version: '3.7'
+
 services:
   frontend:
     build:
@@ -35,8 +37,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=NtgyU8*QA*wzg5JP
     volumes:
       - "mongo_data:/data/db"
       - "mongo_config:/data/configdb"
