@@ -128,13 +128,13 @@ pipeline {
                   "fromAppTemplate": false,
                   "autoUpdate": null,
                   "additionalFiles": null,
-                  "env": [
-                    {name: "API_KEY", value: "$API_KEY"},
-                    {name: "DATABASE_URL", value: "$DATABASE_URL"},
-                    {name: "DATABASE_USERNAME", value: "$DATABASE_USERNAME"},
-                    {name: "DATABASE_PASSWORD", value: "$DATABASE_PASSWORD"},
-                    {name: "NEXT_PUBLIC_GITHUB", value: "$NEXT_PUBLIC_GITHUB"},
-                    {name: "NEXT_PUBLIC_MAIL", value: "$NEXT_PUBLIC_MAIL"}
+                  "env":  [
+                    ["name": "API_KEY", "value": "${API_KEY}"],
+                    ["name": "DATABASE_URL", "value": "${DATABASE_URL}"],
+                    ["name": "DATABASE_USERNAME", "value": "${DATABASE_USERNAME}"],
+                    ["name": "DATABASE_PASSWORD", "value": "${DATABASE_PASSWORD}"],
+                    ["name": "NEXT_PUBLIC_GITHUB", "value": "${NEXT_PUBLIC_GITHUB}"],
+                    ["name": "NEXT_PUBLIC_MAIL", "value": "${NEXT_PUBLIC_MAIL}"]
                   ]
                 ])
                 deployConnection.outputStream.write(deployRequestBody.getBytes("UTF-8"))
@@ -163,12 +163,12 @@ pipeline {
                 redeployConnection.doOutput = true
                 def redeployRequestBody = new groovy.json.JsonOutput().toJson([
                   "env": [
-                    {name: "API_KEY", value: "$API_KEY"},
-                    {name: "DATABASE_URL", value: "$DATABASE_URL"},
-                    {name: "DATABASE_USERNAME", value: "$DATABASE_USERNAME"},
-                    {name: "DATABASE_PASSWORD", value: "$DATABASE_PASSWORD"},
-                    {name: "NEXT_PUBLIC_GITHUB", value: "$NEXT_PUBLIC_GITHUB"},
-                    {name: "NEXT_PUBLIC_MAIL", value: "$NEXT_PUBLIC_MAIL"}
+                    ["name": "API_KEY", "value": "${API_KEY}"],
+                    ["name": "DATABASE_URL", "value": "${DATABASE_URL}"],
+                    ["name": "DATABASE_USERNAME", "value": "${DATABASE_USERNAME}"],
+                    ["name": "DATABASE_PASSWORD", "value": "${DATABASE_PASSWORD}"],
+                    ["name": "NEXT_PUBLIC_GITHUB", "value": "${NEXT_PUBLIC_GITHUB}"],
+                    ["name": "NEXT_PUBLIC_MAIL", "value": "${NEXT_PUBLIC_MAIL}"]
                   ],
                   "repositoryAuthentication": true,
                   "repositoryUsername": "lukasbriza",
