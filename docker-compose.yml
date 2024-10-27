@@ -12,9 +12,6 @@ services:
     depends_on:
       - backend
   backend:
-    env_file:
-      - path: ./apps/backend/.env
-        required: true
     build:
       context: .
       dockerfile: docker/nestjs/Dockerfile
@@ -27,9 +24,6 @@ services:
     depends_on:
       - database
   database:
-    env_file:
-      - path: /apps/backend/.env
-        required: true
     container_name: coin-crusade-game-database-rs0
     image: prismagraphql/mongo-single-replica:5.0.3
     ports:
