@@ -5,6 +5,8 @@ pipeline {
       PROJECT_DIR = "coincrusade-runner-game"
       PORTAINER_API = "https://portainer.lukasbriza.eu/api"
       TARGET_POINTAINER_ENVIRONMENT = "Homeport"
+
+      NODE_ENV="production"
     }
     stages {
       stage("Check workspace") {
@@ -52,6 +54,12 @@ pipeline {
             withCredentials([
               string(credentialsId:"GITHUB_PAT", variable: "GITHUB_PAT"),
               string(credentialsId:"PORTAINER_API_KEY", variable: "PORTAINER_API_KEY"),
+              string(credentialsId:"API_KEY", variable: "API_KEY"),
+              string(credentialsId:"DATABASE_URL", variable: "DATABASE_URL"),
+              string(credentialsId:"DATABASE_USERNAME", variable: "DATABASE_USERNAME"),
+              string(credentialsId:"DATABASE_PASSWORD", variable: "DATABASE_PASSWORD"),
+              string(credentialsId:"NEXT_PUBLIC_GITHUB", variable: "NEXT_PUBLIC_GITHUB"),
+              string(credentialsId:"NEXT_PUBLIC_MAIL", variable: "NEXT_PUBLIC_MAIL"),
             ]) {
 
               echo "Requesting existing stacks..."
@@ -120,7 +128,14 @@ pipeline {
                   "fromAppTemplate": false,
                   "autoUpdate": null,
                   "additionalFiles": null,
-                  "env": null
+                  "env": [
+                    {"name": "API_KEY", "value": "$API_KEY"},
+                    {"name": "DATABASE_URL", "value": "$DATABASE_URL"},
+                    {"name": "DATABASE_USERNAME", "value": "$DATABASE_USERNAME"},
+                    {"name": "DATABASE_PASSWORD", "value": "$DATABASE_PASSWORD"},
+                    {"name": "NEXT_PUBLIC_GITHUB", "value": "$NEXT_PUBLIC_GITHUB"},
+                    {"name": "NEXT_PUBLIC_MAIL", "value": "$NEXT_PUBLIC_MAIL"},
+                  ]
                 ])
                 deployConnection.outputStream.write(deployRequestBody.getBytes("UTF-8"))
                 deployConnection.outputStream.close()
@@ -147,7 +162,14 @@ pipeline {
                 redeployConnection.setRequestProperty("X-API-KEY", "$PORTAINER_API_KEY")
                 redeployConnection.doOutput = true
                 def redeployRequestBody = new groovy.json.JsonOutput().toJson([
-                  "env": [],
+                  "env": [
+                    {"name": "API_KEY", "value": "$API_KEY"},
+                    {"name": "DATABASE_URL", "value": "$DATABASE_URL"},
+                    {"name": "DATABASE_USERNAME", "value": "$DATABASE_USERNAME"},
+                    {"name": "DATABASE_PASSWORD", "value": "$DATABASE_PASSWORD"},
+                    {"name": "NEXT_PUBLIC_GITHUB", "value": "$NEXT_PUBLIC_GITHUB"},
+                    {"name": "NEXT_PUBLIC_MAIL", "value": "$NEXT_PUBLIC_MAIL"},
+                  ],
                   "repositoryAuthentication": true,
                   "repositoryUsername": "lukasbriza",
                   "repositoryPassword": "${env.GITHUB_PAT}",

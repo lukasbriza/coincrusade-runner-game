@@ -9,11 +9,12 @@ services:
     container_name: coin-crusade-game-fe
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV:development
     depends_on:
       - backend
   backend:
+    env_file:
+      - path: ./apps/backend/.env
+        required: true
     build:
       context: .
       dockerfile: docker/nestjs/Dockerfile
@@ -23,18 +24,19 @@ services:
     container_name: coin-crusade-game-be
     ports:
       - "3001:3001"
-    environment:
-      - NODE_ENV:development
     depends_on:
       - database
   database:
+    env_file:
+      - path: /apps/backend/.env
+        required: true
     container_name: coin-crusade-game-database-rs0
     image: prismagraphql/mongo-single-replica:5.0.3
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=NtgyU8*QA*wzg5JP
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - "mongo_data:/data/db"
       - "mongo_config:/data/configdb"
