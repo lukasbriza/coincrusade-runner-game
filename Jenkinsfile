@@ -1,219 +1,238 @@
-pipeline {
-    agent any
-    environment {
-      GITHUB_URL = "https://github.com/lukasbriza/coincrusade-runner-game"
-      PROJECT_DIR = "coincrusade-runner-game"
-      PORTAINER_API = "https://portainer.lukasbriza.eu/api"
-      TARGET_POINTAINER_ENVIRONMENT = "Homeport"
+import groovy.json.JsonSlurper
 
-      NODE_ENV="production"
+@Library('jenkins-shared-library') _
+
+/**
+* SUPPORTS ENV VARIABLES:
+* - NEXT_PUBLIC_GITHUB
+* - NEXT_PUBLIC_MAIL
+* - DATABASE_URL
+* - API_KEY
+* - API_URL
+* - DATABASE_PORT
+* - BACKEND_PORT
+* - FRONTEND_PORT
+* - MONGODB_ROOT_PASSWORD
+* - MONGODB_ROOT_USER
+* - MONGODB_REPLICA_SET_KEY
+* - NODE_ENV
+*/
+
+pipeline {
+  agent any
+  environment {
+    API_PROCESSOR_API = "http://api-processor:3002"
+    GITHUB_URL = "github.com/lukasbriza/coincrusade-runner-game"
+    PROJECT_DIR = "coincrusade-runner-game"
+    PASSBOLT_FOLDER_DEV_ID = "7fc21eac-53da-4678-b2db-b6fb22a9f377"
+    PASSBOLT_FOLDER_PROD_ID = "f6de24b5-3cad-4537-a34e-6528f7edcd44"
+    PASSBOLT_SHARED_FOLDER_ID = "61ac7071-e34d-4d18-9651-6fd084c195f3"
+    POINTAINER_TARGET_ENVIRONMENT = "Homeport"
+    NODE_ENV = "production"
+  }
+  stages {
+    stage("Check workspace") {
+      when {
+        expression { fileExists("${env.PROJECT_DIR}") }
+      }
+      steps {
+        echo "Preparing workspace before build..."
+        sh "rm -rf ${env.PROJECT_DIR}"
+      }
     }
-    stages {
-      stage("Check workspace") {
-        when {
-          expression { fileExists("${env.PROJECT_DIR}") }
-        }
-        steps {
-          echo "Preparing workspace before build..."
-          sh "rm -rf ${env.PROJECT_DIR}"
+    stage("Fetching secrets") {
+      steps {
+        script {
+          echo "Fetching secrets..."
+          env.SHARED_SECRETS = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_SHARED_FOLDER_ID)
+          def ticker = getTicker()
+          if (ticker == "--prod"){
+            echo "Resolved as production environment..."
+            def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_PROD_ID)
+            env.SECRETS = response
+          } else {
+            echo "Resolved as development environment..."
+            def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_DEV_ID)
+            env.SECRETS = response
+          }
+
+          echo "Parse secrets..."
+          def secrets = new JsonSlurper().parseText(env.SECRETS)
+          def sharedSecrets = new JsonSlurper().parseText(env.SHARED_SECRETS)
+          
+          env.NEXT_PUBLIC_GITHUB = secrets["NEXT_PUBLIC_GITHUB"]
+          env.NEXT_PUBLIC_MAIL = secrets["NEXT_PUBLIC_MAIL"]
+          env.API_KEY = secrets["API_KEY"]
+          env.DATABASE_PORT = secrets["DATABASE_PORT"]
+          env.BACKEND_PORT = secrets["BACKEND_PORT"]
+          env.FRONTEND_PORT = secrets["FRONTEND_PORT"]
+          env.MONGODB_ROOT_PASSWORD = secrets["MONGODB_ROOT_PASSWORD"]
+          env.MONGODB_ROOT_USER = secrets["MONGODB_ROOT_USER"]
+          env.MONGODB_REPLICA_SET_KEY = secrets["MONGODB_REPLICA_SET_KEY"]
+
+          env.GITHUB_PAT = sharedSecrets["GITHUB_PAT"]
+          env.PORTAINER_API_KEY = sharedSecrets["PORTAINER_API_KEY"]
+
+          echo "Constructiing database url..."
+          env.DATABASE_URL = createMongoDbUrl("${env.MONGODB_ROOT_USER}","${env.MONGODB_ROOT_PASSWORD}", "${env.DATABASE_NAME}")
         }
       }
-      stage("Checkout") {
-        steps {
+    }
+    /*
+    stage("Checkout") {
+      steps {
+        script {
           echo "Checking out branch..."
-          sh "git clone ${env.GITHUB_URL}.git"
+          sh "git config --global http.postBuffer 524288000"
+          sh "git config --global http.lowSpeedLimit 1000"
+          sh "git config --global http.lowSpeedTime 60"
+          sh "git config --global credentials.helper cache"
+          sh "git config --global credential.helper 'cache --timeout=3600'"
+          sh "git clone https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
         }
       }
-      stage("Build images") {
-        steps {
+    }
+    stage("Build images") {
+      steps {
+        script {
           echo "Building images..."
           dir ("${env.PROJECT_DIR}") {
-            sh "docker compose build"
+            sh "docker compose build --no-cache"
           }
         }
       }
-      stage("Try to run compose stack") {
-        steps {
-          echo "Trying to run compose stack..."
-          dir ("${env.PROJECT_DIR}") {
-            sh "docker compose up -d"
+    }
+    stage("Try to run compose stack") {
+      steps {
+        echo "Trying to run compose stack..."
+        dir ("${env.PROJECT_DIR}") {
+          sh "docker compose up -d"
+        }
+        sleep(3)
+      }
+    }
+    stage("Stop stack") {
+      steps {
+        echo "Stopping composed stack..."
+        dir ("${env.PROJECT_DIR}") {
+          sh "docker compose down"
+        }
+        sleep(3)
+      }
+    }
+    */
+    stage("Update/Create Portainer stack") {
+      steps {
+        script {
+          def ticker = getTicker()
+          echo "Resolved ticker: ${ticker}"
+          def stacksResponse = portainerApi.getStacks(env.API_PROCESSOR_API)
+          def environmentsResponse = portainerApi.getEnvironments(env.API_PROCESSOR_API)
+
+          def stacksContent = new groovy.json.JsonSlurper().parseText(stacksResponse)
+          def environmentsContent = new groovy.json.JsonSlurper().parseText(environmentsResponse)
+
+          def targetEnvironment = getTargetEnv(environmentsContent, env.POINTAINER_TARGET_ENVIRONMENT)
+          echo "Target environment id: ${targetEnvironment.Id}"
+
+          def stacksWithGithubUrl = stacksContent.findAll{ stack -> stack.GitConfig.URL == "https://${env.GITHUB_URL}" }
+          def stacksToRedeploy = stacksWithGithubUrl.findAll{ stack -> stack.Name.endsWith(ticker) }
+          /*
+          def envBody = [
+            ["name": "NEXT_PUBLIC_GITHUB", "value": "${env.NEXT_PUBLIC_GITHUB}"],
+            ["name": "NEXT_PUBLIC_MAIL", "value": "${env.NEXT_PUBLIC_MAIL}"],
+            ["name": "API_KEY", "value": "${env.API_KEY}"],
+            ["name": "DATABASE_PORT", "value": "${env.DATABASE_PORT}"],
+            ["name": "BACKEND_PORT", "value": "${env.BACKEND_PORT}"],
+            ["name": "FRONTEND_PORT", "value": "${env.FRONTEND_PORT}"],
+            ["name": "MONGODB_ROOT_PASSWORD", "value": "${env.MONGODB_ROOT_PASSWORD}"],
+            ["name": "MONGODB_ROOT_USER", "value": "${env.MONGODB_ROOT_USER}"],
+            ["name": "MONGODB_REPLICA_SET_KEY", "value": "${env.MONGODB_REPLICA_SET_KEY}"],
+            ["name": "DATABASE_URL", "value": "${env.DATABASE_URL}"],
+            ["name": "NODE_ENV", "value": "${env.NODE_ENV}"] 
+          ]
+          def envJsonBody =  new groovy.json.JsonOutput().toJson(envBody)
+          */
+          if (stacksToRedeploy.size() == 0) {
+            echo "There is no deployed stack with source url https://${env.GITHUB_URL} in Portainer..."
+            echo "Initiate new stack..."
+            /* 
+            def deployRequestBody = new groovy.json.JsonOutput().toJson([
+              "endpointId": "${targetEnvironment.Id}",
+              "name": "coincrusade-runner-game${ticker}",
+              "repositoryURL": "https://${env.GITHUB_URL}",
+              "repositoryAuthentication": true,
+              "repositoryUsername": "lukasbriza",
+              "repositoryPassword": "${env.GITHUB_PAT}",
+              "repositoryReferenceName": "refs/heads/master",
+              "composeFile": "docker-compose.yaml",
+              "tlsskipVerify": true,
+              "fromAppTemplate": false,
+              "autoUpdate": null,
+              "additionalFiles": null,
+              "env":  envJsonBody
+            ])
+            */
+            // def requestBody = deployRequestBody.toString()
+            // def deployResponse = portainerApi.deployStack(env.API_PROCESSOR_API, requestBody)
+
+            def deployUrl = "${env.API_PROCESSOR_API}/api/portainer/stack"
+
+            echo "Creating new Portainer stack by calling $deployUrl..."
+
+            def deployResponse = httpRequest(
+              httpMode: 'POST',
+              url: "${env.API_PROCESSOR_API}/api/portainer/stack",
+              contentType: 'APPLICATION_JSON',
+              timeout: 360
+            )
+            echo deployResponse.content
+            return
+          }
+
+          echo "Redeploying existing stacks..."
+
+          for (stackToRedeploy in stacksToRedeploy) {
+            def redeployRequestBody = new groovy.json.JsonOutput().toJson([
+              "repositoryAuthentication": true,
+              "repositoryUsername": "lukasbriza",
+              "repositoryPassword": '${env.GITHUB_PAT}',
+              "repositoryReferenceName": "refs/heads/master",
+              "prune": true,
+              "pullImage": true,
+              "env": envBody
+            ])
+
+            def jsonBody = redeployRequestBody.toString()
+
+            def redeployResponse = portainerApi.reDeployStack("${env.API_PROCESSOR_API}", "${stackToRedeploy.Id}", "${targetEnvironment.Id}", redeployRequestBody)
+
+            echo "Redeploy of stack with Id: ${stackToRedeploy.Id} was succesfull..."
           }
         }
       }
-      stage("Stop stack") {
-        steps {
-          echo "Stopping composed stack..."
+    }
+  }
+  post {
+    always {
+      script {
+        echo "Cleaning up..."
+
+        if (fileExists("${env.PROJECT_DIR}")) {
           dir ("${env.PROJECT_DIR}") {
             sh "docker compose down"
-          }
+          } 
+            sh "rm -rf ${env.PROJECT_DIR}"
         }
-      }
-      stage("Update/Create Portainer stack") {
-        steps {
-          script {
-            withCredentials([
-              string(credentialsId:"GITHUB_PAT", variable: "GITHUB_PAT"),
-              string(credentialsId:"PORTAINER_API_KEY", variable: "PORTAINER_API_KEY"),
-              string(credentialsId:"API_KEY", variable: "API_KEY"),
-              string(credentialsId:"DATABASE_URL", variable: "DATABASE_URL"),
-              string(credentialsId:"DATABASE_USERNAME", variable: "DATABASE_USERNAME"),
-              string(credentialsId:"DATABASE_PASSWORD", variable: "DATABASE_PASSWORD"),
-              string(credentialsId:"NEXT_PUBLIC_GITHUB", variable: "NEXT_PUBLIC_GITHUB"),
-              string(credentialsId:"NEXT_PUBLIC_MAIL", variable: "NEXT_PUBLIC_MAIL"),
-            ]) {
-
-              echo "Requesting existing stacks..."
-              def stacksResponse = httpRequest customHeaders: [[name: "X-API-KEY", value: "$PORTAINER_API_KEY"]], 
-                    httpMode: "GET",
-                    url: "${env.PORTAINER_API}/stacks"
-
-              if (stacksResponse.status != 200) {
-                echo "Requesting for stacks failed..."
-                currentBuild.result = 'FAILURE'
-                return
-              }
-              
-              echo "Requesting existing environments..."
-              def environmentsResponse = httpRequest customHeaders: [[name: "X-API-KEY", value: "$PORTAINER_API_KEY"]],
-                    httpMode: "GET",
-                    url: "${env.PORTAINER_API}/endpoints"
-              
-              if (environmentsResponse.status != 200) {
-                echo "Requesting for environments failed..."
-                currentBuild.result = 'FAILURE'
-                return
-              }
-
-              def stacksContent = new groovy.json.JsonSlurper().parseText(stacksResponse.content)
-              def environmentsContent = new groovy.json.JsonSlurper().parseText(environmentsResponse.content)
-
-              if (environmentsContent.size() == 0) {
-                echo "No available environments for stack initialization..."
-                currentBuild.result = 'FAILURE'
-                return
-              }
-
-              def targetEnvironment = environmentsContent.find { content -> content.Name == "${env.TARGET_POINTAINER_ENVIRONMENT}"}
-
-              if (targetEnvironment == null) {
-                echo "There is no environment ${env.TARGET_POINTAINER_ENVIRONMENT} in Portainer..."
-                currentBuild.result = 'FAILURE'
-                return
-              }
-
-              def stacksToRedeploy = stacksContent.findAll { stack -> stack.GitConfig.URL == "${env.GITHUB_URL}"}
-
-              if (stacksToRedeploy.size() == 0) {
-                echo "There is no deployed stack with source url ${env.GITHUB_URL} in Portainer..."
-                echo "Initiate new stack..."
-
-                def deployUrl = "${env.PORTAINER_API}/stacks/create/standalone/repository?endpointId=${targetEnvironment.Id}"
-                  
-                echo "Creating new stack by calling ${deployUrl}..."
-
-                def deployConnection = new URL(deployUrl).openConnection()
-                deployConnection.setRequestMethod("POST")
-                deployConnection.setRequestProperty("Content-Type", "application/json")
-                deployConnection.setRequestProperty("X-API-KEY", "$PORTAINER_API_KEY")
-                deployConnection.doOutput = true
-                def deployRequestBody = new groovy.json.JsonOutput().toJson([
-                  "name": "coincrusade-runner-game",
-                  "repositoryURL": "https://github.com/lukasbriza/coincrusade-runner-game",
-                  "repositoryAuthentication": true,
-                  "repositoryUsername": "lukasbriza",
-                  "repositoryPassword": "$GITHUB_PAT",
-                  "repositoryReferenceName": "refs/heads/master",
-                  "composeFile": "docker-compose.yml",
-                  "tlsskipVerify": false,
-                  "fromAppTemplate": false,
-                  "autoUpdate": null,
-                  "additionalFiles": null,
-                  "env":  [
-                    ["name": "API_KEY", "value": "${API_KEY}"],
-                    ["name": "DATABASE_URL", "value": "${DATABASE_URL}"],
-                    ["name": "DATABASE_USERNAME", "value": "${DATABASE_USERNAME}"],
-                    ["name": "DATABASE_PASSWORD", "value": "${DATABASE_PASSWORD}"],
-                    ["name": "NEXT_PUBLIC_GITHUB", "value": "${NEXT_PUBLIC_GITHUB}"],
-                    ["name": "NEXT_PUBLIC_MAIL", "value": "${NEXT_PUBLIC_MAIL}"]
-                  ]
-                ])
-                deployConnection.outputStream.write(deployRequestBody.getBytes("UTF-8"))
-                deployConnection.outputStream.close()
-                def deployResponseStatus = deployConnection.getResponseCode()
-
-                if (deployResponseStatus != 200) {
-                  echo "Deploying new stack into Portainer failed..."
-                  currentBuild.result = 'FAILURE'
-                  return
-                }
-
-                return              
-              }
-
-              echo "Redeploying existing stacks..."
-
-              for (stackToRedeploy in stacksToRedeploy) {
-                def redeployUrl = "${env.PORTAINER_API}/stacks/${stackToRedeploy.Id}/git/redeploy?endpointId=${targetEnvironment.Id}"
-                echo "Redeploying stack with Id: ${stackToRedeploy.Id} calling ${redeployUrl}..."
-
-                def redeployConnection = new URL(redeployUrl).openConnection()
-                redeployConnection.setRequestMethod("PUT")
-                redeployConnection.setRequestProperty("Content-Type", "application/json")
-                redeployConnection.setRequestProperty("X-API-KEY", "$PORTAINER_API_KEY")
-                redeployConnection.doOutput = true
-                def redeployRequestBody = new groovy.json.JsonOutput().toJson([
-                  "env": [
-                    ["name": "API_KEY", "value": "${API_KEY}"],
-                    ["name": "DATABASE_URL", "value": "${DATABASE_URL}"],
-                    ["name": "DATABASE_USERNAME", "value": "${DATABASE_USERNAME}"],
-                    ["name": "DATABASE_PASSWORD", "value": "${DATABASE_PASSWORD}"],
-                    ["name": "NEXT_PUBLIC_GITHUB", "value": "${NEXT_PUBLIC_GITHUB}"],
-                    ["name": "NEXT_PUBLIC_MAIL", "value": "${NEXT_PUBLIC_MAIL}"]
-                  ],
-                  "repositoryAuthentication": true,
-                  "repositoryUsername": "lukasbriza",
-                  "repositoryPassword": "${env.GITHUB_PAT}",
-                  "repositoryReferenceName": "refs/heads/master",
-                  "prune": false,
-                  "pullImage": false
-                ])
-                redeployConnection.outputStream.write(redeployRequestBody.getBytes("UTF-8"))
-                redeployConnection.outputStream.close()
-                def redeployResponseStatus = redeployConnection.getResponseCode()
-
-                if (redeployResponseStatus != 200) {
-                  echo "Redeployin of stack with Id: ${stackToRedeploy.Id} failed..."
-                  currentBuild.result = 'FAILURE'
-                  return
-                }
-
-                echo "Redeploy of stack with Id: ${stackToRedeploy.Id} was succesfull..."
-              }
-            }
-          }
-        }
+        
+        sh "docker system prune --volumes -f -a"
       }
     }
-    post {
-      always {
-        script {
-          echo "Cleaning up..."
-
-          if (fileExists("${env.PROJECT_DIR}")) {
-            dir ("${env.PROJECT_DIR}") {
-              sh "docker compose down"
-            } 
-              sh "rm -rf ${env.PROJECT_DIR}"
-          }
-          
-          sh "docker system prune --volumes -f -a"
-        }
-      }
-      success {
-        echo "Build succeeded!"
-      }
-      failure {
-        echo "Build failed!"
-      }
+    success {
+      echo "Build succeeded!"
     }
+    failure {
+      echo "Build failed!"
+    }
+  }
 }

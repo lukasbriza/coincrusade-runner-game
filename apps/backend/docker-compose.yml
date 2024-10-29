@@ -1,0 +1,18 @@
+services:
+  database:
+    container_name: dev_rs0
+    build:
+      context: .
+      dockerfile: ../../docker/mongodb/single-replica/Dockerfile
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=dev_rs0 #must be same as container_name
+      - MONGODB_ROOT_USER=${DATABASE_USERNAME}
+      - MONGODB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:27017
+    volumes:
+      - 'dev_mongo_data:/bitnami/mongodb'
+
+volumes:
+  dev_mongo_data:
+    driver: local

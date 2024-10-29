@@ -11,9 +11,7 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "build-image:frontend": "docker build -f docker/nextjs/Dockerfile -t coin-crusade-game-fe --build-arg APP=frontend .",
-    "build-image:backend": "docker build -f docker/nestjs/Dockerfile -t coin-crusade-game-be --build-arg APP=backend .",
-    "compose-project": "docker-compose --env-file ./apps/backend/.env up --build",
+    "compose-project-local": "docker compose -f docker-compose.local.yaml up --build -V -d",
     "cleanup": "turbo run cleanup --no-daemon",
     "postcleanup": "rimraf .eslintcache tsconfig.tsbuildinfo node_modules",
     "cli": "turbo build --filter @lukasbriza/cli & node ./packages/cli/dist/cli.js",
@@ -44,6 +42,9 @@
     "turbo": "2.0.6",
     "typescript": "5.5.3",
     "typescript-eslint": "7.15.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "7.4.2"
   },
   "packageManager": "pnpm@9.4.0",
   "engines": {

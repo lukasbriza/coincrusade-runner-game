@@ -11,6 +11,8 @@ import { NeuralNetworkModule } from './modules/neural-network'
 @Module({
   imports: [
     ConfigModule.forRoot({
+      expandVariables: true,
+      envFilePath: process.env.NODE_ENV === 'development' ? '.env.local' : '.env',
       isGlobal: true,
       cache: true,
       validate: validateConfig,
