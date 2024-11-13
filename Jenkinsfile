@@ -100,7 +100,7 @@ pipeline {
           if (ticker == "--prod") {
             sh "git clone -b production https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
           } else {
-            sh "git clone -b master https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
+            sh "git clone -b feat/pipeline-production https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
           }
         }
       }
