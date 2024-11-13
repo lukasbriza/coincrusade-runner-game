@@ -87,13 +87,21 @@ pipeline {
     stage("Checkout") {
       steps {
         script {
+          def ticker = getTicker()
+
           echo "Checking out branch..."
           sh "git config --global http.postBuffer 524288000"
           sh "git config --global http.lowSpeedLimit 1000"
           sh "git config --global http.lowSpeedTime 60"
           sh "git config --global credentials.helper cache"
           sh "git config --global credential.helper 'cache --timeout=3600'"
-          sh "git clone https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
+          
+          // DECIDE WHICH BRANCH TO CLONE
+          if (ticker == "--prod") {
+            sh "git clone -b production https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
+          } else {
+            sh "git clone -b master https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
+          }
         }
       }
     }
@@ -104,6 +112,8 @@ pipeline {
             echo "Building images..."
             dir ("${env.PROJECT_DIR}") {
               def ticker = getTicker()
+
+              // DECIDE WHICH COMPOSE FILE USE
               if (ticker == "--prod") {
                 sh "docker compose -f docker-compose.prod.yaml build"
               } else {
@@ -120,7 +130,14 @@ pipeline {
         script {
           echo "Trying to run compose stack..."
           dir ("${env.PROJECT_DIR}") {
-            sh "docker compose up -d"
+            def ticker = getTicker()
+
+            // DECIDE WHICH FILE COMPOSE
+            if (ticker == "--prod"){
+              sh "docker compose -f docker-compose.prod.yaml up -d"
+            } else {
+              sh "docker compose -f docker-compose.dev.yaml up -d"
+            }
           }
           sleep(3)
         }
