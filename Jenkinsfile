@@ -49,16 +49,20 @@ pipeline {
           if (ticker == "--prod"){
             echo "Resolved as production environment..."
             def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_PROD_ID)
+            println(response)
             env.SECRETS = response
           } else {
             echo "Resolved as development environment..."
             def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_DEV_ID)
+            println(response)
             env.SECRETS = response
           }
 
           echo "Parse secrets..."
           def secrets = new JsonSlurper().parseText(env.SECRETS)
           def sharedSecrets = new JsonSlurper().parseText(env.SHARED_SECRETS)
+          println(secrets)
+          println(sharedSecrets)
           
           env.NEXT_PUBLIC_GITHUB = secrets["NEXT_PUBLIC_GITHUB"]
           env.NEXT_PUBLIC_MAIL = secrets["NEXT_PUBLIC_MAIL"]
