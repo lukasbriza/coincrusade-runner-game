@@ -137,7 +137,7 @@ pipeline {
 
           def stacksWithGithubUrl = stacksContent.findAll{ stack -> stack.GitConfig.URL == "https://${env.GITHUB_URL}" }
           def stacksToRedeploy = stacksWithGithubUrl.findAll{ stack -> stack.Name.endsWith(ticker) }
-          /*
+          
           def envBody = [
             ["name": "NEXT_PUBLIC_GITHUB", "value": "${env.NEXT_PUBLIC_GITHUB}"],
             ["name": "NEXT_PUBLIC_MAIL", "value": "${env.NEXT_PUBLIC_MAIL}"],
@@ -151,61 +151,51 @@ pipeline {
             ["name": "DATABASE_URL", "value": "${env.DATABASE_URL}"],
             ["name": "NODE_ENV", "value": "${env.NODE_ENV}"] 
           ]
-          def envJsonBody =  new groovy.json.JsonOutput().toJson(envBody)
-          */
+          
           if (stacksToRedeploy.size() == 0) {
             echo "There is no deployed stack with source url https://${env.GITHUB_URL} in Portainer..."
             echo "Initiate new stack..."
-            /* 
-            def deployRequestBody = new groovy.json.JsonOutput().toJson([
+            
+            def deployRequestBody = [
               "endpointId": "${targetEnvironment.Id}",
               "name": "coincrusade-runner-game${ticker}",
               "repositoryURL": "https://${env.GITHUB_URL}",
               "repositoryAuthentication": true,
               "repositoryUsername": "lukasbriza",
               "repositoryPassword": "${env.GITHUB_PAT}",
-              "repositoryReferenceName": "refs/heads/master",
+              "repositoryReferenceName": getBranchReference(),
               "composeFile": "docker-compose.yaml",
               "tlsskipVerify": true,
               "fromAppTemplate": false,
               "autoUpdate": null,
               "additionalFiles": null,
-              "env":  envJsonBody
-            ])
-            */
-            // def requestBody = deployRequestBody.toString()
-            // def deployResponse = portainerApi.deployStack(env.API_PROCESSOR_API, requestBody)
+              "env":  envBody
+            ]
+            
+            def requestBody = new groovy.json.JsonOutput().toJson(deployRequestBody)
+            def deployResponse = portainerApi.deployStack(env.API_PROCESSOR_API, requestBody)
 
-            def deployUrl = "${env.API_PROCESSOR_API}/api/portainer/stack"
-
-            echo "Creating new Portainer stack by calling $deployUrl..."
-
-            def deployResponse = httpRequest(
-              httpMode: 'POST',
-              url: "${env.API_PROCESSOR_API}/api/portainer/stack",
-              contentType: 'APPLICATION_JSON',
-              timeout: 360
-            )
-            echo deployResponse.content
+            echo "Stack deployed..."
             return
           }
 
           echo "Redeploying existing stacks..."
 
           for (stackToRedeploy in stacksToRedeploy) {
-            def redeployRequestBody = new groovy.json.JsonOutput().toJson([
+            def redeployRequestBody = [
+              "endpointId": "${targetEnvironment.Id}",
+              "stackId": "${stackToRedeploy.Id}",
               "repositoryAuthentication": true,
               "repositoryUsername": "lukasbriza",
               "repositoryPassword": '${env.GITHUB_PAT}',
-              "repositoryReferenceName": "refs/heads/master",
+              "repositoryReferenceName": getBranchReference(),
               "prune": true,
               "pullImage": true,
               "env": envBody
-            ])
+            ]
 
-            def jsonBody = redeployRequestBody.toString()
-
-            def redeployResponse = portainerApi.reDeployStack("${env.API_PROCESSOR_API}", "${stackToRedeploy.Id}", "${targetEnvironment.Id}", redeployRequestBody)
+            def requestBody = new groovy.json.JsonOutput().toJson(redeployRequestBody)
+            def redeployResponse = portainerApi.reDeployStack(env.API_PROCESSOR_API, "${stackToRedeploy.Id}", requestBody)
 
             echo "Redeploy of stack with Id: ${stackToRedeploy.Id} was succesfull..."
           }
