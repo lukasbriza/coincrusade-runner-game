@@ -148,7 +148,14 @@ pipeline {
         script {
           echo "Stopping composed stack..."
           dir ("${env.PROJECT_DIR}") {
-            sh "docker compose down"
+            def ticker = getTicker()
+
+            // DECIDE WHICH ENVIROMENT SHUT DOWN
+            if (ticker == "--prod"){
+              sh "docker compose -f docker-compose.prod.yaml down"
+            } else {
+              sh "docker compose -f docker-compose.dev.yaml down"
+            }
           }
           sleep(3)
         }
@@ -160,7 +167,14 @@ pipeline {
           retry(5){
             echo "Login to DockerHub..."
             sh "docker login -p ${env.DOCKER_PASSWORD} -u ${env.DOCKER_NAME}"
-            sh "docker compose push"
+
+            def ticker = getTicker()
+            // DECIDE WHICH ENVIROMENT PUSH
+            if (ticker == "--prod"){
+              sh "docker compose -f docker-compose.prod.yaml push"
+            } else {
+              sh "docker compose -f docker-compose.dev.yaml push"
+            }
           }
         }
       }
@@ -256,7 +270,14 @@ pipeline {
 
         if (fileExists("${env.PROJECT_DIR}")) {
           dir ("${env.PROJECT_DIR}") {
-            sh "docker compose down"
+            def ticker = getTicker()
+
+            // DECIDE WHICH ENVIROMENT SHUT DOWN
+            if (ticker == "--prod"){
+              sh "docker compose -f docker-compose.prod.yaml down"
+            } else {
+              sh "docker compose -f docker-compose.dev.yaml down"
+            }
           } 
             sh "rm -rf ${env.PROJECT_DIR}"
         }
