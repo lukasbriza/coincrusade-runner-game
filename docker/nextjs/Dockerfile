@@ -14,21 +14,23 @@ ENV DOCKER=true
 
 RUN rm -rf /var/cache/apk/*
 
-RUN mirrors=( \
-        "http://mirror.fel.cvut.cz/alpine/" \
-        "https://mirror1.hs-esslingen.de/pub/Mirrors/alpine/" \
-        "https://mirror.ibcp.fr/pub/alpine/" \
-    ); \
-    for mirror in "${mirrors[@]}"; do \
-    echo "Trying mirror: $mirror"; \
+RUN mirrors="http://mirror.fel.cvut.cz/alpine/ \
+             https://mirror1.hs-esslingen.de/pub/Mirrors/alpine/ \
+             https://mirror.ibcp.fr/pub/alpine/"; \
+    for mirror in $mirrors; do \
+        echo "Trying mirror: $mirror"; \
         sed -i "s|http[s]*://[a-zA-Z0-9.-]*/alpine/|$mirror|" /etc/apk/repositories; \
-        apk update && \
+        if apk update && \
         apk add --no-cache \
-        libc6-compat \
-        bash \
-        curl \
-        jq && break || echo "Mirror $mirror failed, trying next..."; \
-    done
+          libc6-compat \
+          bash \
+          curl \
+          jq; then \
+        break; \
+      else \
+        echo "Mirror $mirror failed, trying next..."; \
+      fi; \
+  done
 
 RUN corepack enable
 RUN rm -rf /var/cache/apk/*

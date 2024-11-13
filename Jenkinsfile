@@ -76,13 +76,14 @@ pipeline {
 
           env.GITHUB_PAT = sharedSecrets["GITHUB_PAT"]
           env.PORTAINER_API_KEY = sharedSecrets["PORTAINER_API_KEY"]
+          env.DOCKER_NAME = sharedSecrets["DOCKER_NAME"]
+          env.DOCKER_PASSWORD = sharedSecrets["DOCKER_PASSWORD"]
 
           echo "Constructiing database url..."
           env.DATABASE_URL = createMongoDbUrl("${env.MONGODB_ROOT_USER}","${env.MONGODB_ROOT_PASSWORD}", "${env.DATABASE_NAME}")
         }
       }
     }
-    /*
     stage("Checkout") {
       steps {
         script {
@@ -99,32 +100,55 @@ pipeline {
     stage("Build images") {
       steps {
         script {
-          echo "Building images..."
-          dir ("${env.PROJECT_DIR}") {
-            sh "docker compose build --no-cache"
+          retry(5){
+            echo "Building images..."
+            dir ("${env.PROJECT_DIR}") {
+              def ticker = getTicker()
+              if (ticker == "--prod") {
+                sh "docker compose -f docker-compose.prod.yaml build"
+              } else {
+                sh "docker compose -f docker-compose.dev.yaml build"
+              }
+            }
+            sleep(3)
           }
         }
       }
     }
     stage("Try to run compose stack") {
       steps {
-        echo "Trying to run compose stack..."
-        dir ("${env.PROJECT_DIR}") {
-          sh "docker compose up -d"
+        script {
+          echo "Trying to run compose stack..."
+          dir ("${env.PROJECT_DIR}") {
+            sh "docker compose up -d"
+          }
+          sleep(3)
         }
-        sleep(3)
       }
     }
     stage("Stop stack") {
       steps {
-        echo "Stopping composed stack..."
-        dir ("${env.PROJECT_DIR}") {
-          sh "docker compose down"
+        script {
+          echo "Stopping composed stack..."
+          dir ("${env.PROJECT_DIR}") {
+            sh "docker compose down"
+          }
+          sleep(3)
         }
-        sleep(3)
       }
     }
-    */
+    stage("Push images") {
+      steps {
+        script {
+          retry(5){
+            echo "Login to DockerHub..."
+            sh "docker login -p ${env.DOCKER_PASSWORD} -u ${env.DOCKER_NAME}"
+            sh "docker compose push"
+          }
+        }
+      }
+    }
+    /*
     stage("Update/Create Portainer stack") {
       steps {
         script {
@@ -206,6 +230,7 @@ pipeline {
         }
       }
     }
+    */
   }
   post {
     always {

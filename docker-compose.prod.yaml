@@ -24,7 +24,7 @@ services:
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
-    image: coin-crusade-game-fe
+    image: lbriza/coincrusade-runner-game:fe-prod
     container_name: coin-crusade-game-fe
     ports:
       - "${FRONTEND_PORT}:3000"
@@ -42,7 +42,7 @@ services:
       dockerfile: docker/nestjs/Dockerfile
       args:
         - APP=backend
-    image: coin-crusade-game-be
+    image: lbriza/coincrusade-runner-game:be-prod
     container_name: coin-crusade-game-be
     ports:
       - "${BACKEND_PORT}:3001"
@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: docker/mongodb/single-replica/Dockerfile
-    image: mongodb-single-replica
+    image: lbriza/coincrusade-runner-game:db-prod
     container_name: rs0
     ports:
       - ${DATABASE_PORT}:27017
