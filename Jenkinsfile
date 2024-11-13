@@ -168,7 +168,7 @@ pipeline {
               "repositoryUsername": "lukasbriza",
               "repositoryPassword": "${env.GITHUB_PAT}",
               "repositoryReferenceName": getBranchReference(),
-              "composeFile": "docker-compose.yaml",
+              "composeFile": "docker-compose.yml",
               "tlsskipVerify": true,
               "fromAppTemplate": false,
               "autoUpdate": null,
