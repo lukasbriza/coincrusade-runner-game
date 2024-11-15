@@ -9,7 +9,8 @@
     "DATABASE_USERNAME",
     "DATABASE_PASSWORD",
     "DATABASE_URL",
-    "NEXT_PUBLIC_MAIL"
+    "NEXT_PUBLIC_MAIL",
+    "NODE_ENV"
   ],
   "tasks": {
     "build": {

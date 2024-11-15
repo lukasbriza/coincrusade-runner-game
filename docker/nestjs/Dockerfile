@@ -1,4 +1,4 @@
-ARG NODE_VERSION=22.9.0
+ARG NODE_VERSION=22.11.0
 
 ################################
 #Alpine image
@@ -12,19 +12,33 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV CI=true
 ENV DOCKER=true
 
-RUN apk add --no-cache \
-    openssl \
-    libc6-compat \
-    musl \
-    musl-utils \
-    musl-locales \
-    libstdc++ \
-    bash \
-    curl \
-    jq && \
-    apk update && \
-    rm -rf /var/cache/apk/* && \
-    corepack enable
+RUN rm -rf /var/cache/apk/*
+
+RUN mirrors="http://mirror.fel.cvut.cz/alpine/ \
+             https://mirror1.hs-esslingen.de/pub/Mirrors/alpine/ \
+             https://mirror.ibcp.fr/pub/alpine/"; \
+    for mirror in $mirrors; do \
+        echo "Trying mirror: $mirror"; \
+        sed -i "s|http[s]*://[a-zA-Z0-9.-]*/alpine/|$mirror|" /etc/apk/repositories; \
+        if apk update && \
+           apk add --no-cache \
+               openssl \
+               libc6-compat \
+               musl \
+               musl-utils \
+               musl-locales \
+               libstdc++ \
+               bash \
+               curl \
+               jq; then \
+            break; \
+        else \
+            echo "Mirror $mirror failed, trying next..."; \
+        fi; \
+    done
+
+RUN corepack enable
+RUN rm -rf /var/cache/apk/*
 
 COPY package.json .
 RUN corepack prepare "$(jq -r '.packageManager' package.json)" --activate 
@@ -79,7 +93,6 @@ RUN rm -rf ./src/modules/prisma/generated
 
 # Generate prisma code
 RUN pnpm prisma:generate
-
 
 # Build and ceanup
 WORKDIR /application

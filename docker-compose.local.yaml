@@ -1,0 +1,72 @@
+networks:
+  app:
+    driver: bridge
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/nextjs/Dockerfile
+      args:
+        - APP=frontend
+    image: lbriza/coincrusade-runner-game:fe-local
+    container_name: coin-crusade-game-fe
+    env_file:
+      - ./apps/frontend/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/nestjs/Dockerfile
+      args:
+        - APP=backend
+    image: lbriza/coincrusade-runner-game:be-local
+    container_name: coin-crusade-game-be
+    env_file:
+      - ./apps/backend/.env.local
+    ports:
+      - "3001:3001"
+    networks:
+      - app
+    depends_on:
+      - database
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  database:
+    build:
+      context: .
+      dockerfile: docker/mongodb/single-replica/Dockerfile
+    image:  lbriza/coincrusade-runner-game:db-local
+    container_name: rs0
+    env_file:
+      - ./apps/backend/.env.local
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=rs0
+    ports:
+      - 27017:27017
+    networks:
+      - app
+    volumes:
+      - 'mongo_data:/bitnami/mongodb'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mongo_data:
+     driver: local

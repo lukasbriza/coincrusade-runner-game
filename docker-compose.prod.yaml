@@ -1,0 +1,79 @@
+# NEED TO DEFINE THIS VARIABLES IN .ENV #
+#########################################
+# - NEXT_PUBLIC_GITHUB
+# - NEXT_PUBLIC_MAIL
+# - DATABASE_URL
+# - API_KEY
+# - API_URL
+# - DATABASE_PORT
+# - BACKEND_PORT
+# - FRONTEND_PORT
+# - MONGODB_ROOT_PASSWORD
+# - MONGODB_ROOT_USER
+# - MONGODB_REPLICA_SET_KEY
+# - NODE_ENV
+
+networks:
+  app:
+    driver: bridge
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/nextjs/Dockerfile
+      args:
+        - APP=frontend
+    image: lbriza/coincrusade-runner-game:fe-prod
+    container_name: coin-crusade-game-fe
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    depends_on:
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/nestjs/Dockerfile
+      args:
+        - APP=backend
+    image: lbriza/coincrusade-runner-game:be-prod
+    container_name: coin-crusade-game-be
+    ports:
+      - "${BACKEND_PORT}:3001"
+    networks:
+      - app
+    depends_on:
+      - database
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  database:
+    build:
+      context: .
+      dockerfile: docker/mongodb/single-replica/Dockerfile
+    image: lbriza/coincrusade-runner-game:db-prod
+    container_name: rs0
+    ports:
+      - ${DATABASE_PORT}:27017
+    networks:
+      - app
+    volumes:
+      - 'mongo_data:/bitnami/mongodb'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mongo_data:
+     driver: local
