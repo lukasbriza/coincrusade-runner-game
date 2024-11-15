@@ -2,14 +2,12 @@
 import { GameObjects } from 'phaser'
 
 import { UI_KEYS } from '../assets'
-import { gamePauseEmiter, gameRestartListener, knightDeadListener } from '../events'
+import { gamePauseEmiter, gamePauseListener, gameResumeListener } from '../events'
 import type { IScene } from '../types'
 
 import { Button } from './button-factory'
 
 export class SettingsButton extends Button implements ISettingsButton {
-  public isBlocked: boolean = false
-
   constructor(scene: IScene, x: number, y: number) {
     super(scene, x, y, UI_KEYS.GREY_BUTTON)
     this.setOrigin(1, 0)
@@ -39,11 +37,11 @@ export class SettingsButton extends Button implements ISettingsButton {
       }
     })
 
-    gameRestartListener(() => {
-      this.isBlocked = false
+    gamePauseListener(() => {
+      this.setTexture(UI_KEYS.GREY_BUTTON_LIGHT_PRESSED)
     })
-    knightDeadListener(() => {
-      this.isBlocked = true
+    gameResumeListener(() => {
+      this.setTexture(UI_KEYS.GREY_BUTTON)
     })
   }
 }

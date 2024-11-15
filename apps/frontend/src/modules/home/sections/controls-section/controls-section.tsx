@@ -40,11 +40,11 @@ export const ControlsSection: FC = async () => {
       <MainHeader id={anchors[1].path}>{t('header')}</MainHeader>
       <ControlPartsSection>
         <ControlsPart header={t('movement.headerRight')} sections={movementRightSections} />
-        <ControlsDivider />
+        <ControlsDivider sizes="60%" />
         <ControlsPart header={t('movement.headerLeft')} sections={movementLeftSections} />
-        <ControlsDivider />
+        <ControlsDivider sizes="60%" />
         <ControlsPart animate header={t('movement.headerJump')} sections={movementUpSections} />
-        <ControlsDivider />
+        <ControlsDivider sizes="60%" />
       </ControlPartsSection>
     </Root>
   )

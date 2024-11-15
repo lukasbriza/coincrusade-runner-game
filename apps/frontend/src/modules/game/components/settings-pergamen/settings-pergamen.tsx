@@ -103,9 +103,12 @@ export const SettingsPergamen: FC = () => {
     <Root>
       <Pergamen
         ref={pergamen}
+        bottomSizes="(max-width: 676px) calc(60vw + 40px), 480px"
         className={settingsPergamen.root}
         defaultPosition="rolled"
+        pergamenSizes="(max-width: 676px) 60vw, 400px"
         rolled={rolled}
+        topSizes="(max-width: 676px) calc(60vw + 40px), 480px"
         onAnimationStateChange={resolveAction}
       >
         <SettingsPergamenContent ref={content}>

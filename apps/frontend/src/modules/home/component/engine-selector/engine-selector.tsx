@@ -11,6 +11,7 @@ import { useRouter } from '@/i18n/routing'
 import { engines, routes } from '@/shared'
 import { Arrow, MobileVerificationSnackbar, Pergamen } from '@/shared/components'
 import { useGameConfiguration, useSnackbarContext } from '@/shared/context'
+import { isMobile } from '@/utils'
 
 import { useApertureContext } from '../../context'
 import { EngineSettingsModal } from '../engine-settings-modal'
@@ -37,7 +38,7 @@ export const EngineSelector: FC = () => {
   const handleSettingsModal = () => setSettingsOpen((state) => !state)
 
   const startGame = () => {
-    if (true) {
+    if (isMobile()) {
       addSnackbar(<MobileVerificationSnackbar />)
       return
     }
@@ -103,16 +104,20 @@ export const EngineSelector: FC = () => {
         height={70}
         left
         show={selectedEngine !== 0}
+        sizes="(max-width: 498px) 41px, 56px"
         width={70}
         onClick={handleLeftclick}
       />
       <Pergamen
         ref={pergamen}
         allowAdjustment={!minimized}
+        bottomSizes="(max-width: 676px) calc(60vw + 40px), 480px"
         className={minimized ? engineSelectorClasses.pergamen : undefined}
         closePergamen={handlePergamenMinimizeAnimation}
         defaultPosition="unrolled"
+        pergamenSizes="(max-width: 676px) 60vw, 400px"
         rolled={rolled}
+        topSizes="(max-width: 676px) calc(60vw + 40px), 480px"
         onAnimationStateChange={animationStateChangeHandler}
         onClick={handleUnminimizePergamen}
       >
@@ -136,6 +141,7 @@ export const EngineSelector: FC = () => {
         className={engineSelectorClasses.rightArrow}
         height={70}
         show={selectedEngine !== engines.length - 1}
+        sizes="(max-width: 498px) 41px, 56px"
         width={70}
         onClick={handleRightClick}
       />

@@ -1,10 +1,13 @@
+/* eslint-disable lines-between-class-members */
 /* eslint-disable func-names */
 import { GameObjects } from 'phaser'
 
+import { gamePauseListener, gameRestartListener, gameResumeListener, knightDeadListener } from '../events'
 import type { IScene } from '../types'
 
 export class Button extends Phaser.Physics.Arcade.Sprite implements IButton {
   public scene: IScene
+  public isBlocked: boolean = false
 
   constructor(scene: IScene, x: number, y: number, key: string) {
     super(scene, x, y, key)
@@ -12,6 +15,19 @@ export class Button extends Phaser.Physics.Arcade.Sprite implements IButton {
 
     this.setInteractive({
       useHandCursor: true,
+    })
+
+    gameRestartListener(() => {
+      this.isBlocked = false
+    })
+    knightDeadListener(() => {
+      this.isBlocked = true
+    })
+    gamePauseListener(() => {
+      this.isBlocked = true
+    })
+    gameResumeListener(() => {
+      this.isBlocked = false
     })
   }
 

@@ -23,44 +23,52 @@ export class MusicButton extends Button implements IMusicButton {
     })
 
     this.on('pointerdown', () => {
-      if (this.isEnabled) {
-        this.mousePointerDown(UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED)
-        this.isEnabled = false
-        return
-      }
-      if (!this.isEnabled) {
-        this.mousePointerDown(UI_KEYS.MUSIC_GREY_OFF_LIGHT_PRESSED)
-        this.isEnabled = true
+      if (!this.isBlocked) {
+        if (this.isEnabled) {
+          this.mousePointerDown(UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED)
+          this.isEnabled = false
+          return
+        }
+        if (!this.isEnabled) {
+          this.mousePointerDown(UI_KEYS.MUSIC_GREY_OFF_LIGHT_PRESSED)
+          this.isEnabled = true
+        }
       }
     })
     this.on('pointerup', () => {
-      if (this.isEnabled) {
-        this.mousePointerUp(UI_KEYS.MUSIC_GREY_ON)
-        if (this.music.isPaused) {
-          this.music.play()
+      if (!this.isBlocked) {
+        if (this.isEnabled) {
+          this.mousePointerUp(UI_KEYS.MUSIC_GREY_ON)
+          if (this.music.isPaused) {
+            this.music.play()
+          }
         }
-      }
-      if (!this.isEnabled) {
-        this.mousePointerUp(UI_KEYS.MUSIC_GREY_OFF)
-        if (this.music.isPlaying) {
-          this.music.pause()
+        if (!this.isEnabled) {
+          this.mousePointerUp(UI_KEYS.MUSIC_GREY_OFF)
+          if (this.music.isPlaying) {
+            this.music.pause()
+          }
         }
       }
     })
     this.on('pointerover', () => {
-      if (this.isEnabled) {
-        this.mouseEnter(UI_KEYS.MUSIC_GREY_ON_LIGHT)
-      }
-      if (!this.isEnabled) {
-        this.mouseEnter(UI_KEYS.MUSIC_GREY_OFF_LIGHT)
+      if (!this.isBlocked) {
+        if (this.isEnabled) {
+          this.mouseEnter(UI_KEYS.MUSIC_GREY_ON_LIGHT)
+        }
+        if (!this.isEnabled) {
+          this.mouseEnter(UI_KEYS.MUSIC_GREY_OFF_LIGHT)
+        }
       }
     })
     this.on('pointerout', () => {
-      if (this.isEnabled) {
-        this.mouseLeave(UI_KEYS.MUSIC_GREY_ON)
-      }
-      if (!this.isEnabled) {
-        this.mouseLeave(UI_KEYS.MUSIC_GREY_OFF)
+      if (!this.isBlocked) {
+        if (this.isEnabled) {
+          this.mouseLeave(UI_KEYS.MUSIC_GREY_ON)
+        }
+        if (!this.isEnabled) {
+          this.mouseLeave(UI_KEYS.MUSIC_GREY_OFF)
+        }
       }
     })
 
@@ -71,7 +79,7 @@ export class MusicButton extends Button implements IMusicButton {
     })
 
     gameRestartListener(() => {
-      if (this.music) {
+      if (this.music && this.isEnabled) {
         this.music.play({ loop: true, volume: 0.8 })
       }
     })

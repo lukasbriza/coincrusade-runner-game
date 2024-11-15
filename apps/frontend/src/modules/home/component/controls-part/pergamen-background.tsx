@@ -70,6 +70,7 @@ export const PergamenBackground: FC<PergamenBackgroundProps> = ({ className, chi
           fill
           loading="lazy"
           ownerState={{ offset: top / 2 + bottom / 2 }}
+          sizes="(max-width: 779px) 80vw, 100vw"
           src="/paper.png"
         />
         <ContentVertical ownerState={{ topOffset: top, bottomOffset: bottom }}>{children}</ContentVertical>
@@ -86,11 +87,26 @@ export const PergamenBackground: FC<PergamenBackgroundProps> = ({ className, chi
           fill
           loading="lazy"
           ownerState={{ leftOffset: left, rightOffset: right }}
+          sizes="(max-width: 1750px) calc(100% - 180px), 1220px"
           src="/paper-h.png"
         />
         <Content ownerState={{ leftOffset: left, rightOffset: right }}>{children}</Content>
-        <PergamenLeftSide ref={leftSide} alt="scroll side part" fill loading="lazy" src="/upper-l-h.png" />
-        <PergamenRightSide ref={rightSide} alt="scroll side part" fill loading="lazy" src="/upper-r-h.png" />
+        <PergamenLeftSide
+          ref={leftSide}
+          alt="scroll side part"
+          fill
+          loading="lazy"
+          sizes="100px"
+          src="/upper-l-h.png"
+        />
+        <PergamenRightSide
+          ref={rightSide}
+          alt="scroll side part"
+          fill
+          loading="lazy"
+          sizes="100px"
+          src="/upper-r-h.png"
+        />
       </PergamenBackgroundRoot>
     </>
   )
