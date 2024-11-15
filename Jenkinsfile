@@ -79,9 +79,12 @@ pipeline {
       steps {
         script {
           dockerApi.cloneEnvSpecificBranch("https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git", "feat/pipeline-production", "production")
+          def tag = sh(returnStdout: true, script: "git tag --contains | head -1").trim()
+          echo tag
         }
       }
     }
+    /*
     stage("Build images") {
       steps {
         script {
@@ -193,6 +196,7 @@ pipeline {
         }
       }
     }
+    */
   }
   post {
     always {
