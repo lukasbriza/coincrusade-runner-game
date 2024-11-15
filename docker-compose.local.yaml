@@ -9,7 +9,7 @@ services:
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
-    image: coin-crusade-game-fe
+    image: lbriza/coincrusade-runner-game:fe-local
     container_name: coin-crusade-game-fe
     env_file:
       - ./apps/frontend/.env.local
@@ -29,7 +29,7 @@ services:
       dockerfile: docker/nestjs/Dockerfile
       args:
         - APP=backend
-    image: coin-crusade-game-be
+    image: lbriza/coincrusade-runner-game:be-local
     container_name: coin-crusade-game-be
     env_file:
       - ./apps/backend/.env.local
@@ -49,7 +49,7 @@ services:
     build:
       context: .
       dockerfile: docker/mongodb/single-replica/Dockerfile
-    image: mongodb-single-replica
+    image:  lbriza/coincrusade-runner-game:db-local
     container_name: rs0
     env_file:
       - ./apps/backend/.env.local

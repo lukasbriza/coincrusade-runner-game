@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 @Library('jenkins-shared-library') _
 
 /**
@@ -16,6 +14,11 @@ import groovy.json.JsonSlurper
 * - MONGODB_ROOT_USER
 * - MONGODB_REPLICA_SET_KEY
 * - NODE_ENV
+* - POINTAINER_TARGET_ENVIRONMENT
+* - DOCKER_PASSWORD
+* - DOCKER_NAME
+* - PORTAINER_API_KEY
+* - GITHUB_PAT
 */
 
 pipeline {
@@ -27,8 +30,6 @@ pipeline {
     PASSBOLT_FOLDER_DEV_ID = "7fc21eac-53da-4678-b2db-b6fb22a9f377"
     PASSBOLT_FOLDER_PROD_ID = "f6de24b5-3cad-4537-a34e-6528f7edcd44"
     PASSBOLT_SHARED_FOLDER_ID = "61ac7071-e34d-4d18-9651-6fd084c195f3"
-    POINTAINER_TARGET_ENVIRONMENT = "Homeport"
-    NODE_ENV = "production"
   }
   stages {
     stage("Check workspace") {
@@ -43,27 +44,15 @@ pipeline {
     stage("Fetching secrets") {
       steps {
         script {
-          echo "Fetching secrets..."
+          println("Fetching secrets...")
           env.SHARED_SECRETS = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_SHARED_FOLDER_ID)
-          def ticker = getTicker()
-          if (ticker == "--prod"){
-            echo "Resolved as production environment..."
-            def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_PROD_ID)
-            println(response)
-            env.SECRETS = response
-          } else {
-            echo "Resolved as development environment..."
-            def response = passboltApi.getFolderSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_DEV_ID)
-            println(response)
-            env.SECRETS = response
-          }
+          env.SECRETS = getEnvSpecificSecrets(env.API_PROCESSOR_API, env.PASSBOLT_FOLDER_DEV_ID, env.PASSBOLT_FOLDER_PROD_ID)
 
-          echo "Parse secrets..."
-          def secrets = new JsonSlurper().parseText(env.SECRETS)
-          def sharedSecrets = new JsonSlurper().parseText(env.SHARED_SECRETS)
-          println(secrets)
-          println(sharedSecrets)
+          println("Parsing secrets...")
+          def secrets = new groovy.json.JsonSlurper().parseText(env.SECRETS)
+          def sharedSecrets = new groovy.json.JsonSlurper().parseText(env.SHARED_SECRETS)
           
+          println("Assigning secrets...")
           env.NEXT_PUBLIC_GITHUB = secrets["NEXT_PUBLIC_GITHUB"]
           env.NEXT_PUBLIC_MAIL = secrets["NEXT_PUBLIC_MAIL"]
           env.API_KEY = secrets["API_KEY"]
@@ -78,50 +67,29 @@ pipeline {
           env.PORTAINER_API_KEY = sharedSecrets["PORTAINER_API_KEY"]
           env.DOCKER_NAME = sharedSecrets["DOCKER_NAME"]
           env.DOCKER_PASSWORD = sharedSecrets["DOCKER_PASSWORD"]
+          env.NODE_ENV = sharedSecrets["NODE_ENV"]
+          env.POINTAINER_TARGET_ENVIRONMENT = sharedSecrets["POINTAINER_TARGET_ENVIRONMENT"]
 
-          echo "Constructiing database url..."
+          println("Constructiing database url...")
           env.DATABASE_URL = createMongoDbUrl("${env.MONGODB_ROOT_USER}","${env.MONGODB_ROOT_PASSWORD}", "${env.DATABASE_NAME}")
         }
       }
     }
-    stage("Checkout") {
+    stage("Clone branche") {
       steps {
         script {
-          def ticker = getTicker()
-
-          echo "Checking out branch..."
-          sh "git config --global http.postBuffer 524288000"
-          sh "git config --global http.lowSpeedLimit 1000"
-          sh "git config --global http.lowSpeedTime 60"
-          sh "git config --global credentials.helper cache"
-          sh "git config --global credential.helper 'cache --timeout=3600'"
-          
-          // DECIDE WHICH BRANCH TO CLONE
-          if (ticker == "--prod") {
-            sh "git clone -b production https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
-          } else {
-            sh "git clone -b feat/pipeline-production https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git"
-          }
+          dockerApi.cloneEnvSpecificBranch("https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git", "feat/pipeline-production", "production")
         }
       }
     }
     stage("Build images") {
       steps {
         script {
-          retry(5){
             echo "Building images..."
             dir ("${env.PROJECT_DIR}") {
-              def ticker = getTicker()
-
-              // DECIDE WHICH COMPOSE FILE USE
-              if (ticker == "--prod") {
-                sh "docker compose -f docker-compose.prod.yaml build"
-              } else {
-                sh "docker compose -f docker-compose.dev.yaml build"
-              }
+              dockerApi.buildDockerComposeImages()
             }
             sleep(3)
-          }
         }
       }
     }
@@ -130,14 +98,7 @@ pipeline {
         script {
           echo "Trying to run compose stack..."
           dir ("${env.PROJECT_DIR}") {
-            def ticker = getTicker()
-
-            // DECIDE WHICH FILE COMPOSE
-            if (ticker == "--prod"){
-              sh "docker compose -f docker-compose.prod.yaml up -d"
-            } else {
-              sh "docker compose -f docker-compose.dev.yaml up -d"
-            }
+            dockerApi.runEnvSpecificDockerCompose()
           }
           sleep(3)
         }
@@ -148,14 +109,7 @@ pipeline {
         script {
           echo "Stopping composed stack..."
           dir ("${env.PROJECT_DIR}") {
-            def ticker = getTicker()
-
-            // DECIDE WHICH ENVIROMENT SHUT DOWN
-            if (ticker == "--prod"){
-              sh "docker compose -f docker-compose.prod.yaml down"
-            } else {
-              sh "docker compose -f docker-compose.dev.yaml down"
-            }
+            dockerApi.stopEnvSpecificDockerCompose()
           }
           sleep(3)
         }
@@ -164,38 +118,16 @@ pipeline {
     stage("Push images") {
       steps {
         script {
-          retry(5){
-            echo "Login to DockerHub..."
-            sh "docker login -p ${env.DOCKER_PASSWORD} -u ${env.DOCKER_NAME}"
-
-            def ticker = getTicker()
-            // DECIDE WHICH ENVIROMENT PUSH
-            if (ticker == "--prod"){
-              sh "docker compose -f docker-compose.prod.yaml push"
-            } else {
-              sh "docker compose -f docker-compose.dev.yaml push"
-            }
-          }
+          dockerApi.pushEnvSpecificDockerComposeImages(env.DOCKER_PASSWORD, env.DOCKER_NAME)
         }
       }
     }
-    /*
+    
     stage("Update/Create Portainer stack") {
       steps {
         script {
-          def ticker = getTicker()
-          echo "Resolved ticker: ${ticker}"
-          def stacksResponse = portainerApi.getStacks(env.API_PROCESSOR_API)
-          def environmentsResponse = portainerApi.getEnvironments(env.API_PROCESSOR_API)
-
-          def stacksContent = new groovy.json.JsonSlurper().parseText(stacksResponse)
-          def environmentsContent = new groovy.json.JsonSlurper().parseText(environmentsResponse)
-
-          def targetEnvironment = getTargetEnv(environmentsContent, env.POINTAINER_TARGET_ENVIRONMENT)
-          echo "Target environment id: ${targetEnvironment.Id}"
-
-          def stacksWithGithubUrl = stacksContent.findAll{ stack -> stack.GitConfig.URL == "https://${env.GITHUB_URL}" }
-          def stacksToRedeploy = stacksWithGithubUrl.findAll{ stack -> stack.Name.endsWith(ticker) }
+          def targetEnvironment = getTargetEnv(env.API_PROCESSOR_API, env.POINTAINER_TARGET_ENVIRONMENT)
+          def stacksToRedeploy = getStacksToDeploy(env.API_PROCESSOR_API, "https://${env.GITHUB_URL}")
           
           def envBody = [
             ["name": "NEXT_PUBLIC_GITHUB", "value": "${env.NEXT_PUBLIC_GITHUB}"],
@@ -212,8 +144,8 @@ pipeline {
           ]
           
           if (stacksToRedeploy.size() == 0) {
-            echo "There is no deployed stack with source url https://${env.GITHUB_URL} in Portainer..."
-            echo "Initiate new stack..."
+            println("There is no deployed stack with source url https://${env.GITHUB_URL} in Portainer...")
+            println("Initiate new stack...")
             
             def deployRequestBody = [
               "endpointId": "${targetEnvironment.Id}",
@@ -223,7 +155,7 @@ pipeline {
               "repositoryUsername": "lukasbriza",
               "repositoryPassword": "${env.GITHUB_PAT}",
               "repositoryReferenceName": getBranchReference(),
-              "composeFile": "docker-compose.yml",
+              "composeFile": getComposeFileName(),
               "tlsskipVerify": true,
               "fromAppTemplate": false,
               "autoUpdate": null,
@@ -234,11 +166,11 @@ pipeline {
             def requestBody = new groovy.json.JsonOutput().toJson(deployRequestBody)
             def deployResponse = portainerApi.deployStack(env.API_PROCESSOR_API, requestBody)
 
-            echo "Stack deployed..."
+            println("Stack deployed...")
             return
           }
 
-          echo "Redeploying existing stacks..."
+          println("Redeploying existing stacks...")
 
           for (stackToRedeploy in stacksToRedeploy) {
             def redeployRequestBody = [
@@ -256,33 +188,25 @@ pipeline {
             def requestBody = new groovy.json.JsonOutput().toJson(redeployRequestBody)
             def redeployResponse = portainerApi.reDeployStack(env.API_PROCESSOR_API, "${stackToRedeploy.Id}", requestBody)
 
-            echo "Redeploy of stack with Id: ${stackToRedeploy.Id} was succesfull..."
+            println("Redeploy of stack with Id: ${stackToRedeploy.Id} was succesfull...")
           }
         }
       }
     }
-    */
   }
   post {
     always {
       script {
-        echo "Cleaning up..."
+        println("Cleaning up...")
 
         if (fileExists("${env.PROJECT_DIR}")) {
           dir ("${env.PROJECT_DIR}") {
-            def ticker = getTicker()
-
-            // DECIDE WHICH ENVIROMENT SHUT DOWN
-            if (ticker == "--prod"){
-              sh "docker compose -f docker-compose.prod.yaml down"
-            } else {
-              sh "docker compose -f docker-compose.dev.yaml down"
-            }
+            dockerApi.stopEnvSpecificDockerCompose()
           } 
             sh "rm -rf ${env.PROJECT_DIR}"
         }
         
-        sh "docker system prune --volumes -f -a"
+        dockerApi.cleanDocker()
       }
     }
     success {
