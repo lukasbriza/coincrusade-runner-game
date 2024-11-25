@@ -4,7 +4,9 @@ import { HeroText } from '@lukasbriza/components'
 import { useTranslations } from 'next-intl'
 import { useEffect, type FC } from 'react'
 
+import { GAME_INITIATED_STORAGE_KEY } from '@/shared'
 import { useInitialAnimationContext } from '@/shared/context'
+import { getItem } from '@/utils'
 
 import { useApertureContext } from '../../context/aperture-context'
 
@@ -18,6 +20,14 @@ export const InitialAnimation: FC = () => {
   const t = useTranslations('home')
 
   useEffect(() => {
+    const redirecteFromGame = getItem(GAME_INITIATED_STORAGE_KEY)
+
+    if (redirecteFromGame === 'true') {
+      setInitialised(true)
+      disableAperture()
+      return
+    }
+
     if (loaded && !initialised) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       animation(setStage).then(() => {

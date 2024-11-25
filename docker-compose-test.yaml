@@ -11,6 +11,7 @@
 # - MONGODB_ROOT_PASSWORD
 # - MONGODB_ROOT_USER
 # - MONGODB_REPLICA_SET_KEY
+# - MONGO_DATABASE_PATH
 # - NODE_ENV
 
 networks:
@@ -24,10 +25,16 @@ services:
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
-    image: lbriza/coincrusade-runner-game:fe-prod
+    image: lbriza/coincrusade-runner-game:fe-test
     container_name: coin-crusade-game-fe
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - ${FRONTEND_PORT}:3000
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - NEXT_PUBLIC_GITHUB=${NEXT_PUBLIC_GITHUB}
+      - NEXT_PUBLIC_MAIL=${NEXT_PUBLIC_MAIL}
+      - API_KEY=${API_KEY}
+      - API_URL=${API_URL}
     depends_on:
       - backend
     logging:
@@ -42,10 +49,17 @@ services:
       dockerfile: docker/nestjs/Dockerfile
       args:
         - APP=backend
-    image: lbriza/coincrusade-runner-game:be-prod
+    image: lbriza/coincrusade-runner-game:be-test
     container_name: coin-crusade-game-be
     ports:
-      - "${BACKEND_PORT}:3001"
+      - ${BACKEND_PORT}:3001
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - API_KEY=${API_KEY}
+      - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+      - MONGODB_ROOT_USER=${MONGODB_ROOT_USER}
+      - MONGODB_REPLICA_SET_KEY=${MONGODB_REPLICA_SET_KEY}
+      - NODE_ENV=${NODE_ENV}
     networks:
       - app
     depends_on:
@@ -60,10 +74,12 @@ services:
     build:
       context: .
       dockerfile: docker/mongodb/single-replica/Dockerfile
-    image: lbriza/coincrusade-runner-game:db-prod
+    image: lbriza/coincrusade-runner-game:db-test
     container_name: rs0
     ports:
       - ${DATABASE_PORT}:27017
+    environment:
+      - NODE_ENV=${NODE_ENV}
     networks:
       - app
     volumes:
@@ -77,3 +93,7 @@ services:
 volumes:
   mongo_data:
      driver: local
+     driver_opts:
+      type: none
+      o: bind
+      device: ${MONGO_DATABASE_PATH}

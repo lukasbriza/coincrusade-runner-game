@@ -4,8 +4,9 @@ import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 
 import { ControlPartDivider } from './styles'
+import type { ControlsDividerProps } from './types'
 
-export const ControlsDivider: FC = () => {
+export const ControlsDivider: FC<ControlsDividerProps> = ({ sizes }) => {
   const ref = useRef<HTMLImageElement>(null)
   useEffect(() => {
     ref.current?.style.removeProperty('position')
@@ -15,5 +16,5 @@ export const ControlsDivider: FC = () => {
     ref.current?.style.removeProperty('height')
   }, [ref])
 
-  return <ControlPartDivider ref={ref} alt="flourish" fill src="/flourish.png" />
+  return <ControlPartDivider ref={ref} alt="flourish" fill sizes={sizes} src="/flourish.png" />
 }

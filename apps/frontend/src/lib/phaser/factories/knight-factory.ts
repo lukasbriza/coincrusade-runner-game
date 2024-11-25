@@ -13,7 +13,7 @@ import {
 } from '../animations'
 import { SPRITE_KEYS } from '../assets'
 import { TILE_HEIGHT, TILE_WIDTH } from '../constants'
-import { gameRestartListener, knightDeadListener, knightHitCallbackListener } from '../events'
+import { gameEndListener, gameRestartListener, knightDeadListener, knightHitCallbackListener } from '../events'
 import { TimerHelper, type ITimerHelper } from '../helpers'
 import { getGameStateContext } from '../singletons'
 import type { IScene } from '../types'
@@ -60,9 +60,13 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 
     this.powerBar = this.scene.add.powerbar(this, id)
     this.run()
+
+    gameEndListener(() => {
+      this.removeListeners()
+    })
   }
 
-  private initMovementListeners() {
+  private initPowerBarListeners() {
     this.keySpace?.on('down', this.startCollectingPower, this)
     this.keySpace?.on('up', this.jump, this)
     this.keyUp?.on('down', this.startCollectingPower, this)
@@ -74,7 +78,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     knightDeadListener(this.knightDead)
     gameRestartListener(this.knightReset)
 
-    this.initMovementListeners()
+    this.initPowerBarListeners()
   }
   public removeListeners() {
     this.keyUp?.removeListener('down', this.startCollectingPower, this)
@@ -91,7 +95,7 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   private resetState() {
     this.inAir = false
     this.powerBar.setPercents(0)
-    this.initMovementListeners()
+    this.initPowerBarListeners()
   }
 
   // COLLISION

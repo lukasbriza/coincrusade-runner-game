@@ -42,11 +42,9 @@ declare interface IText extends Phaser.GameObjects.BitmapText {
   destroyAfterTime: (time: number, callback: () => void) => void
 }
 
-declare interface ISettingsButton extends Phaser.Physics.Arcade.Sprite {
-  isBlocked: boolean
-}
+declare type ISettingsButton = IButton
 
-declare interface IMusicButton extends Phaser.Physics.Arcade.Sprite {
+declare interface IMusicButton extends IButton {
   isEnabled: boolean
   music: SoundObject
 }
@@ -54,6 +52,7 @@ declare interface IMusicButton extends Phaser.Physics.Arcade.Sprite {
 declare type IFullscreenButton = Phaser.Physics.Arcade.Sprite
 
 declare interface IButton extends Phaser.Physics.Arcade.Sprite {
+  isBlocked: boolean
   mouseEnter: (key: string, callback?: () => void) => void
   mouseLeave: (key: string, callback?: () => void) => void
   mousePointerUp: (key: string, callback?: () => void) => void

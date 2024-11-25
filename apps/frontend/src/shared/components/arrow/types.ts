@@ -6,4 +6,5 @@ export type ArrowProps = {
   animated?: boolean | undefined
   className?: string | undefined
   onClick?: (() => void) | undefined
+  sizes?: string | undefined
 }

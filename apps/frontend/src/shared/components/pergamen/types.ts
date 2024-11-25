@@ -10,6 +10,9 @@ export type PergamenProps = {
   onAnimationStateChange?: ((rolled: boolean) => void) | undefined
   closePergamen?: (() => void) | undefined
   onClick?: MouseEventHandler | undefined
+  pergamenSizes?: string | undefined
+  topSizes?: string | undefined
+  bottomSizes?: string | undefined
 }
 
 export type RollAnimationInput = {
