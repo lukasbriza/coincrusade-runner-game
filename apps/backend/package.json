@@ -17,10 +17,7 @@
     "format:fix": "pnpm run format --write",
     "lint": "eslint --cache --ext cjs,js,ts .",
     "lint:fix": "pnpm run lint --fix",
-    "ts": "tsc --build tsconfig.json",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "ts": "tsc --build tsconfig.json"
   },
   "dependencies": {
     "@lukasbriza/eslint-config": "workspace:*",

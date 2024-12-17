@@ -11,16 +11,18 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "compose-project-local": "docker compose -f docker-compose-local.yaml up --build -V -d",
     "cleanup": "turbo run cleanup --no-daemon",
     "postcleanup": "rimraf .eslintcache tsconfig.tsbuildinfo node_modules",
     "cli": "turbo build --filter @lukasbriza/cli & node ./packages/cli/dist/cli.js",
+    "compose-project-local": "docker compose -f docker-compose-local.yaml up --build -V -d",
     "dev": "turbo dev",
     "dev:frontend": "turbo dev --filter=!./apps/backend",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint --no-daemon",
     "lint:fix": "turbo run lint:fix --no-daemon",
+    "prepare": "husky",
     "prepare:husky": "husky",
+    "test": "turbo test",
     "ts": "turbo run ts --no-daemon"
   },
   "dependencies": {

@@ -9,6 +9,7 @@ export const MailIcon = forwardRef<SVGSVGElement, MailIconProps>(({ className, o
   <svg
     ref={ref}
     className={className}
+    data-testid="mailicon"
     fill="none"
     height={size}
     viewBox="0 0 24 24"

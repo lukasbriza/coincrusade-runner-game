@@ -15,7 +15,13 @@ export const Space = forwardRef<SVGSVGElement, KeyboardKeyProps>(
     },
     ref,
   ) => (
-    <svg ref={ref} {...restProps} viewBox="192.4653 309.1269 162.399 39.799" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      ref={ref}
+      {...restProps}
+      data-testid="space"
+      viewBox="192.4653 309.1269 162.399 39.799"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g transform="matrix(1, 0, 0, 1, 146.60125732421875, 115.70389556884764)">
         <path
           d="M194.964,195.123h-135.8c-3.7,0-6.8,1.201-9.4,3.9c-2.6,2.6-3.9,5.699-3.9,9.301v11.6

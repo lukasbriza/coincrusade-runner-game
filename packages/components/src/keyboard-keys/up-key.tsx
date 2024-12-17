@@ -15,7 +15,13 @@ export const UpKey = forwardRef<SVGSVGElement, KeyboardKeyProps>(
     },
     ref,
   ) => (
-    <svg ref={ref} {...restProps} viewBox="240.8426 284.1559 47.299 39.799" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      ref={ref}
+      {...restProps}
+      data-testid="upkey"
+      viewBox="240.8426 284.1559 47.299 39.799"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M138.265,99.923h-20.8c-3.7,0-6.9,1.3-9.4,3.8c-2.7,2.7-3.9,5.8-3.9,9.5v11.5c0,3.701,1.2,6.8,3.9,9.399
 		c2.5,2.601,5.7,3.9,9.4,3.9h20.8c3.699,0,6.8-1.301,9.3-3.9c2.7-2.6,3.899-5.699,3.899-9.399v-11.5c0-3.7-1.199-6.8-3.899-9.5

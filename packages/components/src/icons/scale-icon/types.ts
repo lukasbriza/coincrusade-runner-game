@@ -1,4 +1,4 @@
-import type { ComponentBaseProps } from '../types'
+import type { ComponentBaseProps } from '../../types'
 
 export type ScaleIconProps = ComponentBaseProps & {
   size?: number

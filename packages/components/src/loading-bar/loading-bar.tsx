@@ -13,7 +13,7 @@ export const LoadingBar: FC<LoadingBarProps> = ({ className, fillerClass, progre
   }
 
   return (
-    <Root className={className}>
+    <Root className={className} data-testid="loadingbar">
       <Filler className={fillerClass} ownerState={{ width: percentValue }} />
       <Percents variant="M">{percentValue.toFixed(0)}%</Percents>
     </Root>

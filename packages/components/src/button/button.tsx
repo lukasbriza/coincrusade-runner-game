@@ -8,7 +8,7 @@ export const Button: FC<ButtonProps> = (props) => {
   const { type = 'submit', text, borderWidth = 3, className, onClick } = props
   const { ref } = useButton()
   return (
-    <Root className={className}>
+    <Root className={className} data-testid="button">
       <ButtonStyled
         ref={ref}
         ownerState={{

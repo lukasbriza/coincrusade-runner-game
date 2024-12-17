@@ -10,7 +10,13 @@ export const MenuIcon: FC<MenuIconProps> = ({ className, active, width, height, 
   const { isActiveHandler } = useMenuIcon(active, height, onClick)
 
   return (
-    <Root className={className} ownerState={{ color, height, width }} onClick={isActiveHandler} {...restProps}>
+    <Root
+      className={className}
+      ownerState={{ color, height, width }}
+      onClick={isActiveHandler}
+      {...restProps}
+      data-testid="menuicon"
+    >
       <div className={clsx(menuIconClasses.line, menuIconClasses.a1)} />
       <div className={clsx(menuIconClasses.line, menuIconClasses.a2)} />
       <div className={clsx(menuIconClasses.line, menuIconClasses.a3)} />

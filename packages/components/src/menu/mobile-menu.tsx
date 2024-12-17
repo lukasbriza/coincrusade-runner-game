@@ -26,6 +26,7 @@ export const MobileMenu: FC<MobileMenuProps> = ({
   return (
     <>
       <MenuModal
+        data-testid="menumodal"
         disablePortal
         hideBackdrop
         keepMounted
@@ -46,7 +47,10 @@ export const MobileMenu: FC<MobileMenuProps> = ({
               />
             ))}
             {iconSection ? (
-              <MobileMenuIconWrapper className={clsx(menuClasses.menuItem, menuClasses.menuItemIcons)}>
+              <MobileMenuIconWrapper
+                className={clsx(menuClasses.menuItem, menuClasses.menuItemIcons)}
+                data-testid="mobilemenuicons"
+              >
                 {iconSection.map((icon) => icon)}
               </MobileMenuIconWrapper>
             ) : null}

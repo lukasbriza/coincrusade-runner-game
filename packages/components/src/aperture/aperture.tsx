@@ -10,9 +10,9 @@ export const Aperture: FC<ApertureProps> = ({ children, stage, initialStage, cla
   const { top, down } = useAperture(stage, initialStage)
   return (
     <>
-      <Top ref={top} className={className} />
+      <Top ref={top} className={className} data-testid="aperture1" />
       {children}
-      <Down ref={down} className={className} />
+      <Down ref={down} className={className} data-testid="aperture2" />
     </>
   )
 }

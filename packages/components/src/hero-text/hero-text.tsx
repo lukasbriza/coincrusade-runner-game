@@ -8,7 +8,7 @@ import { Root } from './styles'
 import type { HeroTextProps } from './types'
 
 export const HeroText: FC<HeroTextProps> = ({ main, subtitle, mainClassName, subtitleClassName, ...restProps }) => (
-  <Root {...restProps}>
+  <Root {...restProps} data-testid="herotext">
     <Text className={clsx(heroTextClasses.main, mainClassName)} component="h1" variant="h1">
       {main}
     </Text>
