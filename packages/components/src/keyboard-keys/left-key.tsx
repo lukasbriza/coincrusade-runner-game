@@ -15,7 +15,13 @@ export const LeftKey = forwardRef<SVGSVGElement, KeyboardKeyProps>(
     },
     ref,
   ) => (
-    <svg {...restProps} ref={ref} viewBox="111.1869 297.4948 47.4 39.8" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      {...restProps}
+      ref={ref}
+      data-testid="leftkey"
+      viewBox="111.1869 297.4948 47.4 39.8"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g transform="matrix(1, 0, 0, 1, 64.92186737060547, 153.87184143066406)">
         <path
           d="M80.365,145.324h-20.8c-3.6,0-6.8,1.199-9.4,3.898c-2.6,2.602-3.9,5.701-3.9,9.301v11.6

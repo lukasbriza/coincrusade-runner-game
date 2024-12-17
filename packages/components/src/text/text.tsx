@@ -9,6 +9,7 @@ export const Text = forwardRef<HTMLElement, TextProps>(function Text(
 ) {
   return (
     <Root
+      data-testid="text"
       {...props}
       ref={ref}
       className={className as string}

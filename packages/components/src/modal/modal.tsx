@@ -17,7 +17,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, open, c
   }
 
   return (
-    <Root ref={ref} data-modal="true" onClick={backDropClick}>
+    <Root ref={ref} data-modal="true" data-testid="modal" onClick={backDropClick}>
       <MuiModal className={className} closeAfterTransition disablePortal hideBackdrop open={open}>
         <ModalContent tabIndex={-1}>{children}</ModalContent>
       </MuiModal>

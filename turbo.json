@@ -14,77 +14,45 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "dist/**/*",
-        "tsconfig.tsbuildinfo",
-        "tsconfig.build.tsbuildinfo"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**/*", "tsconfig.tsbuildinfo", "tsconfig.build.tsbuildinfo"]
     },
     "lint": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".eslintcache"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": [".eslintcache"]
     },
     "lint:fix": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".eslintchache"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": [".eslintchache"]
     },
     "copy-fonts": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "node_modules/@lukasbriza/theme/static/fonts/**/*"
-      ],
-      "outputs": [
-        "public/fonts/**/*",
-        "static/fonts/**/*"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["node_modules/@lukasbriza/theme/static/fonts/**/*"],
+      "outputs": ["public/fonts/**/*", "static/fonts/**/*"]
     },
     "dev": {
       "cache": false,
-      "dependsOn": [
-        "^build",
-        "copy-fonts"
-      ],
+      "dependsOn": ["^build", "copy-fonts"],
       "persistent": true
     },
     "dev:frontend": {
       "cache": false,
-      "dependsOn": [
-        "^build",
-        "copy-fonts"
-      ],
+      "dependsOn": ["^build", "copy-fonts"],
       "persistent": true
     },
     "ts": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "tsconfig.tsbuildinfo"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "cleanup": {
       "cache": false
     },
     "run": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false
+    },
+    "test": {
+      "cache": true
     }
   }
 }

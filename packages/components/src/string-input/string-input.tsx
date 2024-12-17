@@ -22,7 +22,7 @@ export const StringInput = forwardRef<HTMLInputElement, StringInputProps>(
       label,
       required,
       helper,
-      type = 'string',
+      type = 'text',
       ...props
     },
     ref,
@@ -51,7 +51,7 @@ export const StringInput = forwardRef<HTMLInputElement, StringInputProps>(
     }, [value])
 
     return (
-      <RootBase ownerState={{ fullWidth }}>
+      <RootBase data-testid="stringinput" ownerState={{ fullWidth }}>
         <Label
           ref={labelRef}
           htmlFor={name}

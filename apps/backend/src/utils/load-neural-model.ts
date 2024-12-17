@@ -17,7 +17,7 @@ export const loadNeuralModel = async (modelType: AVAILABLE_MODELS) => {
   const weightBuffer = new Uint8Array(fileWeights.buffer).buffer
 
   const handler: io.IOHandler = {
-    load: async () => io.getModelArtifactsForJSONSync(model, manifest, weightBuffer),
+    load: async () => io.getModelArtifactsForJSONSync(model, manifest, weightBuffer as ArrayBuffer),
   }
 
   const nnModel = await loadLayersModel(handler)

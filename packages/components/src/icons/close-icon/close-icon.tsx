@@ -9,6 +9,7 @@ export const CloseIcon = forwardRef<SVGSVGElement, CloseIconProps>(({ className,
   <svg
     ref={ref}
     className={className}
+    data-testid="closeicon"
     fill="none"
     height={size}
     viewBox="0 0 24 24"

@@ -47,6 +47,7 @@ export const Snackbar: FC<SnackbarProps> = ({ children, autoHideDuration = 5000,
   return (
     <Root
       autoHideDuration={autoHideDuration}
+      data-testid="snackbar"
       exited={exited}
       id={id}
       open={open}

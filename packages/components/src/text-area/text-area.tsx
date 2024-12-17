@@ -50,7 +50,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     }, [value])
 
     return (
-      <RootBase ownerState={{ fullWidth }}>
+      <RootBase data-testid="textarea" ownerState={{ fullWidth }}>
         <Label
           ref={labelRef}
           htmlFor={name}

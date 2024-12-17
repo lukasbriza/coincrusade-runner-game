@@ -26,11 +26,13 @@ export const Menu: FC<MenuProps> = ({
   const { onItemClickHandler } = useMenu(onItemClick)
 
   return (
-    <Root {...restProps}>
+    <Root {...restProps} data-testid="menu">
       {iconSection ? (
-        <IconsMenuSection className={menuClasses.isDesktop}>{iconSection.map((icon) => icon)}</IconsMenuSection>
+        <IconsMenuSection className={menuClasses.isDesktop} data-testid="iconmenusection">
+          {iconSection.map((icon) => icon)}
+        </IconsMenuSection>
       ) : null}
-      <MenuItemsWrapper>
+      <MenuItemsWrapper data-testid="menuitemswrapper">
         {items.map(({ name, path, active }) => (
           <MenuItem
             key={name}

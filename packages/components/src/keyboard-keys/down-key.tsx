@@ -15,7 +15,13 @@ export const DownKey = forwardRef<SVGSVGElement, KeyboardKeyProps>(
     },
     ref,
   ) => (
-    <svg {...restProps} ref={ref} viewBox="207.0048 252.4567 47.298 39.8" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      {...restProps}
+      ref={ref}
+      data-testid="downkey"
+      viewBox="207.0048 252.4567 47.298 39.8"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g transform="matrix(1, 0, 0, 1, 103.08980560302734, 108.83366394042967)">
         <path
           d="M138.014,145.324h-20.801c-3.699,0-6.899,1.199-9.399,3.898c-2.7,2.602-3.899,5.701-3.899,9.301v11.6

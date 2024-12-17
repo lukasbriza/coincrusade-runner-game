@@ -22,12 +22,14 @@
     "prebuild": "rimraf dist tsconfig.build.tsbuildinfo",
     "build": "tsc --build tsconfig.build.json",
     "cleanup": "rimraf .eslintcache .turbo tsconfig.tsbuildinfo tsconfig.build.tsbuildinfo coverage dist node_modules",
+    "coverage": "vitest run --coverage",
     "dev": "pnpm run build --watch",
     "fix": "run-p ts format:fix lint:fix",
     "format": "prettier --check \"./**/*.{json,md,mdx}\"",
     "format:fix": "pnpm run format --write",
     "lint": "eslint --cache --ext cjs,js,ts,tsx .",
     "lint:fix": "pnpm run lint --fix",
+    "test": "vitest run",
     "ts": "tsc --build tsconfig.json"
   },
   "dependencies": {
@@ -43,8 +45,8 @@
     "clsx": "2.1.1",
     "deepmerge": "4.3.1",
     "gsap": "3.12.5",
-    "lodash.throttle": "4.1.1",
     "lodash.capitalize": "4.2.1",
+    "lodash.throttle": "4.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
@@ -57,13 +59,16 @@
     "@storybook/react": "8.2.6",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.0.0",
-    "@types/lodash.throttle": "4.1.9",
     "@types/lodash.capitalize": "4.2.9",
+    "@types/lodash.throttle": "4.1.9",
     "@types/node": "20.14.9",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "@vitest/coverage-istanbul": "2.1.5",
+    "jsdom": "25.0.1",
     "storybook": "8.2.6",
     "typescript": "5.5.3",
-    "vitest": "2.0.4"
+    "vitest": "2.1.5"
   }
 }
