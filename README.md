@@ -1,72 +1,118 @@
-# Turborepo starter
+# 🎮 COIN CRUSADE: KNIGHT'S QUEST
 
-This is an official starter Turborepo.
+**An Endless 2D Runner Game**  
+Conquer obstacles, collect coins, and adapt to AI-driven challenges in this unique endless-runner experience.  
+Choose from four intelligent difficulty generators that shape the gameplay dynamically.
+In **COIN CRUSADE: KNIGHT'S QUEST**, players take on the role of a brave knight navigating an endless world filled with AI-generated obstacles and challenges. Your objective is to run, jump, and collect coins while the game intelligently adjusts its difficulty based on your gameplay.
 
-## Using this example
+## 🧠 Dynamic Difficulty Generators
 
-Run the following command:
+The game features **four unique AI-based difficulty generators**, each offering a different experience:
 
-```sh
-npx create-turbo@latest
+### 🔹 **Linear Generator**
+
+- The difficulty increases progressively over time, independent of the player's performance.
+
+### 🔹 **Hamlet System**
+
+- Difficulty adapts dynamically based on the player's performance in each section of the game.
+- Inspired by **Stock Theory**.
+
+### 🔹 **Neural Network Generator**
+
+- Adjusts gameplay difficulty using data collected during your runs, analyzed through a **neural network**.
+
+### 🔹 **Reinforcement Learning Generator**
+
+- Uses **reinforcement learning** to optimize challenges as you play.
+- The longer you play, the smarter the game becomes at estimating your skill level.
+
+## 🕹️ Controls
+
+Master the controls to succeed on your quest:
+
+- **Move Right**: Press the **Right Arrow** to accelerate forward.
+
+  https://github.com/user-attachments/assets/ed34724b-a60f-4b19-82b6-3cda8e91de72
+
+- **Move Left**: Press the **Left Arrow** to accelerate backward.
+
+  https://github.com/user-attachments/assets/9ec65bb9-c53f-4aca-b38f-1cd585959ea2
+
+- **Power Jump**: Hold **Up Arrow** or **Space Bar** to jump.  
+  The longer you hold, the higher you jump.
+
+  https://github.com/user-attachments/assets/b16c8204-c3d7-4e1c-8bab-1b539cde8f87
+
+> _Tip: Plan your jumps carefully! A new jump cannot start until the previous one finishes._
+
+---
+
+## ⚙️ Game Settings
+
+Customize the game experience with configurable settings:
+
+| Setting                  | Description                                             |
+| ------------------------ | ------------------------------------------------------- |
+| **Heal Rate**            | Time in seconds before a player's life regenerates.     |
+| **Base Time**            | Starting time credited to the player.                   |
+| **Max Player Lives**     | Maximum number of lives a player can have.              |
+| **Immortality Duration** | Duration of post-hit immortality (in milliseconds).     |
+| **Coin Time Bonus**      | Time added after collecting a specific number of coins. |
+
+> **⚠️ Warning**: Modifying default settings may affect gameplay balance.
+
+## 🛠️ Built With
+
+The project leverages cutting-edge technologies to deliver a smooth and intelligent gaming experience:
+
+- **TypeScript**: Ensuring clean, maintainable, and type-safe code.
+- **Phaser.js**: A powerful HTML5 game development framework for 2D games.
+- **Next.js**: Building a responsive and interactive game interface.
+- **AI Algorithms**: For adaptive difficulty adjustments:
+  - Neural Networks
+  - Reinforcement Learning
+  - Adaptive Heuristics
+- **PNPM**: For efficient dependency management.
+- **HTML5 Canvas**: Rendering 2D graphics with optimal performance.
+- **CSS**: Styling the game components beautifully.
+
+---
+
+## 🚀 Installation & Setup
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd coin-crusade-knights-quest
 ```
 
-## What's inside?
+2. Install dependencies using pnpm:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```bash
+pnpm install
 ```
 
-### Develop
+3. Run the development server:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
+```bash
 pnpm dev
 ```
 
-### Remote Caching
+4. Open the game in your browser:
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```bash
+http://localhost:8080
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## ✉️ Contact
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Found a bug or have a suggestion? Let us know!
 
-```
-npx turbo link
-```
+- **Email**: [lukasbriza@seznam.cz](mailto:lukasbriza@seznam.cz)
+- **GitHub**: [Source Code](#)
 
+I'd love to hear your ideas for improvements or new features. Happy gaming! 🎉
 
+---
