@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 8080",
+    "cleanup": "rimraf .eslintcache .turbo tsconfig.tsbuildinfo node_modules",
     "build": "next build",
     "copy-fonts": "cpy ./node_modules/@lukasbriza/theme/static/fonts ./public/fonts --flat",
     "lint": "next lint",

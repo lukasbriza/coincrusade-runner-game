@@ -24,6 +24,21 @@ import groovy.json.JsonOutput
 * - MONGODB_HOST_NAME
 */
 
+/**
+* PIPELINE STEPS
+* --------------
+* CHECK WORKSPACE
+* API HEALTH CHECK
+* FETCH SECRETS
+* CLONE BRANCH
+* RUN UNIT TESTS
+* BUILD IMAGES
+* COMPOSE PROJECT
+* PUSH IMAGES
+* CREATE/UPDATE PORTAINER STACK
+* CLEAN UP
+*/
+
 pipeline {
   agent any
   environment {
@@ -89,10 +104,20 @@ pipeline {
         }
       }
     }
-    stage("Clone branche") {
+    stage("Clone branch") {
       steps {
         script {
           dockerApi.cloneEnvSpecificBranch("https://lukasbriza:${env.GITHUB_PAT}@${env.GITHUB_URL}.git")
+        }
+      }
+    }
+    stage("Run unit tests") {
+      steps {
+        script {
+          echo "Running unit tests..."
+          dir ("${env.PROJECT_DIR}") {
+            sh "docker compose -f docker-compose-dev.yaml --rm node_shell -c 'set -e; pnpm i && pnpm turbo build --filter=./packages/* && pnpm turbo test'"
+          }
         }
       }
     }
@@ -112,7 +137,7 @@ pipeline {
         script {
           echo "Trying to run compose stack..."
           dir ("${env.PROJECT_DIR}") {
-            // Create voluima folder
+            // Create volume folder
             sh "mkdir -p ${env.MONGO_DATABASE_PATH}"
             
             dockerApi.runEnvSpecificDockerCompose()

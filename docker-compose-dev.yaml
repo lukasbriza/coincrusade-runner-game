@@ -1,0 +1,19 @@
+services:
+  node:
+    build: docker/dev
+    user: ${COMPOSE_UID-1000}:${COMPOSE_GID-1000}
+
+  # To run commands in CI
+  node_ci:
+    extends: node
+    volumes:
+      - .:/workspace:z
+
+  # For interactive development
+  node_shell:
+    extends: node
+    entrypoint: bash
+    ports:
+      - ${COMPOSE_START_PORT-8080}:${COMPOSE_START_PORT-8080}
+    volumes:
+      - .:/workspace:z
