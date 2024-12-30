@@ -15,18 +15,37 @@
 # - NODE_ENV
 
 networks:
-  app:
+  app-prod:
     driver: bridge
 
 services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/base.Dockerfile
+      args:
+        - NODE_VERSION=22.11.0
+    image: lbriza/coincrusade-runner-game:base
+    container_name: base_prod
+    networks:
+      - app-prod
+
+    # Share logging options
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
   frontend:
+    extends: base
     build:
       context: .
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
     image: lbriza/coincrusade-runner-game:fe-prod
-    container_name: coin-crusade-game-fe
+    container_name: coin-crusade-game_fe-prod
     ports:
       - ${FRONTEND_PORT}:3000
     environment:
@@ -37,20 +56,17 @@ services:
       - API_URL=${API_URL}
     depends_on:
       - backend
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - base
 
   backend:
+    extends: base
     build:
       context: .
       dockerfile: docker/nestjs/Dockerfile
       args:
         - APP=backend
     image: lbriza/coincrusade-runner-game:be-prod
-    container_name: coin-crusade-game-be
+    container_name: coin-crusade-game_be-prod
     ports:
       - ${BACKEND_PORT}:3001
     environment:
@@ -60,40 +76,35 @@ services:
       - MONGODB_ROOT_USER=${MONGODB_ROOT_USER}
       - MONGODB_REPLICA_SET_KEY=${MONGODB_REPLICA_SET_KEY}
       - NODE_ENV=${NODE_ENV}
-    networks:
-      - app
     depends_on:
       - database
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - base
 
   database:
     build:
       context: .
       dockerfile: docker/mongodb/single-replica/Dockerfile
     image: lbriza/coincrusade-runner-game:db-prod
-    container_name: rs0
+    container_name: rs0_db-prod
     ports:
       - ${DATABASE_PORT}:27017
     environment:
       - NODE_ENV=${NODE_ENV}
+      - MONGODB_ADVERTISED_HOSTNAME=rs0_db-prod
     networks:
-      - app
+      - app-prod
     volumes:
       - 'mongo_data:/bitnami/mongodb'
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   mongo_data:
-     driver: local
-     driver_opts:
+    driver: local
+    driver_opts:
       type: none
       o: bind
       device: ${MONGO_DATABASE_PATH}

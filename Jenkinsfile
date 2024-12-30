@@ -116,7 +116,7 @@ pipeline {
         script {
           echo "Running unit tests..."
           dir ("${env.PROJECT_DIR}") {
-            sh "docker compose -f docker-compose-dev.yaml --rm node_shell -c 'set -e; pnpm i && pnpm turbo build --filter=./packages/* && pnpm turbo test'"
+            sh "docker compose -f docker/tests/docker-compose-run-tests.yaml up --build"
           }
         }
       }
