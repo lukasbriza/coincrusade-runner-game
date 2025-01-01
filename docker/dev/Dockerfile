@@ -11,7 +11,7 @@ RUN corepack enable
 
 RUN rm -rf /var/cache/apk/*
 
-RUN mkdir /workspace
-WORKDIR /workspace
+RUN mkdir /application
+WORKDIR /application
 
-RUN chmod -R 777 /workspace
+RUN chmod -R 777 /application

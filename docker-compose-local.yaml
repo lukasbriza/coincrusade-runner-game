@@ -1,72 +1,82 @@
 networks:
-  app:
+  app-local:
     driver: bridge
 
 services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/base.Dockerfile
+      args:
+        - NODE_VERSION=22.11.0
+    image: lbriza/coincrusade-runner-game:base
+    container_name: base_local
+    networks:
+      - app-local
+
+    # Share logging options
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
   frontend:
+    extends: base
     build:
       context: .
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
     image: lbriza/coincrusade-runner-game:fe-local
-    container_name: coin-crusade-game-fe
+    container_name: coin-crusade-game_fe-local
     env_file:
       - ./apps/frontend/.env.local
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - backend
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - base
 
   backend:
+    extends: base
     build:
       context: .
       dockerfile: docker/nestjs/Dockerfile
       args:
         - APP=backend
     image: lbriza/coincrusade-runner-game:be-local
-    container_name: coin-crusade-game-be
+    container_name: coin-crusade-game_be-local
     env_file:
       - ./apps/backend/.env.local
     ports:
-      - "3001:3001"
-    networks:
-      - app
+      - '3001:3001'
     depends_on:
       - database
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - base
 
   database:
     build:
       context: .
       dockerfile: docker/mongodb/single-replica/Dockerfile
-    image:  lbriza/coincrusade-runner-game:db-local
-    container_name: rs0
+    image: lbriza/coincrusade-runner-game:db-local
+    container_name: rs0_db-local
     env_file:
       - ./apps/backend/.env.local
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=rs0
+      - MONGODB_ADVERTISED_HOSTNAME=rs0_db-local
     ports:
       - 27017:27017
     networks:
-      - app
+      - app-local
     volumes:
       - 'mongo_data:/bitnami/mongodb'
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   mongo_data:
-     driver: local
+    driver: local
