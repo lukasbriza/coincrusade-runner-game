@@ -44,10 +44,7 @@ declare interface IText extends Phaser.GameObjects.BitmapText {
 
 declare type ISettingsButton = IButton
 
-declare interface IMusicButton extends IButton {
-  isEnabled: boolean
-  music: SoundObject
-}
+type IMusicButton = IButton
 
 declare type IFullscreenButton = Phaser.Physics.Arcade.Sprite
 

@@ -56,3 +56,12 @@ export enum POLICY {
   PLATFORM = 1,
   PLATFORM_DIFFICULTY = 2,
 }
+
+export const SOUND_CONFIG = {
+  COIN: { loop: false, volume: 0.3 },
+  BACKGROUND: { loop: true, volume: 0.5 },
+  JUMP: { loop: false, volume: 0.8 },
+  HIT: { loop: false, volume: 0.5 },
+  GAME_OVER: { loop: false, volume: 0.8 },
+  RUN: { loop: true, volume: 0.1, rate: 0.9 },
+}

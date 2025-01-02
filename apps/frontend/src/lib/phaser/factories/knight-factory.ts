@@ -11,11 +11,12 @@ import {
   knightRunLeft,
   knightRunReset,
 } from '../animations'
-import { SPRITE_KEYS } from '../assets'
-import { TILE_HEIGHT, TILE_WIDTH } from '../constants'
+import { SOUND_KEYS, SPRITE_KEYS } from '../assets'
+import { SOUND_CONFIG, TILE_HEIGHT, TILE_WIDTH } from '../constants'
 import { gameEndListener, gameRestartListener, knightDeadListener, knightHitCallbackListener } from '../events'
 import { TimerHelper, type ITimerHelper } from '../helpers'
 import { getGameStateContext } from '../singletons'
+import { getGameSoundContext } from '../singletons/sound-context'
 import type { IScene } from '../types'
 import { isKnightOnLeftSideCorner, isKnightOnLeftSideOfWorld, isKnightOnRightSideOfWorld } from '../utils'
 
@@ -60,6 +61,9 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
 
     this.powerBar = this.scene.add.powerbar(this, id)
     this.run()
+
+    const soundContext = getGameSoundContext()
+    soundContext.playSound(SOUND_KEYS.RUN_SOUND, SOUND_CONFIG.RUN)
 
     gameEndListener(() => {
       this.removeListeners()
@@ -126,6 +130,9 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
     }
   }
   public knightHit = (knight: IKnight, worldObject: ColliderObject) => {
+    const soundContext = getGameSoundContext()
+    soundContext.playSound(SOUND_KEYS.HIT_SOUND, SOUND_CONFIG.HIT)
+
     this.run()
     this.immortalityAnimation()
     this.onCollideWithWorld(knight, worldObject)
@@ -136,14 +143,24 @@ export class Knight extends Physics.Arcade.Sprite implements IKnight {
   }
 
   // ANIMATIONS
-  private run = () => knightRun(this)
+  private run = () => {
+    knightRun(this)
+  }
   private runSlover = () => knightRunLeft(this)
   private runQuicker = () => knightRunReset(this)
-  private jump = () => knightJump(this)
+  private jump = () => {
+    const soundContext = getGameSoundContext()
+    soundContext.playSound(SOUND_KEYS.JUMP_SOUND, SOUND_CONFIG.JUMP)
+    knightJump(this)
+  }
   private immortalityAnimation() {
     knightImmortality(this, this.scene)
   }
   private knightDead = () => {
+    const soundContext = getGameSoundContext()
+    soundContext.playSound(SOUND_KEYS.GAME_OVER_SOUND, SOUND_CONFIG.GAME_OVER)
+    soundContext.pauseSound(SOUND_KEYS.RUN_SOUND)
+
     this.removeListeners()
     knightDeadAnimation(this)
   }

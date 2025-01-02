@@ -11,6 +11,7 @@ import { checkersRegistration, collidersRegistration } from '../helpers'
 import type { IKeyboardManager, IPlatformManager, IPlayerStatus } from '../objects'
 import { KeyboardManager, PlatformManager, PlayerStatus } from '../objects'
 import { getGameStateContext } from '../singletons'
+import { initGameSoundContext } from '../singletons/sound-context'
 import type { IScene } from '../types'
 import { addBackgorund } from '../utils'
 
@@ -45,6 +46,7 @@ export class GameScene extends Scene implements IScene {
 
   init(data: { gameConfig: GameConfiguration }) {
     this.gameConfig = data.gameConfig
+    initGameSoundContext(this.scene.scene as IScene)
   }
 
   create() {

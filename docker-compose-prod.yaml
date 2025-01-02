@@ -26,7 +26,7 @@ services:
       args:
         - NODE_VERSION=22.11.0
     image: lbriza/coincrusade-runner-game:base
-    container_name: base_prod
+    container_name: coin-crusade-game-base_prod
     networks:
       - app-prod
 
