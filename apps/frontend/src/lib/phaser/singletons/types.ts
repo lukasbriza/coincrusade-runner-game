@@ -1,7 +1,10 @@
+import type { Types } from 'phaser'
+
 import type { GameConfiguration } from '@/shared/context'
 
-import type { ColliderObject } from '../factories'
-import type { Chances, ChangeTypes, ChunkLog, LastChunk, PlayerState, SuggestedAction } from '../types'
+import type { SOUND_KEYS } from '../assets'
+import type { ColliderObject, SoundObject } from '../factories'
+import type { Chances, ChangeTypes, ChunkLog, IScene, LastChunk, PlayerState, SuggestedAction } from '../types'
 
 export type GameStateContextSingleton = {
   state: PlayerState
@@ -37,4 +40,16 @@ export type GameStateContext = {
   lastChunk: LastChunk
   chunksData: ChunkLog[]
   chances: Chances
+}
+export type SoundRecords = Map<SOUND_KEYS, SoundObject>
+
+export type GameSoundsContextSingleton = {
+  soundEnabled: boolean
+  soundRecords: SoundRecords
+  isPaused: (key: SOUND_KEYS) => boolean
+  isPlaying: (key: SOUND_KEYS) => boolean
+  playSound: (key: SOUND_KEYS, config?: Types.Sound.SoundConfig) => void
+  pauseSound: (key: SOUND_KEYS) => void
+  restartSound: (key: SOUND_KEYS, scene: IScene, config?: Types.Sound.SoundConfig) => void
+  playPickCoinSound: () => void
 }

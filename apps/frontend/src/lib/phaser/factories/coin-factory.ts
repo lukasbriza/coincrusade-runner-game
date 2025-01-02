@@ -5,6 +5,7 @@ import { GameObjects, Physics } from 'phaser'
 import { ANIMATION_KEYS, SPRITE_KEYS } from '../assets'
 import { TimerHelper } from '../helpers/timer-helper'
 import type { ICoinCounter } from '../objects'
+import { getGameSoundContext } from '../singletons/sound-context'
 import type { IScene } from '../types'
 
 export class Coin extends Physics.Arcade.Sprite implements ICoin {
@@ -13,6 +14,7 @@ export class Coin extends Physics.Arcade.Sprite implements ICoin {
   public inCoinCounter: boolean = false
 
   private timerHelper: TimerHelper
+  private pickCoinSoundplaying: boolean = false
 
   constructor(scene: IScene, x: number, y: number, gravity: boolean = true) {
     super(scene, x, y, SPRITE_KEYS.SPRITE_COIN)
@@ -29,6 +31,12 @@ export class Coin extends Physics.Arcade.Sprite implements ICoin {
   }
 
   public pickCoin(coinCounter: ICoinCounter) {
+    if (this.pickCoinSoundplaying === false) {
+      const soundContext = getGameSoundContext()
+      soundContext.playPickCoinSound()
+      this.pickCoinSoundplaying = true
+    }
+
     this.timerHelper.timer(
       () => {
         this.setGravityY(0)

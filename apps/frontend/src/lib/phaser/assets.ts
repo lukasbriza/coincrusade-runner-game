@@ -132,6 +132,11 @@ export enum FONT_KEYS {
 
 export enum SOUND_KEYS {
   BACKGORUND_MUSIC = 'background-music',
+  JUMP_SOUND = 'jump-sound',
+  COIN_PICK_SOUND = 'coin-pick-sound',
+  HIT_SOUND = 'hit-sound',
+  GAME_OVER_SOUND = 'game-over-sound',
+  RUN_SOUND = 'run-sound',
 }
 
 export const PLATFORMS_MAPS: PlatformMapType = {
@@ -258,6 +263,11 @@ export const FONTS: FontTypes = {
 
 export const SOUNDS: SoundType = {
   [SOUND_KEYS.BACKGORUND_MUSIC]: { path: '/assets/music/background.mp3' },
+  [SOUND_KEYS.JUMP_SOUND]: { path: '/assets/music/jump.mp3' },
+  [SOUND_KEYS.COIN_PICK_SOUND]: { path: '/assets/music/coin_pick.mp3' },
+  [SOUND_KEYS.HIT_SOUND]: { path: '/assets/music/hit.mp3' },
+  [SOUND_KEYS.GAME_OVER_SOUND]: { path: '/assets/music/game_over.mp3' },
+  [SOUND_KEYS.RUN_SOUND]: { path: '/assets/music/run.mp3' },
 }
 
 export const tents = [KEYS.TENT1, KEYS.TENT2, KEYS.TENT3, KEYS.TENT4]

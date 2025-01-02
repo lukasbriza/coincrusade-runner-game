@@ -1,18 +1,17 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 /* eslint-disable func-names */
 import { GameObjects } from 'phaser'
 
 import { SOUND_KEYS, UI_KEYS } from '../assets'
+import { SOUND_CONFIG } from '../constants'
 import { gameEndListener, gameRestartListener } from '../events'
+import { getGameSoundContext } from '../singletons/sound-context'
 import type { IScene } from '../types'
 
 import { Button } from './button-factory'
-import type { SoundObject } from './types'
 
 export class MusicButton extends Button implements IMusicButton {
-  public isEnabled: boolean = true
-  public music: SoundObject
-
   constructor(scene: IScene, x: number, y: number) {
     super(scene, x, y, UI_KEYS.MUSIC_GREY_ON)
     this.initMusic()
@@ -24,70 +23,78 @@ export class MusicButton extends Button implements IMusicButton {
 
     this.on('pointerdown', () => {
       if (!this.isBlocked) {
-        if (this.isEnabled) {
+        const soundContext = getGameSoundContext()
+
+        if (soundContext.soundEnabled) {
           this.mousePointerDown(UI_KEYS.MUSIC_GREY_ON_LIGHT_PRESSED)
-          this.isEnabled = false
+          soundContext.soundEnabled = false
           return
         }
-        if (!this.isEnabled) {
+        if (!soundContext.soundEnabled) {
           this.mousePointerDown(UI_KEYS.MUSIC_GREY_OFF_LIGHT_PRESSED)
-          this.isEnabled = true
+          soundContext.soundEnabled = true
         }
       }
     })
     this.on('pointerup', () => {
       if (!this.isBlocked) {
-        if (this.isEnabled) {
+        const soundContext = getGameSoundContext()
+        if (soundContext.soundEnabled) {
           this.mousePointerUp(UI_KEYS.MUSIC_GREY_ON)
-          if (this.music.isPaused) {
-            this.music.play()
+
+          const soundContext = getGameSoundContext()
+          if (soundContext.isPaused(SOUND_KEYS.BACKGORUND_MUSIC)) {
+            soundContext.playSound(SOUND_KEYS.BACKGORUND_MUSIC, SOUND_CONFIG.BACKGROUND)
           }
         }
-        if (!this.isEnabled) {
+        if (!soundContext.soundEnabled) {
           this.mousePointerUp(UI_KEYS.MUSIC_GREY_OFF)
-          if (this.music.isPlaying) {
-            this.music.pause()
+
+          if (soundContext.isPlaying(SOUND_KEYS.BACKGORUND_MUSIC)) {
+            soundContext.pauseSound(SOUND_KEYS.BACKGORUND_MUSIC)
           }
         }
       }
     })
     this.on('pointerover', () => {
       if (!this.isBlocked) {
-        if (this.isEnabled) {
+        const soundContext = getGameSoundContext()
+        if (soundContext) {
           this.mouseEnter(UI_KEYS.MUSIC_GREY_ON_LIGHT)
         }
-        if (!this.isEnabled) {
+        if (!soundContext) {
           this.mouseEnter(UI_KEYS.MUSIC_GREY_OFF_LIGHT)
         }
       }
     })
     this.on('pointerout', () => {
       if (!this.isBlocked) {
-        if (this.isEnabled) {
+        const soundContext = getGameSoundContext()
+        if (soundContext.soundEnabled) {
           this.mouseLeave(UI_KEYS.MUSIC_GREY_ON)
         }
-        if (!this.isEnabled) {
+        if (!soundContext.soundEnabled) {
           this.mouseLeave(UI_KEYS.MUSIC_GREY_OFF)
         }
       }
     })
 
     gameEndListener(() => {
-      if (this.music) {
-        this.music.pause()
-      }
+      const soundContext = getGameSoundContext()
+      soundContext.pauseSound(SOUND_KEYS.BACKGORUND_MUSIC)
     })
 
     gameRestartListener(() => {
-      if (this.music && this.isEnabled) {
-        this.music.play({ loop: true, volume: 0.8 })
+      const soundContext = getGameSoundContext()
+      if (soundContext.soundEnabled) {
+        soundContext.restartSound(SOUND_KEYS.BACKGORUND_MUSIC, this.scene, SOUND_CONFIG.BACKGROUND)
       }
     })
   }
 
   private initMusic() {
-    this.music = this.scene.sound.add(SOUND_KEYS.BACKGORUND_MUSIC)
-    this.music.play({ loop: true, volume: 0.8 })
+    const soundContext = getGameSoundContext()
+    soundContext.playSound(SOUND_KEYS.BACKGORUND_MUSIC, SOUND_CONFIG.BACKGROUND)
   }
 }
 
