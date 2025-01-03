@@ -1,5 +1,3 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs'
 
-export const isGitRepository = () => {
-  return existsSync('.git');
-}
+export const isGitRepository = () => existsSync('.git')

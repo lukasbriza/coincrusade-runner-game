@@ -22,6 +22,7 @@ import groovy.json.JsonOutput
 * - GITHUB_PAT
 * - MONGO_DATABASE_PATH
 * - MONGODB_HOST_NAME
+* - SEND_EMAIL_ADDRESS
 */
 
 /**
@@ -37,6 +38,7 @@ import groovy.json.JsonOutput
 * PUSH IMAGES
 * CREATE/UPDATE PORTAINER STACK
 * CLEAN UP
+* NOTIFY USER
 */
 
 pipeline {
@@ -98,6 +100,7 @@ pipeline {
           env.DOCKER_PASSWORD = sharedSecrets["DOCKER_PASSWORD"]
           env.NODE_ENV = sharedSecrets["NODE_ENV"]
           env.POINTAINER_TARGET_ENVIRONMENT = sharedSecrets["POINTAINER_TARGET_ENVIRONMENT"]
+          env.SEND_EMAIL_ADDRESS = sharedSecrets["SEND_EMAIL_ADDRESS"]
 
           println("Constructing database url...")
           env.DATABASE_URL = createMongoDbUrl("${env.MONGODB_ROOT_USER}", "${env.MONGODB_ROOT_PASSWORD}", "${env.MONGODB_HOST_NAME}", "${env.DATABASE_NAME}")
@@ -258,9 +261,25 @@ pipeline {
     }
     success {
       echo "Build succeeded!"
+
+      mail to: "${env.SEND_EMAIL_ADDRESS}",
+        subject: "Jenkins: Build of ${env.PROJECT_DIR} ${env.BUILD_DISPLAY_NAME} succeeded!",
+        body: """
+          Project ${env.PROJECT_DIR}:
+          Job ${env.BUILD_DISPLAY_NAME} with url ${env.JOB_URL} succeeded!
+          For more information visit url above. 
+        """
     }
     failure {
       echo "Build failed!"
+
+      mail to: "${env.SEND_EMAIL_ADDRESS}",
+        subject: "Jenkins: Build of ${env.PROJECT_DIR} ${env.BUILD_DISPLAY_NAME} failed!",
+        body: """
+          Project ${env.PROJECT_DIR}:
+          Job ${env.BUILD_DISPLAY_NAME} with url ${env.JOB_URL} failed!
+          For more information visit url above. 
+        """
     }
   }
 }
