@@ -2,7 +2,7 @@
   "name": "@lukasbriza/coin-crusade-game",
   "version": "0.0.0",
   "private": true,
-  "description": "Universal monorepo template for application from @lukasbriza",
+  "description": "An Endless 2D Runner Game",
   "author": "https://github.com/lukasbriza",
   "type": "module",
   "workspaces": [
