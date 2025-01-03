@@ -33,6 +33,7 @@ export const createNestJs = (projectName: string) => {
   // CLEAR NESTJS FILES
   const clearFilesSpinner = ora('Clear NestJs files...\n').start()
   try {
+    rmSync(`${APPS_PATH}/${projectName}/.git`, { recursive: true, force: true })
     unlinkSync(`${APPS_PATH}/${projectName}/tsconfig.build.json`)
     unlinkSync(`${APPS_PATH}/${projectName}/tsconfig.json`)
     unlinkSync(`${APPS_PATH}/${projectName}/.prettierrc`)
