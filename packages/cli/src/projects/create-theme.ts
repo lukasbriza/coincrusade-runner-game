@@ -102,6 +102,7 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
     buildThemeSpinner.succeed()
   } catch (error) {
     buildThemeSpinner.fail()
+    // eslint-disable-next-line no-console
     console.log(String(error))
     cleanup(projectName, PROJECT_TYPE.PROJECT)
   }

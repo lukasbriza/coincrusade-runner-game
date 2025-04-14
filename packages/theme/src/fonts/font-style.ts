@@ -1,5 +1,5 @@
-export const fontFamily = 'Joystix Monospace, monospace'
-export const headingsFontFamily = 'Joystix Monospace, monospace'
+export const fontFamily = 'JoystixMono'
+export const headingsFontFamily = 'JoystixMono'
 // 62.5 % of fontSize
 export const htmlFontSize = 10
 export const fontWeightRegular = 400

@@ -1,4 +1,4 @@
-import en from './src/i18n/locales/en.json'
+import en from './src/i18n/locales/en'
 
 type Messages = typeof en
 

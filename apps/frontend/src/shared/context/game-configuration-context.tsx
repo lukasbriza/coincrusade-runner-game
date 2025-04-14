@@ -1,6 +1,5 @@
 'use client'
 
-import { useLocale } from 'next-intl'
 import type { Dispatch, FC, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
@@ -57,7 +56,7 @@ const defaultValue: GameConfigurationContextProps = {
 const GameConfigurationContext = createContext<GameConfigurationContextProps>(defaultValue)
 
 export const GameConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const locale = useLocale()
+  const locale = 'cs' // useLocale()
   const [gameConfig, setGameConfig] = useState<GameConfiguration>(defaultConfig)
 
   const context: GameConfigurationContextProps = useMemo(

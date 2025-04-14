@@ -1,9 +1,9 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { Game } from 'phaser'
 import { useLayoutEffect, useRef } from 'react'
 
-import { usePathname } from '@/i18n/routing'
 import { routes } from '@/shared'
 
 import { GameStateProvider } from '../../context/game-state-context'

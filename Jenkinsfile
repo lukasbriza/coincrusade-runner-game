@@ -11,17 +11,17 @@ import groovy.json.JsonOutput
 * - DATABASE_PORT
 * - BACKEND_PORT
 * - FRONTEND_PORT
-* - MONGODB_ROOT_PASSWORD
-* - MONGODB_ROOT_USER
-* - MONGODB_REPLICA_SET_KEY
 * - NODE_ENV
 * - POINTAINER_TARGET_ENVIRONMENT
 * - DOCKER_PASSWORD
 * - DOCKER_NAME
 * - PORTAINER_API_KEY
 * - GITHUB_PAT
-* - MONGO_DATABASE_PATH
-* - MONGODB_HOST_NAME
+* - POSTGRES_PASSWORD
+* - POSTGRES_USER
+* - DATABASE_NAME
+* - POSTGRES_HOST
+* - DATABASE_PATH
 * - SEND_EMAIL_ADDRESS
 */
 
@@ -87,11 +87,11 @@ pipeline {
           env.DATABASE_PORT = secrets["DATABASE_PORT"]
           env.BACKEND_PORT = secrets["BACKEND_PORT"]
           env.FRONTEND_PORT = secrets["FRONTEND_PORT"]
-          env.MONGODB_ROOT_PASSWORD = secrets["MONGODB_ROOT_PASSWORD"]
-          env.MONGODB_ROOT_USER = secrets["MONGODB_ROOT_USER"]
-          env.MONGODB_REPLICA_SET_KEY = secrets["MONGODB_REPLICA_SET_KEY"]
-          env.MONGO_DATABASE_PATH = secrets["MONGO_DATABASE_PATH"]
-          env.MONGODB_HOST_NAME = secrets["MONGODB_HOST_NAME"]
+          env.POSTGRES_PASSWORD = secrets["POSTGRES_PASSWORD"]
+          env.POSTGRES_USER = secrets["POSTGRES_USER"]
+          env.POSTGRES_HOST = secrets["POSTGRES_HOST"]
+          env.DATABASE_NAME = secrets["DATABASE_NAME"]
+          env.DATABASE_PATH = secrets["DATABASE_PATH"]
           env.API_URL = secrets["API_URL"]
 
           env.GITHUB_PAT = sharedSecrets["GITHUB_PAT"]
@@ -178,16 +178,17 @@ pipeline {
             ["name": "NEXT_PUBLIC_GITHUB", "value": "${env.NEXT_PUBLIC_GITHUB}"],
             ["name": "NEXT_PUBLIC_MAIL", "value": "${env.NEXT_PUBLIC_MAIL}"],
             ["name": "API_KEY", "value": "${env.API_KEY}"],
+            ["name": "API_URL", "value": "${env.API_URL}"],
             ["name": "DATABASE_PORT", "value": "${env.DATABASE_PORT}"],
             ["name": "BACKEND_PORT", "value": "${env.BACKEND_PORT}"],
             ["name": "FRONTEND_PORT", "value": "${env.FRONTEND_PORT}"],
-            ["name": "MONGODB_ROOT_PASSWORD", "value": "${env.MONGODB_ROOT_PASSWORD}"],
-            ["name": "MONGODB_ROOT_USER", "value": "${env.MONGODB_ROOT_USER}"],
-            ["name": "MONGODB_REPLICA_SET_KEY", "value": "${env.MONGODB_REPLICA_SET_KEY}"],
+            ["name": "POSTGRES_PASSWORD", "value": "${env.POSTGRES_PASSWORD}"],
+            ["name": "POSTGRES_USER", "value": "${env.POSTGRES_USER}"],
             ["name": "DATABASE_URL", "value": "${env.DATABASE_URL}"],
+            ["name": "DATABASE_NAME", "value": "${env.DATABASE_NAME}"],
             ["name": "NODE_ENV", "value": "${env.NODE_ENV}"],
-            ["name": "MONGO_DATABASE_PATH", "value": "${env.MONGO_DATABASE_PATH}"],
-            ["name": "MONGODB_HOST_NAME", "value": "${env.MONGODB_HOST_NAME}"]
+            ["name": "DATABASE_PATH", "value": "${env.DATABASE_PATH}"],
+            ["name": "POSTGRES_HOST", "value": "${env.POSTGRES_HOST}"]
           ]
           
           if (stacksToRedeploy.size() == 0) {

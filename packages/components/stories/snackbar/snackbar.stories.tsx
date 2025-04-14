@@ -18,6 +18,7 @@ export const Primary: Story = {
   args: {
     autoHideDuration: 5000,
     onClose: () => {
+      // eslint-disable-next-line no-console
       console.log('onClose')
     },
   },

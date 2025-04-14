@@ -51,6 +51,8 @@ services:
       - ./apps/backend/.env.local
     ports:
       - '3001:3001'
+    networks:
+      - app-local
     depends_on:
       - database
       - base
@@ -58,19 +60,18 @@ services:
   database:
     build:
       context: .
-      dockerfile: docker/mongodb/single-replica/Dockerfile
+      dockerfile: docker/postgres/Dockerfile
     image: lbriza/coincrusade-runner-game:db-local
-    container_name: rs0_db-local
+    container_name: coin-crusade-game_db-dev
     env_file:
       - ./apps/backend/.env.local
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=rs0_db-local
+    restart: always
     ports:
-      - 27017:27017
+      - 5432:5432
     networks:
       - app-local
     volumes:
-      - 'mongo_data:/bitnami/mongodb'
+      - 'posgres_data:/var/lib/postgresql/data'
     logging:
       driver: 'json-file'
       options:
@@ -78,5 +79,5 @@ services:
         max-file: '3'
 
 volumes:
-  mongo_data:
+  posgres_data:
     driver: local

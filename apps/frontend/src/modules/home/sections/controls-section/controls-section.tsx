@@ -1,6 +1,6 @@
-import { getTranslations } from 'next-intl/server'
 import type { FC } from 'react'
 
+import { getScopedI18n } from '@/i18n/server'
 import { anchors } from '@/shared'
 import { MainHeader } from '@/shared/components'
 
@@ -10,7 +10,7 @@ import { ControlsDivider } from './constrols-divider'
 import { ControlPartsSection, Root } from './styles'
 
 export const ControlsSection: FC = async () => {
-  const t = await getTranslations('home.controls')
+  const t = await getScopedI18n('home.controls')
   const movementRightSections: ControlSectionDefinition[] = [
     {
       id: String(Math.random()),

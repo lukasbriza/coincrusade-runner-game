@@ -5,11 +5,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import { Modal } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
 import { useEffect, useRef, type FC } from 'react'
 import type { Control, FieldValues } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { useI18n } from '@/i18n/client'
 import type { Generators } from '@/shared'
 import { defaultConfig, useGameConfiguration, type GameConfiguration } from '@/shared/context'
 
@@ -28,7 +28,7 @@ const getConfigValues = (fullConfig: GameConfiguration) => ({
 })
 
 export const EngineSettingsModal: FC<EngineSettingsProps> = ({ open, onClose }) => {
-  const t = useTranslations()
+  const t = useI18n()
   const modal = useRef<HTMLDivElement>(null)
   const { config, resetConfiguration, changeConfiguration } = useGameConfiguration()
   const methods = useForm<EngineSettingsFormValues>({

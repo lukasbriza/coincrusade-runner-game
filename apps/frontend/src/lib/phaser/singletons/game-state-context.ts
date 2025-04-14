@@ -48,6 +48,7 @@ class GameStateContext implements GameStateContextSingleton {
       })),
     })
     if (!data) {
+      // eslint-disable-next-line no-warning-comments
       // TODO error handle
     }
   }

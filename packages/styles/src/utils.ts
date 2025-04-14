@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import isPropValid from '@emotion/is-prop-valid'
 
 /**

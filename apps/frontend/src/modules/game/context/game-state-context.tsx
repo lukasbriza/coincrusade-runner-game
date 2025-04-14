@@ -2,10 +2,10 @@
 
 /* eslint-disable react/jsx-no-useless-fragment */
 
+import { useRouter } from 'next/navigation'
 import type { FC, ReactNode } from 'react'
 import { useEffect } from 'react'
 
-import { useRouter } from '@/i18n/routing'
 import { EventBus } from '@/lib/phaser'
 import {
   gameEndEmiter,

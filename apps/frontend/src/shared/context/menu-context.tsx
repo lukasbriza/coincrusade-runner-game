@@ -1,9 +1,9 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import type { FC, ReactNode } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import { usePathname } from '@/i18n/routing'
 import { routes } from '@/shared'
 
 export type MenuContext = {

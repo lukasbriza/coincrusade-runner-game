@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
-import { getTranslations } from 'next-intl/server'
 
+import { getScopedI18n } from '@/i18n/server'
 import { anchors, type AsyncWebLayout } from '@/shared'
 import { LocalStorageCleaner, PageWrapper } from '@/shared/components'
 
@@ -12,9 +12,9 @@ const GameInstance = dynamic(
 )
 
 export const PagesLayout: AsyncWebLayout = async ({ children }) => {
-  const t = await getTranslations('anchors')
+  const t = await getScopedI18n('anchors')
   const items = anchors.map((anchor) => ({
-    name: t(`${anchor.title}`, { ns: 'routes' }),
+    name: t(`${anchor.title}`),
     path: anchor.path,
     active: false,
   }))

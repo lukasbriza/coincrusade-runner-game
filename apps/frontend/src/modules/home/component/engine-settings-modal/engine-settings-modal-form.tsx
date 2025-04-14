@@ -1,14 +1,14 @@
 'use client'
 
-/* eslint-disable react/jsx-fragments */
-import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import type { Control, FieldValues } from 'react-hook-form'
+
+import { useScopedI18n } from '@/i18n/client'
 
 import { FormContent, FormInput, FormItem, FormText } from './styles'
 
 export const EngineSettingsModalForm: FC<{ control: Control<FieldValues, unknown> }> = ({ control }) => {
-  const t = useTranslations('home')
+  const t = useScopedI18n('home')
   return (
     <FormContent>
       <FormItem>

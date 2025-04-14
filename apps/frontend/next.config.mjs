@@ -1,22 +1,18 @@
-import createNextIntlPlugin from "next-intl/plugin"
-
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts")
-
 /** @type {import('next').NextConfig} */
-const nextConfig = withNextIntl({
+const nextConfig = {
   reactStrictMode: false,
   transpilePackages:
     process.env.NODE_ENV === 'production'
       ? []
       : [
-          //add packages from monorepo
-          "@lukasbriza/theme",
-          "@lukasbriza/styles",
-          "@lukasbriza/components",
-        ],
+        //add packages from monorepo
+        "@lukasbriza/theme",
+        "@lukasbriza/styles",
+        "@lukasbriza/components",
+      ],
   experimental: {
     serverComponentsExternalPackages: ['next-runtime-env'],
   }
-})
+}
 
 export default nextConfig
