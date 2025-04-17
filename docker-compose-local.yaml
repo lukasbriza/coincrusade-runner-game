@@ -67,7 +67,7 @@ services:
       - ./apps/backend/.env.local
     restart: always
     ports:
-      - 5432:5432
+      - '5432:5432'
     networks:
       - app-local
     volumes:

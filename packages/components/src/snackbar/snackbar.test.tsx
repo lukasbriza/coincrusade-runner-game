@@ -27,7 +27,7 @@ describe('Snackbar', () => {
 
     expect(result.container.children.item(0)?.getAttribute('style')).toBe('opacity: 1;')
   })
-  test('Should close on aoutoHideDuration exceed', async () => {
+  test('Should close on autoHideDuration exceed', async () => {
     const result = render(
       <Snackbar autoHideDuration={500} id="id">
         children

@@ -22,6 +22,7 @@ import groovy.json.JsonOutput
 * - DATABASE_NAME
 * - POSTGRES_HOST
 * - DATABASE_PATH
+* - DATABASE_INNER_PORT
 * - SEND_EMAIL_ADDRESS
 */
 
@@ -93,7 +94,6 @@ pipeline {
           env.DATABASE_NAME = secrets["DATABASE_NAME"]
           env.DATABASE_PATH = secrets["DATABASE_PATH"]
           env.API_URL = secrets["API_URL"]
-
           env.GITHUB_PAT = sharedSecrets["GITHUB_PAT"]
           env.PORTAINER_API_KEY = sharedSecrets["PORTAINER_API_KEY"]
           env.DOCKER_NAME = sharedSecrets["DOCKER_NAME"]
@@ -103,7 +103,7 @@ pipeline {
           env.SEND_EMAIL_ADDRESS = sharedSecrets["SEND_EMAIL_ADDRESS"]
 
           println("Constructing database url...")
-          env.DATABASE_URL = createMongoDbUrl("${env.MONGODB_ROOT_USER}", "${env.MONGODB_ROOT_PASSWORD}", "${env.MONGODB_HOST_NAME}", "${env.DATABASE_NAME}")
+          env.DATABASE_URL = createPostgreSQLDbUrl("${env.POSTGRES_USER}", "${env.POSTGRES_PASSWORD}", "${env.POSTGRES_HOST}", "${env.DATABASE_NAME}")
         }
       }
     }
@@ -141,7 +141,7 @@ pipeline {
           echo "Trying to run compose stack..."
           dir ("${env.PROJECT_DIR}") {
             // Create volume folder
-            sh "mkdir -p ${env.MONGO_DATABASE_PATH}"
+            sh "mkdir -p ${env.DATABASE_PATH}"
             
             dockerApi.runEnvSpecificDockerCompose()
           }
@@ -257,7 +257,7 @@ pipeline {
         }
         
         dockerApi.cleanDocker()
-        recursiveRemoveDir(env.MONGO_DATABASE_PATH)
+        recursiveRemoveDir(env.DATABASE_PATH)
       }
     }
     success {
