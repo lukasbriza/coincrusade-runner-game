@@ -31,7 +31,7 @@ export async function getFontStyle() {
   return (
     <>
       {files
-        .filter((file) => file.isFile() && file.name.endsWith('.woff2'))
+        .filter((file) => file.isFile() && file.name.endsWith('.otf'))
         .map((file) => {
           const href = path.join(fontsDirectory, file.name)
           return <link key={href} as="font" crossOrigin="anonymous" fetchPriority="high" href={href} rel="preload" />

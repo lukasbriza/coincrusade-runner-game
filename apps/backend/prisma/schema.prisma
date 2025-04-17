@@ -6,19 +6,27 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../src/modules/prisma/generated"
+  output   = "../src/modules/prisma/generated"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-type Log {
+model GameSession {
+  id         String   @id @default(uuid())
+  gameEngine String
+  logs       Log[]    @relation("SessionLogs")
+  createdAt  DateTime @default(now())
+}
+
+model Log {
+  id                      String   @id @default(uuid())
   chunkLostLives          Int
   chunkElapsedSeconds     Int
   chunkGainedSeconds      Int
-  chunkPickedCoins        Int  
+  chunkPickedCoins        Int
   chunkGeneratedCoins     Int
   chunkMapDifficulties    Int[]
   chunkPlatformSpeed      Int
@@ -27,11 +35,6 @@ type Log {
   gameTotalGainedSeconds  Int
   engineSuggestedAction   String?
   chunkCreated            DateTime
-}
-
-model GameSession {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  gameEngine      String
-  logs            Log[]
-  createdAt       DateTime @default(now())
+  session                 GameSession @relation("SessionLogs", fields: [sessionId], references: [id])
+  sessionId               String
 }

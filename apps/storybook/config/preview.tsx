@@ -1,3 +1,5 @@
+import '../static/fonts/stylesheet.css'
+
 import type { WebTheme } from '@lukasbriza/theme'
 import { ThemeProvider, useTheme } from '@lukasbriza/theme'
 import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from '@storybook/addon-viewport'

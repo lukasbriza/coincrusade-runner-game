@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/system'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Typeset } from '@storybook/blocks'
 
 import { brandColors } from '../src/colors/index'

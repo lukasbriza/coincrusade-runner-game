@@ -1,9 +1,9 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import type { FC } from 'react'
 import { useEffect } from 'react'
 
-import { useRouter } from '@/i18n/routing'
 import { gameRestartEmiter } from '@/lib/phaser/events'
 import { GAME_INITIATED_STORAGE_KEY, routes } from '@/shared'
 import { MobileVerificationSnackbar } from '@/shared/components'

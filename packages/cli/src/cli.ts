@@ -12,6 +12,7 @@ const option = readlineSync.question(chooseOption())
 if (option.length === 0 || Number.isNaN(Number(option)) || Number(option) > OPTIONS.length || Number(option) <= 0) {
   const [array] = OPTIONS
   selectedOption = array
+  // eslint-disable-next-line no-console
   console.log(`Choosed default option: ${array[DEFAULT_OPTION_INDEX]}`)
 }
 

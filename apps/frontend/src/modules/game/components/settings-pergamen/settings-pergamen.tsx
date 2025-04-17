@@ -3,9 +3,9 @@
 'use client'
 
 import { Button, Text } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState, type FC } from 'react'
 
+import { useScopedI18n } from '@/i18n/client'
 import { Pergamen } from '@/shared/components'
 
 import { GAME_PAUSE_EVENT, GAME_QUIT_EVENT, GAME_RESTART_EVENT, GAME_RESUME_EVENT } from '../../constants'
@@ -26,7 +26,7 @@ export const SettingsPergamen: FC = () => {
   const [rolled, setRolled] = useState<boolean>(true)
   const content = useRef<HTMLDivElement>(null)
   const pergamen = useRef<HTMLDivElement>(null)
-  const t = useTranslations('game.settingsPergamen')
+  const t = useScopedI18n('game.settingsPergamen')
 
   const showElement = () => setShow(true)
   const showPergamenContent = () => fadeIn(content.current)

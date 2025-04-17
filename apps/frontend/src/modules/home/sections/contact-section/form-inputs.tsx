@@ -1,16 +1,17 @@
 'use client'
 
 import { Button } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import { useFormContext } from 'react-hook-form'
+
+import { useScopedI18n } from '@/i18n/client'
 
 import { StringInputControlled, TextAreaControlled } from '../../component/controlled-inputs'
 
 import { FormInputsRoot } from './styles'
 
 export const FormInputs: FC = () => {
-  const t = useTranslations('home.contact.form')
+  const t = useScopedI18n('home.contact.form')
   const { control } = useFormContext()
   return (
     <FormInputsRoot>

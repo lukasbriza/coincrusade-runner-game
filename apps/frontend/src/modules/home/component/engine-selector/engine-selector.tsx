@@ -3,11 +3,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Button, Text } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import type { FC, MouseEventHandler } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import { useRouter } from '@/i18n/routing'
+import { useScopedI18n } from '@/i18n/client'
 import { engines, routes } from '@/shared'
 import { Arrow, MobileVerificationSnackbar, Pergamen } from '@/shared/components'
 import { useGameConfiguration, useSnackbarContext } from '@/shared/context'
@@ -33,7 +33,7 @@ export const EngineSelector: FC = () => {
   const [rolled, setRolled] = useState(false)
   const [minimized, setMinimized] = useState(false)
   const [selectedEngine, setSelectedEngine] = useState<number>(0)
-  const t = useTranslations('home')
+  const t = useScopedI18n('home')
 
   const handleSettingsModal = () => setSettingsOpen((state) => !state)
 

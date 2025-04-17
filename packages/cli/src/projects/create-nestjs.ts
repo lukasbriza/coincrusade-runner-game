@@ -94,6 +94,7 @@ export const createNestJs = (projectName: string) => {
     lintSpinner.succeed()
   } catch (error) {
     lintSpinner.fail()
+    // eslint-disable-next-line no-console
     console.log(error)
     cleanup(projectName, PROJECT_TYPE.APP)
   }

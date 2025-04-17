@@ -1,9 +1,9 @@
 'use client'
 
 import { HeroText } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
 import { useEffect, type FC } from 'react'
 
+import { useScopedI18n } from '@/i18n/client'
 import { GAME_INITIATED_STORAGE_KEY } from '@/shared'
 import { useInitialAnimationContext } from '@/shared/context'
 import { getItem } from '@/utils'
@@ -17,7 +17,7 @@ import { Root } from './styles'
 export const InitialAnimation: FC = () => {
   const { setStage, disableAperture, loaded } = useApertureContext()
   const { setInitialised, initialised } = useInitialAnimationContext()
-  const t = useTranslations('home')
+  const t = useScopedI18n('home')
 
   useEffect(() => {
     const redirecteFromGame = getItem(GAME_INITIATED_STORAGE_KEY)

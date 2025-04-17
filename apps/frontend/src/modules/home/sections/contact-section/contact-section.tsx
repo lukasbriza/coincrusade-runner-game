@@ -4,10 +4,10 @@
 'use client'
 
 import { GithubIcon, MailIcon, Text } from '@lukasbriza/components'
-import { useTranslations } from 'next-intl'
 import { type FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { useScopedI18n } from '@/i18n/client'
 import { anchors } from '@/shared'
 
 import { FormInputs } from './form-inputs'
@@ -15,13 +15,14 @@ import { FormRoot, FormText, Header, InfoIcon, InfoSection, Root } from './style
 import type { ContactFormInputs } from './types'
 
 export const ContactSection: FC = () => {
-  const t = useTranslations('home.contact')
+  const t = useScopedI18n('home.contact')
   const methods = useForm<ContactFormInputs>({
     reValidateMode: 'onChange',
   })
 
   const onSubmit = async (data: ContactFormInputs) => {
     await fetch('/')
+    // eslint-disable-next-line no-console
     console.log(data)
   }
 

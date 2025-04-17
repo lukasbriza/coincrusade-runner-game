@@ -2,6 +2,7 @@
 
 # Dependencies
 node_modules
+node-compile-cache
 .pnp
 .pnp.js
 .pnpm-store

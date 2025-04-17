@@ -109,7 +109,7 @@ export const postCreateNextProject = (nextProjectName: string) => {
       cwd: `${APPS_PATH}/${nextProjectName}`,
     })
     lintFixNextProjectSpinner.succeed()
-  } catch (error) {
+  } catch {
     lintFixNextProjectSpinner.fail()
     cleanupSetup(nextProjectName, hasTheme, hasComponents, hasStyles)
     return

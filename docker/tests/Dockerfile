@@ -30,7 +30,8 @@ RUN mirrors="http://mirror.fel.cvut.cz/alpine/ \
       fi; \
   done
 
-RUN corepack enable
+RUN npm i -g corepack && \
+    corepack enable
 RUN rm -rf /var/cache/apk/*
 
 COPY package.json .
