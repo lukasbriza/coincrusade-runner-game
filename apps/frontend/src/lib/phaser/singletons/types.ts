@@ -13,7 +13,7 @@ export type GameStateContextSingleton = {
   chances: Chances
   config: GameConfiguration
 
-  saveLogs: () => Promise<void>
+  saveLogsAction: () => void
   lifeAddAction: () => void
   leftSideCollisionAction: (knight: IKnight) => void
   onKnightHit: (knight: IKnight, obstacle: ColliderObject) => void

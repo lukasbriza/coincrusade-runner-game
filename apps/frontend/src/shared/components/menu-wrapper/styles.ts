@@ -25,7 +25,6 @@ export const Root = styled('div')<OwnerState<{ blur: boolean }>>(
 
 export const PageMenu = styled(Menu)(({ theme: { spacing } }) => ({
   position: 'relative',
-  left: 0,
   top: 0,
   width: '100%',
   paddingTop: spacing(3.5),

@@ -8,3 +8,4 @@ export const engines = ['LinearGenerator', 'HamletSystem', 'NeuralNetworkGenerat
 
 export const APERTURE_PLAYED_STORAGE_KEY = 'aperture-played'
 export const GAME_INITIATED_STORAGE_KEY = 'game-initiated'
+export const LANGUAGE_CHANGED_STORAGE_KEY = 'language-changed'

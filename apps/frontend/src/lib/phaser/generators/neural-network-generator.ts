@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-import { neuralNetworkPrediction } from '@/actions'
+import type { NeuralNetworkRto } from '@/lib/socket-io'
+import { getSocketContext } from '@/lib/socket-io'
 
 import { DIFF_POLICY, FACTOR_DISTRIBUTIONS } from '../constants'
 import { getGameStateContext } from '../singletons'
@@ -18,39 +19,41 @@ export class NeuralNetworkGenerator implements IPlatformGenerator {
 
   public async generate() {
     // SETUP
+    const context = getSocketContext()
     const stateSingleton = getGameStateContext()
     const lastChunk = stateSingleton.getLastChunk()
     const finalMaps: MapTypeExtended[] = []
     // eslint-disable-next-line prefer-const
     let lenght = 0
 
-    if (!lastChunk) {
+    if (!context?.socket) {
+      // eslint-disable-next-line no-console
+      console.error('Unable to retrieve socket.')
+    }
+
+    if (!lastChunk || !context?.socket) {
       generateFirstChunk(this.scene, stateSingleton.chances, finalMaps, lenght)
       return finalMaps
     }
 
-    const { data } = await neuralNetworkPrediction({
+    const request = {
       chunkLostLives: lastChunk.chunkLostLives,
       chunkElapsedSeconds: lastChunk.chunkElapsedSeconds,
       chunkGainedSeconds: lastChunk.chunkGainedSeconds,
       chunkPickedCoins: lastChunk.chunkPickedCoins,
       chunkGeneratedCoins: lastChunk.chunkGeneratedCoins,
-      chunkMapDifficulties: lastChunk.chunkMapDifficulties.map((difficulty) => difficulty.toString()),
+      chunkMapDifficulties: lastChunk.chunkMapDifficulties,
       chunkPlatformSpeed: lastChunk.chunkPlatformSpeed,
       chunkDifficultySkore: lastChunk.chunkDifficultySkore,
       gameTotalElapsedSeconds: lastChunk.gameTotalElapsedSeconds,
       gameTotalGainedSeconds: lastChunk.gameTotalGainedSeconds,
       gameEngine: stateSingleton.config.currentGenerator,
-      engineSuggestedAction: lastChunk.engineSuggestedAction?.toString() ?? '',
-      chunkCreated: lastChunk.chunkCreated.toString(),
-    })
-
-    if (!data) {
-      // eslint-disable-next-line no-console
-      console.error('API call failed.')
-      generateFirstChunk(this.scene, stateSingleton.chances, finalMaps, lenght)
-      return finalMaps
+      engineSuggestedAction: lastChunk.engineSuggestedAction,
+      chunkCreated: lastChunk.chunkCreated,
     }
+
+    // NN PREDICT
+    const data = await context.socket.emitWithAck<NeuralNetworkRto>('nn-predict', request)
 
     // ADJUSTMENT
     const pickIndex = pickBasedOnWeights(FACTOR_DISTRIBUTIONS)

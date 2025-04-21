@@ -8,6 +8,7 @@ import { GithubIcon } from './github-icon'
 import { MailIcon } from './mail-icon'
 import { MenuIcon } from './menu-icon'
 import { ScaleIcon } from './scale-icon'
+import { TriangleIcon } from './triangle-icon'
 
 afterEach(() => {
   cleanup()
@@ -50,5 +51,13 @@ describe('ScaleIcon', () => {
     const result = render(<ScaleIcon />, { wrapper: WithTheme })
 
     expect(result.getByTestId('scaleicon')).toBeDefined()
+  })
+})
+
+describe('TriangleIcon', () => {
+  test('Should render', () => {
+    const result = render(<TriangleIcon />)
+
+    expect(result.getByTestId('triangleicon')).toBeDefined()
   })
 })

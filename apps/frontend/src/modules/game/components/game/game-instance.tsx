@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { Game } from 'phaser'
 import { useLayoutEffect, useRef } from 'react'
 
+import { useCurrentLocale } from '@/i18n/client'
 import { routes } from '@/shared'
 
 import { GameStateProvider } from '../../context/game-state-context'
@@ -14,9 +15,10 @@ import { ParentElement } from './styles'
 export const GameInstance = () => {
   const game = useRef<Phaser.Game | null>(null)
   const path = usePathname()
+  const locale = useCurrentLocale()
 
   useLayoutEffect(() => {
-    if (path === routes.game) {
+    if (path === `/${locale}${routes.game}`) {
       const startGame = (parent: HTMLDivElement) => new Game({ ...gameConfig, parent, width: parent.offsetWidth })
       // eslint-disable-next-line unicorn/prefer-query-selector
       const parent = document.getElementById('game-container')
@@ -33,7 +35,7 @@ export const GameInstance = () => {
         parent.append(game.current.context.canvas as Node)
       }
     }
-  }, [path])
+  }, [locale, path])
 
   return (
     <GameStateProvider>

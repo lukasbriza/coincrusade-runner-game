@@ -7,5 +7,6 @@ export const menuClasses = generateUtilityClasses('menu', [
   'showMenuItem',
   'modal',
   'isDesktop',
+  'desktopMenuItem',
   'isMobile',
 ])

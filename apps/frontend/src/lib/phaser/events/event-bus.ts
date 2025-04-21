@@ -32,6 +32,7 @@ export enum EventBusEvents {
   PlayerRelocate = 'player-relocate',
   RestartGame = 'restart-game',
   EndGame = 'end-game',
+  PrematureGameEnd = 'premature-game-end',
   PauseGame = 'pause-game',
   ResumeGame = 'resume-game',
   ChunkEnd = 'chunk-end',
@@ -41,4 +42,6 @@ export enum EventBusEvents {
   LoadConfigurationCallback = 'load-configuration-callback',
 
   LoadProgress = 'load-progress',
+
+  SaveLogs = 'save-logs',
 }

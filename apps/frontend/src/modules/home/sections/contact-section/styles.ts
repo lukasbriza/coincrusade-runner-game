@@ -50,6 +50,9 @@ export const FormInputsRoot = styled('div')(({ theme: { spacing } }) => ({
   position: 'relative',
   left: '50%',
   transform: 'translateX(-50%)',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: spacing(2),
 
   '& textarea': {
     minHeight: 100,

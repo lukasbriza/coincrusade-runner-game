@@ -1,8 +1,8 @@
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { config } from 'dotenv'
+import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi'
 
 import { AppConfig } from './app.config'
 import { AppModule } from './app.module'
@@ -22,19 +22,16 @@ async function bootstrap() {
   const port = configService.get('PORT', { infer: true })
 
   if (environment === 'development') {
-    const config = new DocumentBuilder()
-      .setTitle('NestJs Swagger')
-      .setDescription('NestJs App API')
+    const asyncApiOptions = new AsyncApiDocumentBuilder()
+      .setTitle('NestJs WS')
+      .setDescription('NestJs App Websocket API')
       .setVersion('1.0')
-      .addApiKey({ type: 'apiKey', name: 'X-API-KEY', in: 'header' }, 'X-API-KEY')
-      .addSecurityRequirements('X-API-KEY')
       .build()
 
-    const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup('api/swagger', app, document)
+    const asyncApiDocument = AsyncApiModule.createDocument(app, asyncApiOptions)
+    await AsyncApiModule.setup('api/asyncapi', app, asyncApiDocument)
 
     // eslint-disable-next-line no-console
-    console.log(`Swager running on: http://localhost:${port}/api/swagger`)
     console.log(`Application running on : http://localhost:${port}`)
   }
 

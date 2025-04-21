@@ -62,7 +62,7 @@ ARG PORT=3000
 ENV PORT=${PORT}
 ENV HOSTNAME="0.0.0.0"
 ENV TZ=Europe/Prague
-ENV NODE_ENV=production
+# ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs

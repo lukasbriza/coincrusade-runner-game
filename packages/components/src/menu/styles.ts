@@ -7,41 +7,48 @@ import type { OwnerState } from '../types'
 
 import { menuClasses } from './classes'
 
-export const Root = styled('div')(({ theme: { spacing, breakpoints } }) => ({
-  position: 'fixed',
-  display: 'grid',
-  gridTemplateAreas: `
+export const Root = styled('div')<OwnerState<{ maxWidth?: number | undefined }>>(
+  ({ theme: { spacing, breakpoints }, ownerState: { maxWidth } }) => ({
+    position: 'fixed',
+    display: 'grid',
+    gridTemplateAreas: `
     "icons"
     "items"
   `,
-  gridTemplateRows: `min-content min-content`,
-  justifyItems: 'center',
-  alignItems: 'center',
+    gridTemplateRows: `min-content min-content`,
+    justifyItems: 'center',
+    alignItems: 'center',
 
-  width: '100%',
+    width: '100%',
+    maxWidth: maxWidth || '100%',
+    left: '50%',
+    transform: 'translateX(-50%)',
 
-  [`& .${menuClasses.icon}`]: {
-    position: 'absolute',
-    right: spacing(4),
-    top: spacing(4),
-    zIndex: 100,
-  },
-
-  [`& .${menuClasses.isDesktop}`]: {
-    marginLeft: 'min(3vw, 60px)',
-    marginRight: 'min(3vw, 60px)',
-
-    [breakpoints.down('sm')]: {
-      display: 'none',
+    [`& .${menuClasses.icon}`]: {
+      position: 'absolute',
+      right: spacing(2),
+      top: spacing(4),
+      zIndex: 100,
     },
-  },
 
-  [`& .${menuClasses.isMobile}`]: {
-    [breakpoints.up('sm')]: {
-      display: 'none',
+    [`& .${menuClasses.desktopMenuItem}`]: {
+      marginLeft: 'min(3vw, 60px)',
+      marginRight: 'min(3vw, 60px)',
     },
-  },
-}))
+
+    [`& .${menuClasses.isDesktop}`]: {
+      [breakpoints.down(750)]: {
+        display: 'none',
+      },
+    },
+
+    [`& .${menuClasses.isMobile}`]: {
+      [breakpoints.up(750)]: {
+        display: 'none',
+      },
+    },
+  }),
+)
 
 export const MenuItemsWrapper = styled('div')(({ theme: { palette } }) => ({
   gridArea: 'items',
@@ -57,6 +64,17 @@ export const MenuItemsWrapper = styled('div')(({ theme: { palette } }) => ({
 export const IconsMenuSection = styled('div')(() => ({
   gridArea: 'icons',
   display: 'flex',
+}))
+
+export const LanguageSwitcherWrapper = styled('div')(({ theme: { spacing, breakpoints } }) => ({
+  position: 'absolute',
+  right: spacing(4),
+  top: spacing(5),
+
+  [breakpoints.down(750)]: {
+    left: spacing(4),
+    right: 'unset',
+  },
 }))
 
 export const MobileMenuWrapper = styled('div')(({ theme: { spacing, palette } }) => ({

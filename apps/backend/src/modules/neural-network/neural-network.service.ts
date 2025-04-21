@@ -6,15 +6,16 @@ import type { Tensor } from '@tensorflow/tfjs'
 import { AppConfig } from '../../app.config'
 import { AVAILABLE_MODELS, MAX_PLATFORM_PENALTY, MAX_PLATFORM_SPEED } from '../../constants'
 import { NeuralNetworkDto } from '../../dto'
+import { NeuralNetworkRto } from '../../rto'
 import { computePlatformModifier, loadNeuralModel } from '../../utils'
 
-import { NeuralNetworkInputShape, NeuralNetworkOutputShape, NeuralNetworkResponse } from './types'
+import { NeuralNetworkInputShape, NeuralNetworkOutputShape } from './types'
 
 @Injectable()
 export class NeuralNetworkService {
   constructor(private readonly configService: ConfigService<AppConfig, true>) {}
 
-  async predict(log: NeuralNetworkDto): Promise<NeuralNetworkResponse> {
+  async predict(log: NeuralNetworkDto): Promise<NeuralNetworkRto> {
     const networkInput: NeuralNetworkInputShape = [
       log.chunkMapDifficulties.reduce((a, b) => a + b),
       log.chunkPickedCoins,

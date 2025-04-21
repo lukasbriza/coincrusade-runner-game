@@ -10,6 +10,11 @@ export default {
   snackbars: {
     mobileVerification:
       'Hra není podporována na mobilních zařízeních. Pro její spuštění otevřete stránku na stolním počítači.',
+    serverConnectionError: 'Nepodařilo se připojit k serveru. Zkuste to znovu později.',
+    mailSendSuccess: 'E-mail úspěšně odeslán.',
+    mailSendError: 'Nepodařilo se odeslat e-mail. Zkuste to znovu později.',
+    serverNotConnected: 'Stránka není připojena k serveru. Zkuste ji znovu načíst, nebo opakujte akci později.',
+    gameLogSaveSuccess: 'Herní logy byly úspěšně odeslány.',
   },
   home: {
     heroMain: 'COIN CRUSADE',

@@ -10,6 +10,11 @@ export default {
   snackbars: {
     mobileVerification:
       'The game is not supported on mobile devices. To play the game, open the page on a desktop computer.',
+    serverConnectionError: 'Unable to connect to server. Try again later.',
+    mailSendSuccess: 'Mail successfully sent.',
+    mailSendError: 'Unable to send mail. Try again later.',
+    serverNotConnected: 'The page is not connected to the server. Try reloading the page, or repeat the action later.',
+    gameLogSaveSuccess: 'Game logs successfully sent.',
   },
   home: {
     heroMain: 'COIN CRUSADE',

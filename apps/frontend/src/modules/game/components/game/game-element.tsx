@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import type { FC } from 'react'
 import { useEffect } from 'react'
 
+import { useCurrentLocale } from '@/i18n/client'
 import { gameRestartEmiter } from '@/lib/phaser/events'
 import { GAME_INITIATED_STORAGE_KEY, routes } from '@/shared'
 import { MobileVerificationSnackbar } from '@/shared/components'
@@ -18,6 +19,7 @@ import { GameUiOverlay } from './styles'
 
 export const GameElement: FC = () => {
   const router = useRouter()
+  const locale = useCurrentLocale()
   const { addSnackbar } = useSnackbarContext()
 
   useEffect(() => {
@@ -31,9 +33,9 @@ export const GameElement: FC = () => {
   useEffect(() => {
     if (isMobile()) {
       addSnackbar(<MobileVerificationSnackbar />)
-      router.push(routes.home)
+      router.push(`${locale}/${routes.home}`)
     }
-  }, [addSnackbar, router])
+  }, [addSnackbar, locale, router])
 
   return (
     <>

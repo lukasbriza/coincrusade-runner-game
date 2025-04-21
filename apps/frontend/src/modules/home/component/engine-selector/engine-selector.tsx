@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation'
 import type { FC, MouseEventHandler } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import { useScopedI18n } from '@/i18n/client'
+import { useCurrentLocale, useScopedI18n } from '@/i18n/client'
+import { getSocketContext } from '@/lib/socket-io'
 import { engines, routes } from '@/shared'
-import { Arrow, MobileVerificationSnackbar, Pergamen } from '@/shared/components'
+import { Arrow, MobileVerificationSnackbar, Pergamen, SocketSnackbar } from '@/shared/components'
 import { useGameConfiguration, useSnackbarContext } from '@/shared/context'
 import { isMobile } from '@/utils'
 
@@ -24,6 +25,7 @@ export const EngineSelector: FC = () => {
   const pergamen = useRef<HTMLDivElement>(null)
   const root = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const locale = useCurrentLocale()
 
   const { loaded } = useApertureContext()
   const { changeGenerator } = useGameConfiguration()
@@ -34,15 +36,25 @@ export const EngineSelector: FC = () => {
   const [minimized, setMinimized] = useState(false)
   const [selectedEngine, setSelectedEngine] = useState<number>(0)
   const t = useScopedI18n('home')
+  const tSnackbar = useScopedI18n('snackbars')
 
   const handleSettingsModal = () => setSettingsOpen((state) => !state)
 
   const startGame = () => {
+    // GAME NOT SUPPORTED ON MOBILE DEVICES
     if (isMobile()) {
       addSnackbar(<MobileVerificationSnackbar />)
       return
     }
-    router.push(routes.game)
+
+    // VERIFY IF SOCKET IS CONNECTED
+    const socketContext = getSocketContext()
+    if (!socketContext?.socket?.connected) {
+      addSnackbar(<SocketSnackbar message={tSnackbar('serverConnectionError')} />)
+      return
+    }
+
+    router.push(`/${locale}${routes.game}`)
   }
 
   const handleLeftclick = () =>
@@ -111,13 +123,13 @@ export const EngineSelector: FC = () => {
       <Pergamen
         ref={pergamen}
         allowAdjustment={!minimized}
-        bottomSizes="(max-width: 676px) calc(60vw + 40px), 480px"
+        bottomSizes="(max-width: 676px) calc(60vw + 40px), 580px"
         className={minimized ? engineSelectorClasses.pergamen : undefined}
         closePergamen={handlePergamenMinimizeAnimation}
         defaultPosition="unrolled"
-        pergamenSizes="(max-width: 676px) 60vw, 400px"
+        pergamenSizes="(max-width: 676px) 60vw, 500px"
         rolled={rolled}
-        topSizes="(max-width: 676px) calc(60vw + 40px), 480px"
+        topSizes="(max-width: 676px) calc(60vw + 40px), 580px"
         onAnimationStateChange={animationStateChangeHandler}
         onClick={handleUnminimizePergamen}
       >

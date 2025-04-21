@@ -7,4 +7,5 @@ export type ButtonProps = ComponentBaseProps & {
   text: string
   borderWidth?: number | undefined
   onClick?: (() => void) | undefined
+  disabled?: boolean
 }
