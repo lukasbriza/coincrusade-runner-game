@@ -1,3 +1,4 @@
+import type { LanguageSwitcherProps } from '../language-switcher/types'
 import type { ComponentBaseProps } from '../types'
 
 export type OnItemClickHandler = ((item: { name: string; path: string }) => void) | undefined
@@ -12,6 +13,8 @@ export type MenuProps = ComponentBaseProps & {
   itemClassName?: string | undefined
   mobileMenuIconClassName?: string | undefined
   mobileMenuRootClass?: string | undefined
+  languageSwitcher?: LanguageSwitcherProps | undefined
+  maxWidth?: number | undefined
 }
 
 export type MobileMenuProps = {

@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common'
 
 import { GameLogDto } from '../../dto'
+import { GameLogsRto } from '../../rto'
 import { PrismaService } from '../prisma'
-
-import { GameLogsResponse } from './types'
 
 @Injectable()
 export class GameLogsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async saveGameLogs(sessionLogs: GameLogDto): Promise<GameLogsResponse> {
+  async saveGameLogs(sessionLogs: GameLogDto): Promise<GameLogsRto> {
     const { id } = await this.prisma.gameSession.create({
       data: {
         logs: {

@@ -15,4 +15,10 @@ export const Primary: Story = {
   },
 }
 
+export const Disabled: Story = {
+  args: {
+    text: 'Button',
+    disabled: true,
+  },
+}
 export default meta

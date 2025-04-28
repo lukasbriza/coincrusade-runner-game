@@ -45,10 +45,14 @@ export const PergamenBackground: FC<PergamenBackgroundProps> = ({ className, chi
 
   useEffect(() => {
     handleResize()
+    const throttleResize = throttle(handleResize, 50)
+
+    window.addEventListener('scroll', throttleResize)
     window.addEventListener('resize', handleResize)
     window.addEventListener('load', handleResize)
 
     return () => {
+      window.removeEventListener('scroll', throttleResize)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('load', handleResize)
     }

@@ -46,12 +46,18 @@ export class MusicButton extends Button implements IMusicButton {
           if (soundContext.isPaused(SOUND_KEYS.BACKGORUND_MUSIC)) {
             soundContext.playSound(SOUND_KEYS.BACKGORUND_MUSIC, SOUND_CONFIG.BACKGROUND)
           }
+          if (soundContext.isPaused(SOUND_KEYS.RUN_SOUND)) {
+            soundContext.playSound(SOUND_KEYS.RUN_SOUND, SOUND_CONFIG.RUN)
+          }
         }
         if (!soundContext.soundEnabled) {
           this.mousePointerUp(UI_KEYS.MUSIC_GREY_OFF)
 
           if (soundContext.isPlaying(SOUND_KEYS.BACKGORUND_MUSIC)) {
             soundContext.pauseSound(SOUND_KEYS.BACKGORUND_MUSIC)
+          }
+          if (soundContext.isPlaying(SOUND_KEYS.RUN_SOUND)) {
+            soundContext.pauseSound(SOUND_KEYS.RUN_SOUND)
           }
         }
       }
@@ -82,12 +88,14 @@ export class MusicButton extends Button implements IMusicButton {
     gameEndListener(() => {
       const soundContext = getGameSoundContext()
       soundContext.pauseSound(SOUND_KEYS.BACKGORUND_MUSIC)
+      soundContext.pauseSound(SOUND_KEYS.RUN_SOUND)
     })
 
     gameRestartListener(() => {
       const soundContext = getGameSoundContext()
       if (soundContext.soundEnabled) {
         soundContext.restartSound(SOUND_KEYS.BACKGORUND_MUSIC, this.scene, SOUND_CONFIG.BACKGROUND)
+        soundContext.restartSound(SOUND_KEYS.RUN_SOUND, this.scene, SOUND_CONFIG.RUN)
       }
     })
   }
@@ -95,6 +103,7 @@ export class MusicButton extends Button implements IMusicButton {
   private initMusic() {
     const soundContext = getGameSoundContext()
     soundContext.playSound(SOUND_KEYS.BACKGORUND_MUSIC, SOUND_CONFIG.BACKGROUND)
+    soundContext.playSound(SOUND_KEYS.RUN_SOUND, SOUND_CONFIG.RUN)
   }
 }
 

@@ -9,6 +9,7 @@ import { engineSelectorClasses } from '../engine-selector'
 import { animationClasses } from './classes'
 
 export const animation = (setStage: (value: StageValue) => void) => {
+  console.log('start')
   const tl = gsap.timeline()
 
   document.documentElement.scrollTop = 0

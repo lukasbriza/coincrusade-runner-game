@@ -8,21 +8,24 @@ import {
   InitialAnimationRegistry,
   MenuRegistry,
   SnackbarRegistry,
+  SocketRegistry,
 } from './registry'
 
 export const WebLayout: AsyncWebLayout = ({ children, params }) => (
   <EmotionRegistry>
     <I18nProviderClient locale={params.locale}>
-      <SnackbarRegistry>
-        <GameConfigurationRegistry>
-          <InitialAnimationRegistry>
-            <MenuRegistry>
-              <MobileVerificator />
-              {children}
-            </MenuRegistry>
-          </InitialAnimationRegistry>
-        </GameConfigurationRegistry>
-      </SnackbarRegistry>
+      <SocketRegistry>
+        <SnackbarRegistry>
+          <GameConfigurationRegistry>
+            <InitialAnimationRegistry>
+              <MenuRegistry>
+                <MobileVerificator />
+                {children}
+              </MenuRegistry>
+            </InitialAnimationRegistry>
+          </GameConfigurationRegistry>
+        </SnackbarRegistry>
+      </SocketRegistry>
     </I18nProviderClient>
   </EmotionRegistry>
 )

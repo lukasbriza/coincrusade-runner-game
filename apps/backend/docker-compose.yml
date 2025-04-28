@@ -1,6 +1,8 @@
 services:
   database:
-    container_name: dev_rs0
+    container_name: coin-crusade-game_db-dev
+    env_file:
+      - .env.dev
     build:
       context: .
       dockerfile: ../../docker/postgres/Dockerfile

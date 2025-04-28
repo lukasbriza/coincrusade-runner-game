@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
-import { saveGameLogs } from '@/actions'
 import type { GameConfiguration } from '@/shared/context'
 import { initChances, initLastChunk, initPlayerState } from '@/utils'
 
@@ -17,6 +16,7 @@ import {
   knightHitCallbackEmiter,
   playerRelocateEmiter,
   reasignPlatformSpeedCallbackEmiter,
+  saveLogsEmiter,
 } from '../events'
 import type { ColliderObject } from '../factories'
 import type { Chances, ChunkLog, LastChunk, PlayerState } from '../types'
@@ -35,22 +35,6 @@ class GameStateContext implements GameStateContextSingleton {
   constructor(config: GameConfiguration) {
     this.state.actualLives = config.maxPlayerLifes
     this.config = config
-  }
-
-  public saveLogs = async () => {
-    const { data } = await saveGameLogs({
-      logs: this.chunksData.map((chunkLog) => ({
-        ...chunkLog,
-        engineSuggestedAction: chunkLog.engineSuggestedAction?.toString() ?? '',
-        gameEngine: this.config.currentGenerator.toString() ?? '',
-        chunkMapDifficulties: chunkLog.chunkMapDifficulties.map((difficulty) => difficulty.toString()),
-        chunkCreated: chunkLog.chunkCreated.toString(),
-      })),
-    })
-    if (!data) {
-      // eslint-disable-next-line no-warning-comments
-      // TODO error handle
-    }
   }
 
   public lifeAddAction = () => {
@@ -75,11 +59,18 @@ class GameStateContext implements GameStateContextSingleton {
       knightHitCallbackEmiter(knight, obstacle)
 
       if (this.state.playerIsDead) {
+        this.saveLogsAction()
         knightDeadEmiter(knight)
         this.nullifyPlatformSpeedAction()
         reasignPlatformSpeedCallbackEmiter()
       }
     }
+  }
+
+  public saveLogsAction = () => {
+    saveLogsEmiter({
+      logs: this.chunksData,
+    })
   }
 
   public onHitAction = () => {

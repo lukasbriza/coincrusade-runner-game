@@ -24,6 +24,10 @@ import groovy.json.JsonOutput
 * - DATABASE_PATH
 * - DATABASE_INNER_PORT
 * - SEND_EMAIL_ADDRESS
+* - MAIL_RECIPIENT
+* - MAIL_MODULE_HOST
+* - MAIL_MODULE_USER
+* - MAIL_MODULE_PASSPHRASE
 */
 
 /**
@@ -101,6 +105,10 @@ pipeline {
           env.NODE_ENV = sharedSecrets["NODE_ENV"]
           env.POINTAINER_TARGET_ENVIRONMENT = sharedSecrets["POINTAINER_TARGET_ENVIRONMENT"]
           env.SEND_EMAIL_ADDRESS = sharedSecrets["SEND_EMAIL_ADDRESS"]
+          env.MAIL_RECIPIENT = sharedSecrets["MAIL_RECIPIENT"]
+          env.MAIL_MODULE_HOST = sharedSecrets["MAIL_MODULE_HOST"]
+          env.MAIL_MODULE_USER = sharedSecrets["MAIL_MODULE_USER"]
+          env.MAIL_MODULE_PASSPHRASE = sharedSecrets["MAIL_MODULE_PASSPHRASE"]
 
           println("Constructing database url...")
           env.DATABASE_URL = createPostgreSQLDbUrl("${env.POSTGRES_USER}", "${env.POSTGRES_PASSWORD}", "${env.POSTGRES_HOST}", "${env.DATABASE_NAME}")
@@ -188,7 +196,11 @@ pipeline {
             ["name": "DATABASE_NAME", "value": "${env.DATABASE_NAME}"],
             ["name": "NODE_ENV", "value": "${env.NODE_ENV}"],
             ["name": "DATABASE_PATH", "value": "${env.DATABASE_PATH}"],
-            ["name": "POSTGRES_HOST", "value": "${env.POSTGRES_HOST}"]
+            ["name": "POSTGRES_HOST", "value": "${env.POSTGRES_HOST}"],
+            ["name": "MAIL_RECIPIENT", "value": "${env.MAIL_RECIPIENT}"],
+            ["name": "MAIL_MODULE_HOST", "value": "${env.MAIL_MODULE_HOST}"],
+            ["name": "MAIL_MODULE_USER", "value": "${env.MAIL_MODULE_USER}"],
+            ["name": "MAIL_MODULE_PASSPHRASE", "value": "${env.MAIL_MODULE_PASSPHRASE}"],
           ]
           
           if (stacksToRedeploy.size() == 0) {

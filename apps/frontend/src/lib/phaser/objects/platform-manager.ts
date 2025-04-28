@@ -103,7 +103,7 @@ export class PlatformManager implements IPlatformManager {
 
   private generatePlatforms = async () => {
     const stateSingleton = getGameStateContext()
-    const maps = await this.generator.generate() //
+    const maps = await this.generator.generate()
     const lastMemberX = this.slopeGroupHelper.getLastMemberOfGroupByX()
     const x = lastMemberX?.body?.position.x as number
     const translationResult = translateMapTypes(this.scene, stateSingleton.state, maps, x + TILE_WIDTH)

@@ -15,7 +15,7 @@ export const Root = styled('div')<
 >(({ theme: { breakpoints }, ownerState: { width, topTop, bottomTop, ribbonTop } }) => ({
   position: 'relative',
   width: '60%',
-  maxWidth: 400,
+  maxWidth: 500,
   height: '100%',
 
   [breakpoints.down(500)]: {

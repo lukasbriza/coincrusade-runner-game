@@ -8,6 +8,7 @@
       "env": [
         "NEXT_PUBLIC_META_ROBOTS",
         "API_URL",
+        "API_KEY",
         "NEXT_PUBLIC_GITHUB",
         "NEXT_PUBLIC_MAIL"
       ],

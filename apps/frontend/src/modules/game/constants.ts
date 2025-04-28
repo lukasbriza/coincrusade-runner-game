@@ -7,3 +7,5 @@ export const LOAD_START_EVENT = 'load-start-event'
 export const LOAD_END_EVENT = 'load-end-event'
 export const LOAD_PROGRESS_EVENT = 'load-progress-event'
 export const LOAD_ANIMATION_END_EVENT = 'load-animation-end-event'
+
+export const ADD_SNACKBAR_EVENT = 'add-snackbar-event'

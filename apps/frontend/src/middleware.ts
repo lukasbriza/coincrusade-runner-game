@@ -38,5 +38,5 @@ export function middleware(request: NextRequest) {
 
 // Match only internationalized pathnames
 export const config = {
-  matcher: ['/', '/(cs|en)/:path*', `/((?!_next|_vercel|favicon.ico|robots.txt|.*\..*).*)`],
+  matcher: ['/', '/(cs|en)/:path*', `/((?!_next|_vercel|robots.txt|.*\..*).*)`],
 }

@@ -51,8 +51,6 @@ services:
       - ./apps/backend/.env.local
     ports:
       - '3001:3001'
-    networks:
-      - app-local
     depends_on:
       - database
       - base

@@ -112,7 +112,7 @@ export const PergamenContentRoot = styled('div')(({ theme: { breakpoints, spacin
   },
 
   [`& .${engineSelectorClasses.playButton}`]: {
-    maxWidth: '70%',
+    maxWidth: '75%',
     position: 'relative',
     gridArea: 'button',
     left: '50%',
@@ -124,7 +124,7 @@ export const PergamenContentRoot = styled('div')(({ theme: { breakpoints, spacin
   },
 
   [`& .${engineSelectorClasses.configButton}`]: {
-    maxWidth: '70%',
+    maxWidth: '75%',
     position: 'relative',
     gridArea: 'config',
     left: '50%',

@@ -1,1 +1,1 @@
-export const RESIZE_TRIGGER = 'trigger-event'
+export const RESIZE_TRIGGER = 'pergament-resize-trigger-event'

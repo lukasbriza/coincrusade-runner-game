@@ -1,7 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { Scene } from 'phaser'
 
-import { loadConfigurationCallbackListener, loadProgressEmiter } from '../events'
+import { getSocketContext } from '@/lib/socket-io'
+
+import { EventBus, EventBusEvents, loadConfigurationCallbackListener, loadProgressEmiter } from '../events'
 import {
   initCoinFactory,
   initEmptyLifeFactory,
@@ -20,6 +22,12 @@ import { loadFonts, loadImages, loadPlatformMaps, loadSounds, loadSprites, loadU
 export class LoadingScene extends Scene {
   constructor() {
     super({ key: 'loading' })
+    const context = getSocketContext()
+    if (context?.socket === null) {
+      EventBus.emit(EventBusEvents.PrematureGameEnd)
+      this.scene.stop('loading')
+    }
+
     loadConfigurationCallbackListener((config) => {
       this.scene.stop('loading')
       this.scene.start('game', { gameConfig: config })
