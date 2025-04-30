@@ -1,12 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import { StringInput } from '@lukasbriza/components'
-import type { FC } from 'react'
+import type { FieldValues } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import type { StringInputControlledProps } from './types'
 
-export const StringInputControlled: FC<StringInputControlledProps> = ({ control, name, helper, ...props }) => {
+export const StringInputControlled = <T extends FieldValues>({
+  control,
+  name,
+  helper,
+  ...props
+}: StringInputControlledProps<T>) => {
   if (!control) {
     return null
   }

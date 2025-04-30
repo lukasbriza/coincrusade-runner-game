@@ -86,5 +86,6 @@ WORKDIR /application
 COPY --from=builder --chown=nodejs:nodejs /application .
 
 WORKDIR /application/apps/${APP}
+RUN chmod +x /application/apps/${APP}/entrypoint.sh
+CMD ["sh", "entrypoint.sh"]
 EXPOSE ${PORT}
-CMD pnpm start -p ${PORT}

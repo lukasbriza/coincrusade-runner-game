@@ -25,6 +25,9 @@
       "dependsOn": ["^build"],
       "outputs": [".eslintchache"]
     },
+    "prisma:migrate-dev": {
+      "cache": false
+    },
     "copy-fonts": {
       "dependsOn": ["^build"],
       "inputs": ["node_modules/@lukasbriza/theme/static/fonts/**/*"],

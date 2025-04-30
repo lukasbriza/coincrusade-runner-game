@@ -1,11 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { NumberInput } from '@lukasbriza/components'
-import type { FC } from 'react'
+import type { FieldValues } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import type { NumberInputControlledProps } from './types'
 
-export const NumberInputControlled: FC<NumberInputControlledProps> = ({ control, name, helper, ...props }) => {
+export const NumberInputControlled = <T extends FieldValues>({
+  control,
+  name,
+  helper,
+  ...props
+}: NumberInputControlledProps<T>) => {
   if (!control) {
     return null
   }

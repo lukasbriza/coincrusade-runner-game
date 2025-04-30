@@ -97,12 +97,12 @@ class SocketContext implements SocketContextSingleton {
 
   private initListenners = () => {
     if (this.socket === null) {
-      console.log('Socket not initialized.')
+      console.error('Socket not initialized.')
       return
     }
 
     if (this.loaded === false) {
-      console.log('Socket not loaded.')
+      console.error('Socket not loaded.')
       return
     }
 

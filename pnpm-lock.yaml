@@ -123,6 +123,9 @@ importers:
       nodemailer:
         specifier: 6.10.1
         version: 6.10.1
+      prisma:
+        specifier: 5.21.1
+        version: 5.21.1
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -172,9 +175,6 @@ importers:
       mongodb:
         specifier: 6.8.0
         version: 6.8.0(socks@2.8.4)
-      prisma:
-        specifier: 5.21.1
-        version: 5.21.1
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
