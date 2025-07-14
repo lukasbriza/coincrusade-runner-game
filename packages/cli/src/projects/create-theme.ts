@@ -1,28 +1,22 @@
 import { execSync } from 'node:child_process'
-import { copyFileSync, existsSync, unlinkSync } from 'node:fs'
+import { copyFileSync, existsSync, rmSync, unlinkSync } from 'node:fs'
 
 import ora from 'ora'
 
+import { PACKAGES_PATH } from '../constants.js'
 import { tsconfigPath, eslintPath, packagePath } from '../paths/theme-paths.js'
 import { PROJECT_TYPE } from '../types.js'
-import {
-  addLocalDependency,
-  cleanup,
-  createDirectory,
-  downloadTheme,
-  installDeps,
-  PACKAGES_PATH,
-} from '../utils/index.js'
+import { addLocalDependency, cleanup, createDirectory, downloadTheme, installDeps } from '../utils/index.js'
 
 export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   const projectName = 'theme'
 
   // SEARCH FOR EXISTING PROJECT
-  const searchForThemeFolderSpinner = ora('Searching for theme folder...\n').start()
+  const searchForThemeFolderSpinner = ora().start('Searching for theme folder...\n')
   try {
     const exist = existsSync(`${PACKAGES_PATH}/${projectName}`)
     if (exist === true) {
-      searchForThemeFolderSpinner.succeed('Project already exists...\n')
+      searchForThemeFolderSpinner.fail('Project already exists...\n')
       return
     }
     searchForThemeFolderSpinner.succeed()
@@ -32,7 +26,7 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // CREATING PROJECT FOLDER
-  const createThemeFolderSpinner = ora('Creating theme directory...\n').start()
+  const createThemeFolderSpinner = ora().start('Creating theme directory...\n')
   try {
     createDirectory(`${PACKAGES_PATH}/${projectName}`)
     createThemeFolderSpinner.succeed()
@@ -43,7 +37,7 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // DOWNLOAD THEME FROM GIT
-  const downloadSpinner = ora('Downloading MUI theme tamplate...\n').start()
+  const downloadSpinner = ora().start('Downloading MUI theme tamplate...\n')
   try {
     downloadTheme(projectName)
     downloadSpinner.succeed()
@@ -54,10 +48,12 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // COPY CONFIGURATION FILE
-  const copyFilesSpinner = ora('Copy configuration files...\n').start()
+  const copyFilesSpinner = ora().start('Copy configuration files...\n')
   try {
     unlinkSync(`${PACKAGES_PATH}/${projectName}/.eslintrc.cjs`)
     unlinkSync(`${PACKAGES_PATH}/${projectName}/tsconfig.json`)
+    unlinkSync(`${PACKAGES_PATH}/${projectName}/pnpm-lock.yaml`)
+    rmSync(`${PACKAGES_PATH}/${projectName}/.git`, { recursive: true, force: true })
     copyFileSync(eslintPath, `${PACKAGES_PATH}/${projectName}/.eslintrc.cjs`)
     copyFileSync(tsconfigPath, `${PACKAGES_PATH}/${projectName}/tsconfig.json`)
     copyFileSync(packagePath, `${PACKAGES_PATH}/${projectName}/package.json`)
@@ -69,7 +65,7 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // INSTALL DEPENDENCIES
-  const addConfigSpinner = ora('Installing dependencies...\n').start()
+  const addConfigSpinner = ora().start('Installing dependencies...\n')
   try {
     if (connectTheme === true) {
       addLocalDependency('storybook', '@lukasbriza/theme')
@@ -83,7 +79,7 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // RUN LINTER
-  const runLinterSpinner = ora('Running linter...\n').start()
+  const runLinterSpinner = ora().start('Running linter...\n')
   try {
     execSync(`pnpm run lint:fix`, {
       cwd: `${PACKAGES_PATH}/${projectName}`,
@@ -96,14 +92,14 @@ export const createTheme = ({ connectTheme }: { connectTheme?: boolean }) => {
   }
 
   // BUILD THEME
-  const buildThemeSpinner = ora('Building theme...\n').start()
+  const buildThemeSpinner = ora().start('Building theme...\n')
   try {
     execSync('tsc --build tsconfig.build.json', { cwd: `${PACKAGES_PATH}/${projectName}` })
     buildThemeSpinner.succeed()
   } catch (error) {
     buildThemeSpinner.fail()
     // eslint-disable-next-line no-console
-    console.log(String(error))
+    console.log(error)
     cleanup(projectName, PROJECT_TYPE.PROJECT)
   }
 }

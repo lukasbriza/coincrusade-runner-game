@@ -273,7 +273,7 @@ pipeline {
       }
     }
     success {
-      echo "Build succeeded!"
+      println("Build succeeded!")
 
       mail to: "${env.SEND_EMAIL_ADDRESS}",
         subject: "Jenkins: Build of ${env.PROJECT_DIR} ${env.BUILD_DISPLAY_NAME} succeeded!",
@@ -284,7 +284,7 @@ pipeline {
         """
     }
     failure {
-      echo "Build failed!"
+      println("Build failed!")
 
       mail to: "${env.SEND_EMAIL_ADDRESS}",
         subject: "Jenkins: Build of ${env.PROJECT_DIR} ${env.BUILD_DISPLAY_NAME} failed!",

@@ -19,4 +19,9 @@ export const viteConfigPath = path.normalize(`${__dirname}/../../files/storybook
 export const storybookMainPath = path.normalize(`${__dirname}/../../files/storybook/config/main.txt`)
 export const storybookManangerPath = path.normalize(`${__dirname}/../../files/storybook/config/manager.txt`)
 export const storybookPreviewPath = path.normalize(`${__dirname}/../../files/storybook/config/preview.txt`)
+export const storybookPreviewThemePath = path.normalize(
+  `${__dirname}/../../files/storybook/config/with-theme/preview.txt`,
+)
 export const storybookThemePath = path.normalize(`${__dirname}/../../files/storybook/config/theme.txt`)
+
+export const tscWithThemePath = path.normalize(`${__dirname}/../../files/storybook/with-theme/tsc`)

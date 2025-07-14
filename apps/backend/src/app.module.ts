@@ -8,7 +8,7 @@ import { CoincrusadeGatewayModule } from './gateway/coincrusade-gateway.module'
   imports: [
     ConfigModule.forRoot({
       expandVariables: true,
-      envFilePath: process.env.NODE_ENV === 'development' ? '../.env.dev' : '../.env',
+      envFilePath: process.env.NODE_ENV === 'development' ? '.env.dev' : '.env.local',
       isGlobal: true,
       cache: true,
       ignoreEnvFile: process.env.NODE_ENV === 'production',
