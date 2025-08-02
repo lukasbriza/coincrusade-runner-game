@@ -24,29 +24,14 @@ networks:
     driver: bridge
 
 services:
-  base:
-    build:
-      context: .
-      dockerfile: docker/base.Dockerfile
-      args:
-        - NODE_VERSION=22.11.0
-    image: lbriza/coincrusade-runner-game:base
-    container_name: coin-crusade-game-base_prod
-    networks:
-      - app-prod
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '10m'
-        max-file: '3'
-
   frontend:
-    extends: base
     build:
       context: .
       dockerfile: docker/nextjs/Dockerfile
       args:
         - APP=frontend
+        - TAG=base-latest
+        - NODE_ENV=production
     image: lbriza/coincrusade-runner-game:fe-prod
     container_name: coin-crusade-game_fe-prod
     restart: always
@@ -61,20 +46,27 @@ services:
       - FRONTEND_PORT=${FRONTEND_PORT}
     depends_on:
       - backend
-      - base
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   backend:
-    extends: base
     build:
       context: .
-      dockerfile: docker/nestjs/Dockerfile
+      dockerfile: docker/nestjs/prisma/Dockerfile
       args:
         - APP=backend
+        - TAG=base-latest
+        - NODE_ENV=production
     image: lbriza/coincrusade-runner-game:be-prod
     container_name: coin-crusade-game_be-prod
     restart: always
     ports:
       - ${BACKEND_PORT}:3001
+    networks:
+      - app-prod
     environment:
       - API_KEY=${API_KEY}
       - BACKEND_PORT=${BACKEND_PORT}
@@ -90,7 +82,11 @@ services:
       - NODE_ENV=${NODE_ENV}
     depends_on:
       - database
-      - base
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   database:
     build:

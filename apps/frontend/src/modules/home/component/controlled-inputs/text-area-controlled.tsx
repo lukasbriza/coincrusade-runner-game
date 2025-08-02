@@ -1,12 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import { TextArea } from '@lukasbriza/components'
-import type { FC } from 'react'
+import type { FieldValues } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
 import type { TextAreaControlledProps } from './types'
 
-export const TextAreaControlled: FC<TextAreaControlledProps> = ({ control, name, helper, ...props }) => {
+export const TextAreaControlled = <T extends FieldValues>({
+  control,
+  name,
+  helper,
+  ...props
+}: TextAreaControlledProps<T>) => {
   if (!control) {
     return null
   }

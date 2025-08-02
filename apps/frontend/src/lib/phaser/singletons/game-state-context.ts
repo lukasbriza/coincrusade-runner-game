@@ -68,9 +68,11 @@ class GameStateContext implements GameStateContextSingleton {
   }
 
   public saveLogsAction = () => {
-    saveLogsEmiter({
-      logs: this.chunksData,
-    })
+    if (this.chunksData.length > 0) {
+      saveLogsEmiter({
+        logs: this.chunksData.map((log) => ({ ...log, gameEngine: this.config.currentGenerator })),
+      })
+    }
   }
 
   public onHitAction = () => {

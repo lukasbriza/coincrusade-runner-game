@@ -11,7 +11,7 @@ export type NeuralNetworkRto = {
 }
 
 export type SaveGameLogsDto = {
-  logs: ChunkLog[]
+  logs: (ChunkLog & { gameEngine: string })[]
 }
 
 export type ErrorRto = {

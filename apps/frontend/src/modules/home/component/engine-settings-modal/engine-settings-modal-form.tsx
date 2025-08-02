@@ -7,7 +7,9 @@ import { useScopedI18n } from '@/i18n/client'
 
 import { FormContent, FormInput, FormItem, FormText } from './styles'
 
-export const EngineSettingsModalForm: FC<{ control: Control<FieldValues, unknown> }> = ({ control }) => {
+type SettingsControl = Control<FieldValues, unknown>
+
+export const EngineSettingsModalForm: FC<{ control: SettingsControl }> = ({ control }) => {
   const t = useScopedI18n('home')
   return (
     <FormContent>

@@ -6,7 +6,7 @@ export type AppConfig = {
   CORS: string[] | undefined
   API_KEY: string
   PORT: number
-  NODE_ENV: 'development' | 'production'
+  NODE_ENV: 'development' | 'local' | 'production'
   NN_MODEL: string
   DATABASE_URL: string
   MAIL_MODULE_HOST: string
@@ -28,10 +28,6 @@ export const validateConfig = (config: Partial<Record<string, string>>): AppConf
     MAIL_MODULE_PASSPHRASE,
     MAIL_RECIPIENT,
   } = config
-
-  if (config.NODE_ENV === 'development') {
-    return { ...config, NN_MODEL: NN_MODEL ?? AVAILABLE_MODELS.nn86 } as unknown as AppConfig
-  }
 
   if (!DATABASE_URL) {
     throw new Error('Missing DATABASE_URL')
@@ -57,10 +53,10 @@ export const validateConfig = (config: Partial<Record<string, string>>): AppConf
     throw new Error('Missing MAIL_RECIPIENT')
   }
 
-  const isValidEnvironment = yup.string().oneOf(['development', 'production']).isValidSync(NODE_ENV)
+  const isValidEnvironment = yup.string().oneOf(['development', 'production', 'local']).isValidSync(NODE_ENV)
 
   if (!isValidEnvironment) {
-    throw new Error('Invalid NODE_ENV value. Can be only development | production.')
+    throw new Error('Invalid NODE_ENV value. Can be only development | production | local.')
   }
 
   return {

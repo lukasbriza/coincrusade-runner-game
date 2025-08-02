@@ -1,16 +1,23 @@
 import type { NumberInputProps, StringInputProps, TextAreaProps } from '@lukasbriza/components'
-import type { Control } from 'react-hook-form'
+import type { Control, FieldValues } from 'react-hook-form'
 
-import type { ContactFormInputs } from '../../sections/contact-section/types'
-
-export type StringInputControlledProps = Omit<StringInputProps, 'error' | 'onBlur' | 'onChange' | 'value'> & {
-  control: Control<ContactFormInputs>
+export type StringInputControlledProps<T extends FieldValues> = Omit<
+  StringInputProps,
+  'error' | 'onBlur' | 'onChange' | 'value'
+> & {
+  control: Control<T>
 }
 
-export type TextAreaControlledProps = Omit<TextAreaProps, 'error' | 'onBlur' | 'onChange' | 'value'> & {
-  control: Control<ContactFormInputs>
+export type TextAreaControlledProps<T extends FieldValues> = Omit<
+  TextAreaProps,
+  'error' | 'onBlur' | 'onChange' | 'value'
+> & {
+  control: Control<T>
 }
 
-export type NumberInputControlledProps = Omit<NumberInputProps, 'error' | 'onBlur' | 'onChange' | 'value'> & {
-  control: Control<ContactFormInputs>
+export type NumberInputControlledProps<T extends FieldValues> = Omit<
+  NumberInputProps,
+  'error' | 'onBlur' | 'onChange' | 'value'
+> & {
+  control: Control<T>
 }

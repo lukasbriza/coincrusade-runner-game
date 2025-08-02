@@ -14,8 +14,8 @@ import {
 export const WebLayout: AsyncWebLayout = ({ children, params }) => (
   <EmotionRegistry>
     <I18nProviderClient locale={params.locale}>
-      <SocketRegistry>
-        <SnackbarRegistry>
+      <SnackbarRegistry>
+        <SocketRegistry>
           <GameConfigurationRegistry>
             <InitialAnimationRegistry>
               <MenuRegistry>
@@ -24,8 +24,8 @@ export const WebLayout: AsyncWebLayout = ({ children, params }) => (
               </MenuRegistry>
             </InitialAnimationRegistry>
           </GameConfigurationRegistry>
-        </SnackbarRegistry>
-      </SocketRegistry>
+        </SocketRegistry>
+      </SnackbarRegistry>
     </I18nProviderClient>
   </EmotionRegistry>
 )

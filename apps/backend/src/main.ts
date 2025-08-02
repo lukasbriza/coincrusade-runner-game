@@ -7,8 +7,12 @@ import { AsyncApiDocumentBuilder, AsyncApiModule } from 'nestjs-asyncapi'
 import { AppConfig } from './app.config'
 import { AppModule } from './app.module'
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'local') {
   config({ path: '.env.local' })
+}
+
+if (process.env.NODE_ENV === 'development') {
+  config({ path: '.env.dev' })
 }
 
 async function bootstrap() {

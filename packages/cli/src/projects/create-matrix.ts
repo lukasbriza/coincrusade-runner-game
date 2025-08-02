@@ -13,8 +13,10 @@ export const createMatrix = (option: string, projectName: string) => {
       break
     }
     case 'Storybook': {
-      createStorybook()
-      createTheme({ connectTheme: true })
+      const connectTheme = createStorybook()
+      if (connectTheme === true) {
+        createTheme({ connectTheme })
+      }
       break
     }
     case 'Theme': {
