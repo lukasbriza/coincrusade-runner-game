@@ -1,27 +1,39 @@
 # NEED TO DEFINE THESE VARIABLES IN .ENV #
-#########################################
+##########################################
+#               Frontend                 #
+##########################################
 # - NEXT_PUBLIC_GITHUB
 # - NEXT_PUBLIC_MAIL
-# - DATABASE_URL
-# - API_KEY
 # - API_URL
-# - DATABASE_PORT
-# - BACKEND_PORT
-# - FRONTEND_PORT
-# - POSTGRES_PASSWORD
-# - POSTGRES_USER
-# - DATABASE_NAME
-# - POSTGRES_HOST
-# - DATABASE_PATH
-# - NODE_ENV
+# - HOST_FRONTEND_PORT
+##########################################
+#                Backend                 #
+##########################################
+# - DATABASE_URL
 # - MAIL_RECIPIENT
 # - MAIL_MODULE_HOST
 # - MAIL_MODULE_USER
 # - MAIL_MODULE_PASSPHRASE
+# - POSTGRES_HOST
+# - HOST_BACKEND_PORT
+##########################################
+#               Database                 #
+##########################################
+# - HOST_DATABASE_PORT
+# - HOST_DATABASE_PATH
+##########################################
+#                Common                 #
+##########################################
+# - API_KEY
+# - NODE_ENV
+# - POSTGRES_PASSWORD
+# - POSTGRES_USER
+# - DATABASE_NAME
 
 networks:
-  app-prod:
-    driver: bridge
+  coincrusade-prod:
+
+name: coincrusade-runner-game-prod
 
 services:
   frontend:
@@ -36,14 +48,13 @@ services:
     container_name: coin-crusade-game_fe-prod
     restart: always
     ports:
-      - ${FRONTEND_PORT}:3000
+      - ${HOST_FRONTEND_PORT}:3000
     environment:
       - NODE_ENV=${NODE_ENV}
       - NEXT_PUBLIC_GITHUB=${NEXT_PUBLIC_GITHUB}
       - NEXT_PUBLIC_MAIL=${NEXT_PUBLIC_MAIL}
       - API_KEY=${API_KEY}
       - API_URL=${API_URL}
-      - FRONTEND_PORT=${FRONTEND_PORT}
     depends_on:
       - backend
     logging:
@@ -55,7 +66,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: docker/nestjs/prisma/Dockerfile
+      dockerfile: docker/node/prisma/Dockerfile
       args:
         - APP=backend
         - TAG=base-latest
@@ -64,17 +75,15 @@ services:
     container_name: coin-crusade-game_be-prod
     restart: always
     ports:
-      - ${BACKEND_PORT}:3001
+      - ${HOST_BACKEND_PORT}:3001
     networks:
-      - app-prod
+      - coincrusade-prod
     environment:
       - API_KEY=${API_KEY}
-      - BACKEND_PORT=${BACKEND_PORT}
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${DATABASE_NAME}?schema=public
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - DATABASE_NAME=${DATABASE_NAME}
-      - POSTGRES_HOST=${POSTGRES_HOST}
       - MAIL_RECIPIENT=${MAIL_RECIPIENT}
       - MAIL_MODULE_HOST=${MAIL_MODULE_HOST}
       - MAIL_MODULE_USER=${MAIL_MODULE_USER}
@@ -96,16 +105,16 @@ services:
     container_name: coin-crusade-game_db-prod
     restart: always
     ports:
-      - ${DATABASE_PORT}:5432
+      - ${HOST_DATABASE_PORT}:5432
     environment:
       - NODE_ENV=${NODE_ENV}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${DATABASE_NAME}
     networks:
-      - app-prod
+      - coincrusade-prod
     volumes:
-      - ${DATABASE_PATH}:/var/lib/postgresql/data
+      - ${HOST_DATABASE_PATH}:/var/lib/postgresql/data
     logging:
       driver: 'json-file'
       options:
