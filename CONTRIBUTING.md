@@ -31,6 +31,7 @@ All applications and packages **must be covered by tests**, as long as it makes 
 
 Deployment is configured using two distinct Docker Compose files:
 
+- `docker-compose-local.yaml` - for local testing without need of exhausting .env configuration
 - `docker-compose-test.yaml` – for testing and QA environments
 - `docker-compose-prod.yaml` – for production deployments
 

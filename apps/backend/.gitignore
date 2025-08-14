@@ -4,3 +4,4 @@
 /tyr.schema.graphql
 node_modules
 /**/prisma/generated
+/database_data/*

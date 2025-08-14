@@ -5,22 +5,23 @@
 
 # For all available tags look at https://hub.docker.com/repository/docker/lbriza/shared/tags
 ARG TAG=base-latest
+ARG APP_FOLDER=apps
 
 FROM lbriza/shared:${TAG} AS shared
 
 ################################
 # Corepack preparation
 COPY package.json .
-RUN corepack prepare "$(jq -r '.packageManager' package.json)" --activate 
-RUN rm package.json
+RUN corepack prepare "$(jq -r '.packageManager' package.json)" --activate && \
+    rm package.json
 
 ################################
 # Setup turbo on the shared image base
 FROM shared AS base
-RUN npm install turbo --global
 
 WORKDIR /application
-RUN pnpm config set store-dir /application/.pnpm-store
+RUN npm install turbo --global && \
+    pnpm config set store-dir /application/.pnpm-store
 
 ################################
 # Prune project
@@ -35,6 +36,7 @@ RUN turbo prune @lukasbriza/${APP} --docker
 # Build the project
 FROM base AS builder
 ARG APP
+ARG APP_FOLDER=apps
 
 # Copy codestyle configuration files
 COPY --from=pruner /application/.npmrc /application/tsconfig.json /application/.eslintrc.cjs /application/.prettierignore /application/prettier.config.js /application/
@@ -49,37 +51,55 @@ COPY --from=pruner /application/out/json/ .
 
 # Download node prune
 RUN curl -sf https://gobinaries.com/tj/node-prune | sh
-
-# First install the dependencies (as they change less often)
+# Install the dependencies (as they change less often)
 RUN --mount=type=cache,id=pnpm,target=/application/.pnpm-store pnpm install --frozen-lockfile
 
 # Copy source code of isolated subworkspace
 COPY --from=pruner /application/out/full/ .
 
+WORKDIR /application/${APP_FOLDER}/${APP}
+
+# Remove generated prisma client if exists and generate new prisma code
+RUN rm -rf ./src/modules/prisma/generated && \
+    pnpm prisma:generate
+
 # Build and ceanup
-RUN turbo build --filter=@lukasbriza/${APP} && \
-    pnpm prune --prod --no-optional && \
-    find . -type d \( -name "src" -o -name "test" -o -name "tests" -o -name ".turbo" \) -exec rm -rf {} + && \
-    find . -type f -name "*.md" -delete && \
+WORKDIR /application
+RUN turbo build --filter=@lukasbriza/${APP}
+
+# Copy libquery_engine-linux-musl-openssl-3.0.x.so.node in deployment folder
+RUN cp ./apps/${APP}/src/modules/prisma/generated/libquery_engine-linux-musl-openssl-3.0.x.so.node ./apps/${APP}/build/modules/prisma/generated
+
+# Prune and remove unecessary files
+RUN --mount=type=cache,id=pnpm,target=/application/.pnpm-store pnpm prune --prod --no-optional && \
+    rm -rf ./.turbo && \
+    rm -rf ./**/*/src && \
+    rm -rf ./**/*/test && \
+    rm -rf ./**/*/tests && \
+    rm -rf ./**/*/.turbo && \
+    rm -rf ./**/*/*.md && \
     node-prune && \
-    rm -rf $(pnpm store path)
+    sh -c "rm -rf $(pnpm store path)"
 
 ################################
 # Final image
 FROM shared AS runner
 ARG APP
-ARG PORT=3000
+ARG PORT=3001
+ARG APP_FOLDER=apps
 
 ENV PORT=${PORT}
+ENV HOSTNAME="0.0.0.0"
 ENV TZ=Europe/Prague
-ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nextjs && \
-    adduser --system --uid 1001 nextjs
-USER nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nodejs
+USER nodejs
 
 WORKDIR /application
-COPY --from=builder --chown=nextjs:nextjs /application . 
+COPY --from=builder --chown=nodejs:nodejs /application .
 
-WORKDIR /application/apps/${APP}
-CMD sh -c "pnpm next start -p ${PORT}"
+WORKDIR /application/${APP_FOLDER}/${APP}
+# Optionaly will need to tun prisma migrate command in compose "command" key,
+# to ensure, that DB is always actual.
+CMD sh -c "pnpm start -p ${PORT}"

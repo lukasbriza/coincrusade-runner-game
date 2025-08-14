@@ -1,6 +1,14 @@
+# VARIABLES DEFINED IN .ENV.LOCAL FILES #
+#########################################
+# - apps/frontend/.env.local
+# - apps/backend/.env.local
+#
+# To work with .env.local files you need to run `docker:build-local` or `docker:run-local`.
+
 networks:
-  app-local:
-    driver: bridge
+  coincrusade-local:
+
+name: coincrusade-runner-game-local
 
 services:
   frontend:
@@ -10,7 +18,6 @@ services:
       args:
         - APP=frontend
         - TAG=base-latest
-    image: lbriza/coincrusade-runner-game:fe-local
     container_name: coin-crusade-game_fe-local
     env_file:
       - ./apps/frontend/.env.local
@@ -27,13 +34,12 @@ services:
   backend:
     build:
       context: .
-      dockerfile: docker/nestjs/prisma/Dockerfile
+      dockerfile: docker/node/prisma/Dockerfile
       args:
         - APP=backend
         - PORT=3001
         - TAG=base-latest
         - NODE_ENV=local
-    image: lbriza/coincrusade-runner-game:be-local
     container_name: coin-crusade-game_be-local
     command: sh -c "pnpm prisma migrate deploy && pnpm start -p 3001"
     env_file:
@@ -41,7 +47,7 @@ services:
     ports:
       - '${PORT-3001}:3001'
     networks:
-      - app-local
+      - coincrusade-local
     depends_on:
       - database
     logging:
@@ -54,7 +60,6 @@ services:
     build:
       context: .
       dockerfile: docker/postgres/Dockerfile
-    image: lbriza/coincrusade-runner-game:db-local
     container_name: coin-crusade-game_db-dev
     env_file:
       - ./apps/backend/.env.local
@@ -62,15 +67,11 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - app-local
+      - coincrusade-local
     volumes:
-      - 'posgres_data:/var/lib/postgresql/data'
+      - '/apps/backend/database_data:/var/lib/postgresql/data'
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
-
-volumes:
-  posgres_data:
-    driver: local
