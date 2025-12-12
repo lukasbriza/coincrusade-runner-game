@@ -52,6 +52,8 @@ export class CoincrusadeGateway implements OnGatewayInit, OnGatewayDisconnect {
       if (apiKey !== expectedApiKey) {
         console.log(`Client with id ${socket.id} has invalid or missing API key.`)
         socket.emit('error', { message: 'Invalid or missing API key' })
+        socket.disconnect()
+        console.log(`Client with id ${socket.id} disconnected.`)
         return
       }
 
