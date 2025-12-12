@@ -12,8 +12,8 @@ import { i18nConfig } from './i18n/config'
 // const intlMiddleware = createMiddleware(routing)
 
 const I18nMiddleware = createI18nMiddleware({
-  locales: ['en', 'cs'],
-  defaultLocale: 'cs',
+  locales: i18nConfig.locales,
+  defaultLocale: i18nConfig.defaultLocale,
 })
 
 const assetExtensions = ['.mp4', '.mp3', '.jpg', '.png', '.gif', '.svg']

@@ -56,10 +56,10 @@ RUN --mount=type=cache,id=pnpm,target=/application/.pnpm-store pnpm install --fr
 # Copy source code of isolated subworkspace
 COPY --from=pruner /application/out/full/ .
 
-# Build and ceanup
+# Build and cleanup
 RUN turbo build --filter=@lukasbriza/${APP} && \
     pnpm prune --prod --no-optional && \
-    find . -type d \( -name "src" -o -name "test" -o -name "tests" -o -name ".turbo" \) -exec rm -rf {} + && \
+    find . -type d \( -name "test" -o -name "tests" -o -name ".turbo" \) -exec rm -rf {} + && \
     find . -type f -name "*.md" -delete && \
     node-prune && \
     rm -rf $(pnpm store path)

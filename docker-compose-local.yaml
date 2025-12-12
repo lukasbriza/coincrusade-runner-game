@@ -16,13 +16,14 @@ services:
       context: .
       dockerfile: docker/nextjs/Dockerfile
       args:
+        - PORT=3000
         - APP=frontend
         - TAG=base-latest
     container_name: coin-crusade-game_fe-local
     env_file:
       - ./apps/frontend/.env.local
     ports:
-      - '${PORT-3000}:3000'
+      - '3000:3000'
     depends_on:
       - backend
     logging:
@@ -45,7 +46,7 @@ services:
     env_file:
       - ./apps/backend/.env.local
     ports:
-      - '${PORT-3001}:3001'
+      - '3001:3001'
     networks:
       - coincrusade-local
     depends_on:
