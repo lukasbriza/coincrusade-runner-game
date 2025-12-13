@@ -8,7 +8,6 @@ import {
   OnGatewayInit,
   OnGatewayDisconnect,
   MessageBody,
-  ConnectedSocket,
 } from '@nestjs/websockets'
 import { AsyncApi, AsyncApiPub, AsyncApiSub } from 'nestjs-asyncapi'
 import { Server, Socket } from 'socket.io'
@@ -31,7 +30,13 @@ const EventPatterns = {
 }
 
 @AsyncApi()
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+  transports: ['websocket', 'polling'],
+})
 export class CoincrusadeGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(
     private readonly gameLogsService: GameLogsService,
@@ -43,9 +48,9 @@ export class CoincrusadeGateway implements OnGatewayInit, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server
 
-  afterInit(@ConnectedSocket() socket: Socket) {
+  afterInit() {
     // Secure connection with api key
-    socket.on('connection', (socket: Socket) => {
+    this.server.on('connection', (socket: Socket) => {
       const apiKey = socket.handshake.auth.apiKey as string | null
       const expectedApiKey = this.configService.get<string>('API_KEY')
 
