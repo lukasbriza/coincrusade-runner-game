@@ -73,6 +73,7 @@ services:
         - NODE_ENV=production
     image: lbriza/coincrusade-runner-game:be-prod
     container_name: coin-crusade-game_be-prod
+    command: sh -c "pnpm prisma migrate deploy && pnpm start $PORT"
     restart: always
     ports:
       - ${HOST_BACKEND_PORT}:3001
